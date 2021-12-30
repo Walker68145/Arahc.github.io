@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>莫队 on Arahc&#39;s blog</title>
-    <link>https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/</link>
+    <link>http://walker68145.github.io/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/</link>
     <description>Recent content in 莫队 on Arahc&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 02 Aug 2021 21:46:14 +0800</lastBuildDate>
     
-        <atom:link href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="http://walker68145.github.io/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>概率与期望</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E6%A6%82%E7%8E%87%E4%B8%8E%E6%9C%9F%E6%9C%9B/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E6%A6%82%E7%8E%87%E4%B8%8E%E6%9C%9F%E6%9C%9B/</link>
       <pubDate>Wed, 28 Jul 2021 20:38:26 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E6%A6%82%E7%8E%87%E4%B8%8E%E6%9C%9F%E6%9C%9B/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E6%A6%82%E7%8E%87%E4%B8%8E%E6%9C%9F%E6%9C%9B/</guid>
       <description>前言 从前有一个屑到要被淘汰的菜 Oier（其实就是我），他写了一个博客叫“浅谈数学期望”。然后好巧不巧在某一次更新博客的时候以前的文章全部被覆盖了，因为没有存笔记所以直接全部消失。这个人想着算了，覆盖掉就覆盖掉吧，鬼才会写概率和期望的博客。
 半年后的今天，这个死鬼居然补起了学习笔记，好巧不巧，正好就有概率和期望。（我：WDNMD）
 所以今天来写一波概率和期望的笔记。学长讲的时候都是以例题为主，顺带就把在洛谷上平均难度都是冷色系的概率 DP 一起水过去了，差点让我没跟上。所以这一次仔细写一写。
@@ -36,10 +36,10 @@ $$1\times\dfrac{1}{6}+2\times\dfrac{1}{6}+3\times\dfrac{1}{6}+4\times\dfrac{1}{6
     
     <item>
       <title>模意义下的数学</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E6%A8%A1%E6%84%8F%E4%B9%89%E4%B8%8B%E7%9A%84%E6%95%B0%E5%AD%A6/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E6%A8%A1%E6%84%8F%E4%B9%89%E4%B8%8B%E7%9A%84%E6%95%B0%E5%AD%A6/</link>
       <pubDate>Mon, 19 Jul 2021 14:41:28 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E6%A8%A1%E6%84%8F%E4%B9%89%E4%B8%8B%E7%9A%84%E6%95%B0%E5%AD%A6/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E6%A8%A1%E6%84%8F%E4%B9%89%E4%B8%8B%E7%9A%84%E6%95%B0%E5%AD%A6/</guid>
       <description>填完了线性代数和积性函数和莫比乌斯反演的坑之后，来补一下取模的笔记。
 前置导入 什么是取模？  取模运算是求两个数相除的余数。 取模运算（“Modulo Operation”）和取余运算（“Remainder Operation ”）两个概念有重叠的部分但又不完全一致。主要的区别在于对负整数进行除法运算时操作不同。取模主要是用于计算机术语中。取余则更多是数学概念。 模运算在数论和程序设计中都有着广泛的应用，奇偶数的判别到素数的判别，从模幂运算到最大公约数的求法，从孙子问题到凯撒密码问题，无不充斥着模运算的身影。虽然很多数论教材上对模运算都有一定的介绍，但多数都是以纯理论为主，对于模运算在程序设计中的应用涉及不多。 （摘自百度）
  前置知识 $\bmod$ 表示取模运算，也就是两数相除取其余数，在 C++ 中用 % 表示。$a\bmod{b}$ 表示求 $a$ 除以 $b$ 的余数。下面这个式子 $a\equiv b\pmod{p}$ 可以理解为 $a\bmod{p}=b\bmod{p}$。模运算与乘除运算同等级。但是本文有些地方为了方便就将模运算提升到比乘除高一个优先级的地方去了。
@@ -54,10 +54,10 @@ $\operatorname{C}_n^m$ 表示从 $n$ 个不同的元素中任意取出其中 $m$
     
     <item>
       <title>浅谈线性代数</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E6%B5%85%E8%B0%88%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E6%B5%85%E8%B0%88%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/</link>
       <pubDate>Sun, 18 Jul 2021 12:45:09 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E6%B5%85%E8%B0%88%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E6%B5%85%E8%B0%88%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/</guid>
       <description>学了线性代数的一些内容。简单做一个笔记。
 前置内容 什么是线性代数？  线性代数是数学的一个分支，它的研究对象是向量，向量空间（或称线性空间），线性变换和有限维的线性方程组。向量空间是现代数学的一个重要课题。 线性代数的理论已被泛化为算子理论。由于科学研究中的非线性模型通常可以被近似为线性模型，使得线性代数被广泛地应用于自然科学和社会科学中，因而在各种代数分支中占居首要地位。（摘自百度）
  学完线性代数，就有了对空间抽象成代数的思想。但是不一定有这个能力
@@ -74,10 +74,10 @@ $\operatorname{C}_n^m$ 表示从 $n$ 个不同的元素中任意取出其中 $m$
     
     <item>
       <title>浅谈数论</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E6%B5%85%E8%B0%88%E6%95%B0%E8%AE%BA/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E6%B5%85%E8%B0%88%E6%95%B0%E8%AE%BA/</link>
       <pubDate>Sat, 17 Jul 2021 21:44:45 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E6%B5%85%E8%B0%88%E6%95%B0%E8%AE%BA/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E6%B5%85%E8%B0%88%E6%95%B0%E8%AE%BA/</guid>
       <description>今天学长给我们教了数论选讲，把里面的精髓提出来浅谈记录一下。顺便附上机房一位神仙对本文的注解
 什么是数论？ 摘自 百度：
  数论是纯粹数学的分支之一，主要研究整数的性质。整数可以是方程式的解。有些解析函数中包括了一些整数、质数的性质，透过这些函数也可以了解一些数论的问题。
@@ -94,10 +94,10 @@ $\in$ 表示属于，$a\in A$ 表示元素 $a$ 属于集合 $A$。$\natnums^{+}$
     
     <item>
       <title>Shape 题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/shape-%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/shape-%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Mon, 12 Jul 2021 13:46:35 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/shape-%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/shape-%E9%A2%98%E8%A7%A3/</guid>
       <description>题意简述 给定一个 $n\times m$ 的 $0-1$ 矩阵，定义一个 H 形为一个长得像 H （感性理解，具体见题目描述）的图形，求有几个由 $0$ 组成的 H 形。
 例如下图图示（白色为 $0$，黑色为 $1$），一共有 $6$ 个 H 形，这也告诉我们 H 形是可以互相有重叠甚至有包含关系的（但不同的 H 形不会完全恰好重合）。
 题目分析 考虑到 $n,m\leqslant 2\times 10^3$。需要设计一个 $n\times m$ （或带一个 log ）的算法，直接暴力枚举四元组中的任意两个都无法完成，需要找到 H 形中的一个特性。
@@ -112,10 +112,10 @@ $\in$ 表示属于，$a\in A$ 表示元素 $a$ 属于集合 $A$。$\natnums^{+}$
     
     <item>
       <title>从BST到Splay</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E4%BB%8Ebst%E5%88%B0splay/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E4%BB%8Ebst%E5%88%B0splay/</link>
       <pubDate>Sun, 11 Jul 2021 21:36:09 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E4%BB%8Ebst%E5%88%B0splay/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E4%BB%8Ebst%E5%88%B0splay/</guid>
       <description>从堆到二叉搜索树 引言 考虑你需要维护一个数据结构，需要进行以下若干操作：
  添加一个值 value 删除一个值 value 查询值 value 的排名 查询排名为 rank 的值 求值 value 的前驱和后继  显然，如果只需要进行添加操作、查询最大值（最小值），只需要用一个二查堆，就可以解决。如果外加删除操作，则可以开启懒惰标记进行删除。整体复杂度是 $\operatorname{O}{(\log n)}$ 的。
 堆的特性是根的节点的值比左右子树的都要大，于是我们扩展了一下，就可以变成二叉搜索树：对于某个节点 $i$ ，他的值 $data_i$ 大于左儿子节点的值，小于右儿子节点的值。
@@ -131,10 +131,10 @@ void add(int x){ int u = root ; while true : if 找到要填的地方 : 添加�
     
     <item>
       <title>管道迷宫 题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E7%AE%A1%E9%81%93%E8%BF%B7%E5%AE%AB-%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E7%AE%A1%E9%81%93%E8%BF%B7%E5%AE%AB-%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Sat, 03 Jul 2021 21:38:55 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E7%AE%A1%E9%81%93%E8%BF%B7%E5%AE%AB-%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E7%AE%A1%E9%81%93%E8%BF%B7%E5%AE%AB-%E9%A2%98%E8%A7%A3/</guid>
       <description>题目传送门
 （团队题库，不可见，重题见 此处 ）
 题外话 本来是去年一个有关树然后有个线上下扫的交互题今年把它实现出来。
@@ -164,10 +164,10 @@ void add(int x){ int u = root ; while true : if 找到要填的地方 : 添加�
     
     <item>
       <title>大师 题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E5%A4%A7%E5%B8%88-%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E5%A4%A7%E5%B8%88-%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Wed, 26 Aug 2020 21:37:24 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E5%A4%A7%E5%B8%88-%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E5%A4%A7%E5%B8%88-%E9%A2%98%E8%A7%A3/</guid>
       <description>题目传送门
 1 题目介绍 本题的大意就是在一个序列 $a$ 中，求删去若干个数字，使得剩下的数字是等差数列得方法数，从动态规划的角度，这是标准的计数类 DP。
 最后的数据也告诉我们时间复杂度是 $\operatorname{O}${$nv$} 或 大约 $\operatorname{O}${$n^2$} 的。
@@ -187,10 +187,10 @@ void add(int x){ int u = root ; while true : if 找到要填的地方 : 添加�
     
     <item>
       <title>贴海报 题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E8%B4%B4%E6%B5%B7%E6%8A%A5-%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E8%B4%B4%E6%B5%B7%E6%8A%A5-%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Thu, 06 Feb 2020 21:47:47 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E8%B4%B4%E6%B5%B7%E6%8A%A5-%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E8%B4%B4%E6%B5%B7%E6%8A%A5-%E9%A2%98%E8%A7%A3/</guid>
       <description>题目传送门
 这道题题解里各位都用的线段树、浮水法，本蒟蒻完全不会，这里给出我的方法，既没有线段树也没有浮水法，较为易懂（?）。
 可以发现$n$的范围极其大，但是$m$的范围很小，只有1000，所以可以想到一个大致为$m^2$的算法。
@@ -217,10 +217,10 @@ for(register int i=1;i&amp;lt;=m;++i){ photo p; s=a.size(); //因为海报总数
     
     <item>
       <title>ぶんたん 题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E3%81%B6%E3%82%93%E3%81%9F%E3%82%93-%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E3%81%B6%E3%82%93%E3%81%9F%E3%82%93-%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Wed, 15 Jan 2020 21:32:54 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E3%81%B6%E3%82%93%E3%81%9F%E3%82%93-%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E3%81%B6%E3%82%93%E3%81%9F%E3%82%93-%E9%A2%98%E8%A7%A3/</guid>
       <description>题目传送门
 本题没有样例，这里随便先给四个样例供各位测试，一个正常样例，两个特殊样例，一个大样例：
 样例1： $in:$ 30，$out:$ 3
@@ -258,10 +258,10 @@ for(register int i=1;i&amp;lt;=m;++i){ photo p; s=a.size(); //因为海报总数
     
     <item>
       <title>花生采摘 题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E8%8A%B1%E7%94%9F%E9%87%87%E6%91%98-%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E8%8A%B1%E7%94%9F%E9%87%87%E6%91%98-%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Sat, 11 Jan 2020 10:39:25 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E8%8A%B1%E7%94%9F%E9%87%87%E6%91%98-%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E8%8A%B1%E7%94%9F%E9%87%87%E6%91%98-%E9%A2%98%E8%A7%A3/</guid>
       <description>题目传送门
 翻了这道题的前两页题解，没有几个和我的思路相仿的。唯一的一个我看不懂
 首先为了让大家快速找到自己可能有的错误，把这道题的部分坑点给出来：
@@ -292,10 +292,10 @@ int n,m,k,a[23][23]; map&amp;lt;int,pair&amp;lt;int,int&amp;gt; &amp;gt;c; prior
     
     <item>
       <title>BITMAP 题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/bitmap-%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/bitmap-%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Tue, 27 Aug 2019 21:32:18 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/bitmap-%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/bitmap-%E9%A2%98%E8%A7%A3/</guid>
       <description>最近总喜欢在SPOJ上刷黑白双煞题
 题目传送门
 这题的思路异常简单。实际上，如果你稍微看一看，就会发现……
@@ -317,10 +317,10 @@ $\color{CornflowerBlue}\text{范围：1&amp;lt;=n,m&amp;lt;=182}$
     
     <item>
       <title>最大子段和 题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E6%9C%80%E5%A4%A7%E5%AD%90%E6%AE%B5%E5%92%8C-%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E6%9C%80%E5%A4%A7%E5%AD%90%E6%AE%B5%E5%92%8C-%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Tue, 20 Aug 2019 10:49:51 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E6%9C%80%E5%A4%A7%E5%AD%90%E6%AE%B5%E5%92%8C-%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E6%9C%80%E5%A4%A7%E5%AD%90%E6%AE%B5%E5%92%8C-%E9%A2%98%E8%A7%A3/</guid>
       <description>又来水题解了
 ** 题目传送门**
 又是一道经典的 dp
@@ -355,10 +355,10 @@ $\color{Purple}\text{还可以做得更好}$
     
     <item>
       <title>数字三角形 题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E6%95%B0%E5%AD%97%E4%B8%89%E8%A7%92%E5%BD%A2-%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E6%95%B0%E5%AD%97%E4%B8%89%E8%A7%92%E5%BD%A2-%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Mon, 19 Aug 2019 21:47:13 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E6%95%B0%E5%AD%97%E4%B8%89%E8%A7%92%E5%BD%A2-%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E6%95%B0%E5%AD%97%E4%B8%89%E8%A7%92%E5%BD%A2-%E9%A2%98%E8%A7%A3/</guid>
       <description>题目传送门
 听说这是经典dp
 于是乎我用了贪心 记忆搜索

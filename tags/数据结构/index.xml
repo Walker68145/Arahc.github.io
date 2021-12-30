@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>数据结构 on Arahc&#39;s blog</title>
-    <link>https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
+    <link>http://walker68145.github.io/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
     <description>Recent content in 数据结构 on Arahc&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 22 Dec 2021 21:47:24 +0800</lastBuildDate>
     
-        <atom:link href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="http://walker68145.github.io/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>P5633最小度限制生成树 题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Tue, 28 Dec 2021 21:43:22 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/</guid>
       <description>wqs 二分，但是没有归排。
 wqs 我们考虑朴素地用 kruscal 构造一个生成树，是按照边权加边的。这种方法显然无法保证 $s$ 的度。
 因此我们考虑把和 $s$ 相邻的边的边权修改一下，使得最后的生成树能让 $s$ 有那么多的度数。
@@ -34,10 +34,10 @@ wqs 我们考虑朴素地用 kruscal 构造一个生成树，是按照边权加�
     
     <item>
       <title>线性基入门</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/</link>
       <pubDate>Wed, 22 Dec 2021 21:47:24 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/</guid>
       <description>简介 线性基是一个一般用于处理集合中异或相关的问题，其时间复杂度和空间复杂度都是 $\operatorname{O}(\log a)$ 级别，$a$ 为值域。
 线性基最常用的做法是兹瓷以下三个操作：
  向集合内插入一个数。 查询集合内若干数能异或得到的最大值。 查询一个数是否能被集合内若干数异或得到。  当然它还有很多副效果，比如还可以用来……
@@ -56,10 +56,10 @@ wqs 我们考虑朴素地用 kruscal 构造一个生成树，是按照边权加�
     
     <item>
       <title>Markdown 入门</title>
-      <link>https://walker68145/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/</link>
       <pubDate>Tue, 30 Nov 2021 18:41:00 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/</guid>
       <description>前段时间搞了一个 $\LaTeX$ 入门，现在把 markdown 的东西也补一下。
 因为 mardown 的内容比 $\LaTeX$ 的数学公式不知道少了多少，所以写起来也比较简单。下文中会现有演示，演示的下面是这一段演示的 markdown 源码，从中就可以看出格式了。
 标题 因为标题会破坏文章的目录结构这里不演示。
@@ -74,10 +74,10 @@ for(register int i=1;i&amp;lt;=n;++i) 源码就是这样，都比较好写，代
     
     <item>
       <title>OI 相关的非切题内容</title>
-      <link>https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/</link>
       <pubDate>Sun, 28 Nov 2021 21:42:04 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/</guid>
       <description>LaTeX 比较基础的 $\LaTeX$ 语法我已经在这篇博客里面写出了。对于写题解、出题面之类已经足够，对于出一套题面并整合成 pdf 文件这类需求，需要额外在网上查阅相关辅助资料。或者向他人寻求题目模板。
 题面和题解通常都需要用规范美观的 $\LaTeX$ 和 markdown 排版。
 markdown 比较基础的 markdown 已经在我的博客写出了。写题解、出题之类日用完全足够。当然改颜色之类没有什么必要提及，至于内嵌 HTML，首先你得会……
@@ -92,10 +92,10 @@ g++ -o code code.</description>
     
     <item>
       <title>替罪羊与KDTree</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E4%B8%8Ekdtree/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E4%B8%8Ekdtree/</link>
       <pubDate>Thu, 25 Nov 2021 21:48:19 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E4%B8%8Ekdtree/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E4%B8%8Ekdtree/</guid>
       <description>前言 替罪羊树是一种平衡树。对于平衡树的二叉搜索树性质，已经在这个博客比较详细地提到过了。那篇博客内，详细讲了的平衡树是 Splay。注意到 Splay 维护平衡的时候会直接通过旋转改变树的结构，在写平衡树套什么东西的时候，Splay 维护起来可能会有写吃力。因此这里重点写一下替罪羊树。
 KD-Tree 和替罪羊树维护树平衡的方法一样，因此也可以提出来讲讲。
 其实重点是KD不是替罪羊
@@ -112,10 +112,10 @@ struct SheepTree{ int root,tot,tmp; int pb[max_n]; // 记录拍扁时的中序�
     
     <item>
       <title>P3830随机树 题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/p3830%E9%9A%8F%E6%9C%BA%E6%A0%91-%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/p3830%E9%9A%8F%E6%9C%BA%E6%A0%91-%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Thu, 28 Oct 2021 21:42:44 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/p3830%E9%9A%8F%E6%9C%BA%E6%A0%91-%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/p3830%E9%9A%8F%E6%9C%BA%E6%A0%91-%E9%A2%98%E8%A7%A3/</guid>
       <description>upd：一个转移的 $j,y$ 打反了，已更正。此外修复了部分错别字，图床换源。
 题目大意 题目传送门。
  一个初始情况只有根节点的二叉树，定义一个点的深度是这个点到根节点的路径边数，根节点深度为 $0$，一颗树的深度是所有点深度最大值。每次等概率地选择一个叶子，给它挂上一对左右儿子。直到叶子数量为 $n$。求：所有叶子节点平均深度的期望、整个树深度的期望，结果保留六位小数。（$n\leqslant 300$）
@@ -131,10 +131,10 @@ $$f_i\times i=f_{i-1}\times i+2$$
     
     <item>
       <title>CSP2021廊桥分配 题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/csp2021%E5%BB%8A%E6%A1%A5%E5%88%86%E9%85%8D-%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/csp2021%E5%BB%8A%E6%A1%A5%E5%88%86%E9%85%8D-%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Sun, 24 Oct 2021 21:36:53 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/csp2021%E5%BB%8A%E6%A1%A5%E5%88%86%E9%85%8D-%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/csp2021%E5%BB%8A%E6%A1%A5%E5%88%86%E9%85%8D-%E9%A2%98%E8%A7%A3/</guid>
       <description>题目大意 题目传送门。
 分析部分为了节省字数，把国内区叫做 A，国际区叫做 B。
  $n$ 个廊桥分配给 A 和 B。A 有 $m_1$ 个飞机 B 有 $m_2$ 个飞机。每个飞机有一段区间表示停留时间。先到的飞机可以先占自己类的廊桥，使用到飞走，如果自己的类别没有可以使用的廊桥就只能停在飞机场。求最多能让多少飞机停在廊桥。
@@ -149,10 +149,10 @@ $$f_i\times i=f_{i-1}\times i+2$$
     
     <item>
       <title>多项式基本运算</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97/</link>
       <pubDate>Tue, 19 Oct 2021 09:37:55 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97/</guid>
       <description>前言  在数学中，由若干个单项式相加组成的代数式叫做多项式（若有减法：减一个数等于加上它的相反数）。多项式中的每个单项式叫做多项式的项，这些单项式中的最高项次数，就是这个多项式的次数。其中多项式中不含字母的项叫做常数项。 在数学中，多项式（polynomial）是指由变量、系数以及它们之间的加、减、乘、幂运算（非负整数次方）得到的表达式。对于比较广义的定义，一个或零个单项式的和也算多项式。按这个定义，多项式就是整式。实际上，还没有一个只对狭义多项式起作用，对单项式不起作用的定理。$0$ 作为多项式时，次数定义为负无穷大（或 $0$）。单项式和多项式统称为整式。 （摘自：百度百科）
  多项式的定义初中就有，没必要多说吧。本文将会积累所有学了的有关多项式的知识，不定期更新内容。
 本博客全文所有内容均不属于提高组考试范围，你要是硬说多项式加法可能有……那我也不能反驳。
@@ -173,10 +173,10 @@ $$C={ (x_i,\operatorname{f}(x_i)\operatorname{g}(x_i))\mid i\in N^+,i\in[1,n] }$
     
     <item>
       <title>CF643C 题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/cf643c-%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/cf643c-%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Sat, 16 Oct 2021 14:33:28 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/cf643c-%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/cf643c-%E9%A2%98%E8%A7%A3/</guid>
       <description>看见题解里面全是斜率优化，没有李超线段树，所以写一篇纪念。
 不想用李超线段树的也别略过啊 QAQ 还是有题目分析的。
 博客阅读体验更佳。
@@ -192,10 +192,10 @@ $$ \begin{aligned} E &amp;amp;= \frac{x}{y}\cdot 1+\frac{y-x}{y}\cdot\frac{x}{y}
     
     <item>
       <title>2SAT入门</title>
-      <link>https://walker68145/Arahc.github.io/posts/2sat%E5%85%A5%E9%97%A8/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/2sat%E5%85%A5%E9%97%A8/</link>
       <pubDate>Thu, 14 Oct 2021 09:55:51 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/2sat%E5%85%A5%E9%97%A8/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/2sat%E5%85%A5%E9%97%A8/</guid>
       <description>前置知识  Tarjan 没了  问题与解法 问题 2-SAT 问题的模板题目是：
  模板例题：对于 $n$ 个 bool 变量，变量值未知，给定 $m$ 个关系，每个关系形如：$x_i=c_1$ 或 $x_j=c_2$（$c_1,c_2\in{0,1}$）。求是否有给每个变量赋值的方案，若有解则输出一组解。时间复杂度要求线性。
  这类问题就是 2-SAT 问题，更加进一步地，如果关系是：$x_i=c_1$ 或 $x_j=c_2$ 或 $x_k=c_3$。那就是 3-SAT 问题……现在已经被证明，3-SAT 或以上的 k-SAT 问题，是 NPC 的，1-SAT 问题应该不需要多说，所以重点就是 2-SAT 问题了。
@@ -206,10 +206,10 @@ $$ \begin{aligned} E &amp;amp;= \frac{x}{y}\cdot 1+\frac{y-x}{y}\cdot\frac{x}{y}
     
     <item>
       <title>平面图判定 题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E5%B9%B3%E9%9D%A2%E5%9B%BE%E5%88%A4%E5%AE%9A-%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E5%B9%B3%E9%9D%A2%E5%9B%BE%E5%88%A4%E5%AE%9A-%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Sun, 03 Oct 2021 21:44:19 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E5%B9%B3%E9%9D%A2%E5%9B%BE%E5%88%A4%E5%AE%9A-%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E5%B9%B3%E9%9D%A2%E5%9B%BE%E5%88%A4%E5%AE%9A-%E9%A2%98%E8%A7%A3/</guid>
       <description>题目传送门。
 定位：2-SAT。
 前置知识 平面图 平面图：存在一种或几种方法，将这个图画在平面上，除了点之外，所有边之间没有交点的图。
@@ -231,10 +231,10 @@ $$ \begin{aligned} E &amp;amp;= \frac{x}{y}\cdot 1+\frac{y-x}{y}\cdot\frac{x}{y}
     
     <item>
       <title>图论入门</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E5%9B%BE%E8%AE%BA%E5%85%A5%E9%97%A8/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E5%9B%BE%E8%AE%BA%E5%85%A5%E9%97%A8/</link>
       <pubDate>Mon, 20 Sep 2021 21:48:46 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E5%9B%BE%E8%AE%BA%E5%85%A5%E9%97%A8/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E5%9B%BE%E8%AE%BA%E5%85%A5%E9%97%A8/</guid>
       <description>图论是信息学竞赛中永远不失特色的一种算法集合。最常见也是相对简单的有：最短路，最小生成树，拓扑排序，部分树上的问题。此外还有深造一些的，如网络流，Tarjan 等。
 图的结构 一个图由若干个点和连接点的若干个边组成。点的集合记作 $V$，边的集合记作 $E$，后文若无特殊说明，点集大小是 $n$，边集大小是 $m$。
 边有不定向和定向两种。都不定向的图叫无向图，都定向的是有向图，有的定向有的不定向的是混合图。一般情况下，混合图和无向图可以转化为有向图的问题求解。无向图上任意两点之间都有连边的是完全图。
@@ -256,10 +256,10 @@ struct graph{ int hd[max_n],nx[max_n],to[max_n],ct; graph(){ct=1;} // 初始化�
     
     <item>
       <title>叫苦不迭 题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E5%8F%AB%E8%8B%A6%E4%B8%8D%E8%BF%AD-%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E5%8F%AB%E8%8B%A6%E4%B8%8D%E8%BF%AD-%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Mon, 20 Sep 2021 12:43:45 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E5%8F%AB%E8%8B%A6%E4%B8%8D%E8%BF%AD-%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E5%8F%AB%E8%8B%A6%E4%B8%8D%E8%BF%AD-%E9%A2%98%E8%A7%A3/</guid>
       <description>题意描述： 给定一个 $n$ 个点的森林，每个点上有 $a_i$ 个虫子，种类为编号为 $[1,a_i]$ 的种类里各一个，都是第一代虫子。每一代虫子中，种类为 $i$ 的活虫子会造成 $\varphi(i)$ 的贡献，然后对于每一个虫子，设其种类为 $i$，种类为 $j$，都会繁殖一个种类为 $\frac{i(j+1)}{j}$ 的虫子，是原虫子的下一代，然后原虫子会消亡。代数超过 $k$ 的虫子不再造成贡献。有 $m$ 次操作，每次操作为删掉并添加一条边（保证还是森林结构）或查询 $(u,v)$ 路径上所有点上的所有代虫子造成的贡献和。
 $n,m\leqslant 10^5,k\leqslant a_i\leqslant 10^5$。
 题解 注：$n,m,k,a_i$ 都同级，后文为了简便分析复杂度全部用 $n$ 算。 sigma 里面没有标明下界的都是 $1$ 开始，别杠了别杠了孩子怕了。
@@ -271,10 +271,10 @@ inline void getphi(){ // 预处理欧拉函数，存在 phi[] 里 	memset(isprim
     
     <item>
       <title>LaTeX 数学公式</title>
-      <link>https://walker68145/Arahc.github.io/posts/latex-%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/latex-%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F/</link>
       <pubDate>Sat, 18 Sep 2021 21:40:08 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/latex-%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/latex-%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F/</guid>
       <description>前言规定  本文采取分类目录的方式记录，也就是博客左边的那个目录，可以在里面找你要找的公式内容。 为了方便，如果代指任意一个数学式子或公式或变量名等时，用“公式”的英文 formula 表示。 上面是对应字符，下面是插入方法。 operatorname 不会特殊介绍，只要知道格式是把某个东西写成一个函数的方法就行，一般用于最小公倍数，就是 $\operatorname{lcm}$，因为没有自带的这个函数，所以写成 \operatorname{lcm} 不会介绍字体和颜色。  插入公式方法和原则 对于一行里面你要插入一个公式，叫做行内公式，直接使用 $formula$ 的形式插入，比如下面一段文字：
 这个方程式还是不难优化的，显然有 $f_i=s_{i_1}+a_i$。
 这个方程式还是不难优化的，显然有 $f_i=s_{i_1}+a_i$。 对于插入一个单独占据一行的公式，将 $formula$ 替换为 $$formula$$，注意如果要插入单行公式，那么在写的时候这个公式也要单独换一行，不能和别的东西混在一行。比如下面一段文字：
@@ -289,10 +289,10 @@ $$k_i=(a_i+b_i)\bmod{p},x=y,s_i\gets s_{i-1}+a_i,c\gets c\times 2^3$$
     
     <item>
       <title>2021全真模拟</title>
-      <link>https://walker68145/Arahc.github.io/posts/2021%E5%85%A8%E7%9C%9F%E6%A8%A1%E6%8B%9F/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/2021%E5%85%A8%E7%9C%9F%E6%A8%A1%E6%8B%9F/</link>
       <pubDate>Sun, 29 Aug 2021 21:31:17 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/2021%E5%85%A8%E7%9C%9F%E6%A8%A1%E6%8B%9F/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/2021%E5%85%A8%E7%9C%9F%E6%A8%A1%E6%8B%9F/</guid>
       <description>总结 考试策略 T1 $n^2$ 暴力显然，因为好写而且没有想到正解所以直接跳过。T2 因为题意一直在强调几个东西，把这些当做状态就切掉了。仔细阅读 T3 之后没有好想法，所以回到 T1，想到一种正解。写了三分查找，过了大样例后时间剩余不多，紧急回头写 T3 暴力与骗分。
 结果反思 T1：期望得分 $100$，实际得分 $35$，三分查找挂掉了。代码实现能力需加强。
 T2：期望得分 $100$，实际得分 $100$。
@@ -306,10 +306,10 @@ T3：期望得分 $5$，实际得分 $0$。没骗到分，题目不会属于个�
     
     <item>
       <title>LCP 和后缀数组</title>
-      <link>https://walker68145/Arahc.github.io/posts/lcp-%E5%92%8C%E5%90%8E%E7%BC%80%E6%95%B0%E7%BB%84/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/lcp-%E5%92%8C%E5%90%8E%E7%BC%80%E6%95%B0%E7%BB%84/</link>
       <pubDate>Sat, 28 Aug 2021 10:40:36 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/lcp-%E5%92%8C%E5%90%8E%E7%BC%80%E6%95%B0%E7%BB%84/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/lcp-%E5%92%8C%E5%90%8E%E7%BC%80%E6%95%B0%E7%BB%84/</guid>
       <description>前言 后缀数组（SA）是一种可以用于处理字符串后缀有关性质，包括 LCP 等的思想。一般复杂度用 $\operatorname{O}(n\log n)$ 版本，有 $\operatorname{O}(n)$ 版本但相对复杂，码量大。本文讨论的是严格的 $\operatorname{O}(n\log n)$ 的。
 后缀自动机（SAM）则是一种强有力的数据结构，用于解决有关字符串的很多东西。一般复杂度是 $\operatorname{O}(n)$ 的。因为写博客的时间原因 SAM 暂时咕着。暂时只讨论 SA。
 本文可能出现的部分词语定义如下：
@@ -320,10 +320,10 @@ LCP 的性质与引理 根据 LCP 的定义，有这样两个显然的性质：
     
     <item>
       <title>CF1553部分题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/cf1553%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/cf1553%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Sun, 15 Aug 2021 21:33:57 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/cf1553%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/cf1553%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/</guid>
       <description>前言 这一会 CF1553 的 vp 截取的是 DEFG 四道题目，因为 AC 两题我也做出来了，所以会放在一起。另外有一个 B 算法显然。因此本次题解包含 CF1553-ACDEFG 的解释加代码，以及 CF1553-B 的口胡。
 总结 考试策略 CF 当天的考试写出了 AC，B 算法非常显然，也知道怎么做但是并没有写，因为看错数据范围了以为过不去。后面的时间一直在写 F 但是写不出来。vp 的时候第一个就去做 F，随后开始写 D，写完 D 后口胡出 G 的算法但是没来得及写了。E 是考后看题解知道的算法。
 自我感觉整体策略还行，但是有一些瑕疵，比如看错数据范围之类，因为“个人恩怨”选择先写 F，放着别的题不管。
@@ -336,10 +336,10 @@ LCP 的性质与引理 根据 LCP 的定义，有这样两个显然的性质：
     
     <item>
       <title>全真模部分题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/%E5%85%A8%E7%9C%9F%E6%A8%A1%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/%E5%85%A8%E7%9C%9F%E6%A8%A1%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Thu, 12 Aug 2021 21:45:39 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/%E5%85%A8%E7%9C%9F%E6%A8%A1%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/%E5%85%A8%E7%9C%9F%E6%A8%A1%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/</guid>
       <description>考试策略： 比较不行，前面花了太多时间在 T1 上，实际上最后个人感觉 T1 最难。T2 类似于一个猜结果后证明的东西，考虑到数据范围，必然网络流二分图动态规划三选一。因为个人动态规划水平不太好，优先考虑网络流做法没想出来，又因为想到网格图一定是二分图，所以尝试用二分图的角度解释必胜方式，从而证明正确性。T3 因为以前同学讲点分治的时候提到过：
  点分治可以用来处理树上路径长度有关的奇特问题，包括刚好等于的，L 到 R 之间的，一个倍数的……
  看到“长度-最大值”为倍数的时候直接定档点分治，但是因为 T1 耗时间太多没有时间打。最后 T1T3 暴力写挂没有捞到分，总分只由 T2 AC 的 100 分。
@@ -353,10 +353,10 @@ T3 是裸的点分治。我在做题记录里写到点分治是一个好写难�
     
     <item>
       <title>CF1557和CF1530部分题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/cf1557%E5%92%8Ccf1530%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/cf1557%E5%92%8Ccf1530%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Tue, 10 Aug 2021 12:35:19 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/cf1557%E5%92%8Ccf1530%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/cf1557%E5%92%8Ccf1530%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/</guid>
       <description>前言 CF1557 是第一场 VP 前一天晚上的比赛。CF1530 是第一场 VP，题目没有全部做完。这里把我写了代码或者从同学那里学习的算法放上来，以供参考。
 CF1557 四题，A-D，E 是个交互题很有意思，有时间会去做，做完补在这里。
 CF1557A  给定一个序列，将这个序列分成两个子序列。使得两个子序列的所有数的平均数之和最大。求最大值。$n\leqslant 3\times 10^5$。
@@ -370,10 +370,10 @@ $$a_1+\dfrac{\sum_{i=2}^n a_n}{n-1}$$
     
     <item>
       <title>RmqProblem 题解</title>
-      <link>https://walker68145/Arahc.github.io/posts/rmqproblem-%E9%A2%98%E8%A7%A3/</link>
+      <link>http://walker68145.github.io/Arahc.github.io/posts/rmqproblem-%E9%A2%98%E8%A7%A3/</link>
       <pubDate>Mon, 02 Aug 2021 21:46:14 +0800</pubDate>
       
-      <guid>https://walker68145/Arahc.github.io/posts/rmqproblem-%E9%A2%98%E8%A7%A3/</guid>
+      <guid>http://walker68145.github.io/Arahc.github.io/posts/rmqproblem-%E9%A2%98%E8%A7%A3/</guid>
       <description>题目大意 题目传送门
 给定一个静态区间，有多次询问，每次询问查询一段区间 $[l,r]$ 的 $\operatorname{mex}$。（一个区间的 $\operatorname{mex}$ 为最小的没有出现在这个区间的数字中的自然数）
 题目大意一句话可还行
