@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        线性基入门 - Arahc&#39;s blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="简介 线性基是一个一般用于处理集合中异或相关的问题，其时间复杂度和空间复杂度都是 $\operatorname{O}(\log a)$ 级别，$a$ 为值域。
+线性基最常用的做法是兹瓷以下三个操作：
+ 向集合内插入一个数。 查询集合内若干数能异或得到的最大值。 查询一个数是否能被集合内若干数异或得到。  当然它还有很多副效果，比如还可以用来……
+ 查询集合内若干数能异或得到的最小值。 查询集合内若干数能异或得到的第 $k$ 小值。 查询集合内若干数能异或得到的第 $k$ 大值。  等等，你可以尽情扩展，只要你能做到。
+本文章 $\LaTeX$ 完全按照数学标准进行，例如信息学的赋值语句不会使用 $a=b$ 表示而会表示为 $a\leftarrow b$。如有造成阅读困难，那是你自己的事，不要找我。
+若无特殊注明，一个数的某一位默认为二进制下而非十进制下，没有特殊标明和特判就不考虑 $0$。
+线性基基本操作 从一个例题引入已经是典中典了吧。
+ 例 1：维护一个集合，支持两种操作：
+ 插入一个数。 查询集合内若干数能异或得到的最大值。  $n\leqslant 10^6,1\leqslant a_i\leqslant 2^{50}$
+ 你发现这两个操作就是前面说的基本操作的前两个……
+暴力做法非常显然，复杂度是 $2^n$ 的，没必要多说。直接开正题。
+线性基基本原理 线性基只需要用数组实现，记为 ${p}$。其中 $p_i$ 的最高位的 $1$ 在第 $i$ 位。
+用线性基维护一个数组，我们只需要考虑能让原数组 ${a}$ 可以通过 ${p}$ 经过异或得到即可。
+求线性基的时候，先考虑插入一个数 $x$。我们优先找到 $x$ 的 $1$ 的最高位（设为 $i$），如果线性基中没有对应的位，则把 $x$ 插入到线性基内，令 $p_i\leftarrow x$。" />
+    <meta name="generator" content="Hugo 0.91.2 with theme pure" />
+    <title>线性基入门 - Arahc&#39;s blog</title>
+    
+    
+    <link rel="stylesheet" href="https://walker68145/Arahc.github.io/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="线性基入门" />
+<meta property="og:description" content="简介 线性基是一个一般用于处理集合中异或相关的问题，其时间复杂度和空间复杂度都是 $\operatorname{O}(\log a)$ 级别，$a$ 为值域。
+线性基最常用的做法是兹瓷以下三个操作：
+ 向集合内插入一个数。 查询集合内若干数能异或得到的最大值。 查询一个数是否能被集合内若干数异或得到。  当然它还有很多副效果，比如还可以用来……
+ 查询集合内若干数能异或得到的最小值。 查询集合内若干数能异或得到的第 $k$ 小值。 查询集合内若干数能异或得到的第 $k$ 大值。  等等，你可以尽情扩展，只要你能做到。
+本文章 $\LaTeX$ 完全按照数学标准进行，例如信息学的赋值语句不会使用 $a=b$ 表示而会表示为 $a\leftarrow b$。如有造成阅读困难，那是你自己的事，不要找我。
+若无特殊注明，一个数的某一位默认为二进制下而非十进制下，没有特殊标明和特判就不考虑 $0$。
+线性基基本操作 从一个例题引入已经是典中典了吧。
+ 例 1：维护一个集合，支持两种操作：
+ 插入一个数。 查询集合内若干数能异或得到的最大值。  $n\leqslant 10^6,1\leqslant a_i\leqslant 2^{50}$
+ 你发现这两个操作就是前面说的基本操作的前两个……
+暴力做法非常显然，复杂度是 $2^n$ 的，没必要多说。直接开正题。
+线性基基本原理 线性基只需要用数组实现，记为 ${p}$。其中 $p_i$ 的最高位的 $1$ 在第 $i$ 位。
+用线性基维护一个数组，我们只需要考虑能让原数组 ${a}$ 可以通过 ${p}$ 经过异或得到即可。
+求线性基的时候，先考虑插入一个数 $x$。我们优先找到 $x$ 的 $1$ 的最高位（设为 $i$），如果线性基中没有对应的位，则把 $x$ 插入到线性基内，令 $p_i\leftarrow x$。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-12-22T21:47:24+08:00" />
+<meta property="article:modified_time" content="2021-12-22T21:47:24+08:00" />
+
+<meta itemprop="name" content="线性基入门">
+<meta itemprop="description" content="简介 线性基是一个一般用于处理集合中异或相关的问题，其时间复杂度和空间复杂度都是 $\operatorname{O}(\log a)$ 级别，$a$ 为值域。
+线性基最常用的做法是兹瓷以下三个操作：
+ 向集合内插入一个数。 查询集合内若干数能异或得到的最大值。 查询一个数是否能被集合内若干数异或得到。  当然它还有很多副效果，比如还可以用来……
+ 查询集合内若干数能异或得到的最小值。 查询集合内若干数能异或得到的第 $k$ 小值。 查询集合内若干数能异或得到的第 $k$ 大值。  等等，你可以尽情扩展，只要你能做到。
+本文章 $\LaTeX$ 完全按照数学标准进行，例如信息学的赋值语句不会使用 $a=b$ 表示而会表示为 $a\leftarrow b$。如有造成阅读困难，那是你自己的事，不要找我。
+若无特殊注明，一个数的某一位默认为二进制下而非十进制下，没有特殊标明和特判就不考虑 $0$。
+线性基基本操作 从一个例题引入已经是典中典了吧。
+ 例 1：维护一个集合，支持两种操作：
+ 插入一个数。 查询集合内若干数能异或得到的最大值。  $n\leqslant 10^6,1\leqslant a_i\leqslant 2^{50}$
+ 你发现这两个操作就是前面说的基本操作的前两个……
+暴力做法非常显然，复杂度是 $2^n$ 的，没必要多说。直接开正题。
+线性基基本原理 线性基只需要用数组实现，记为 ${p}$。其中 $p_i$ 的最高位的 $1$ 在第 $i$ 位。
+用线性基维护一个数组，我们只需要考虑能让原数组 ${a}$ 可以通过 ${p}$ 经过异或得到即可。
+求线性基的时候，先考虑插入一个数 $x$。我们优先找到 $x$ 的 $1$ 的最高位（设为 $i$），如果线性基中没有对应的位，则把 $x$ 插入到线性基内，令 $p_i\leftarrow x$。"><meta itemprop="datePublished" content="2021-12-22T21:47:24+08:00" />
+<meta itemprop="dateModified" content="2021-12-22T21:47:24+08:00" />
+<meta itemprop="wordCount" content="694">
+<meta itemprop="keywords" content="数据结构,数学," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="线性基入门"/>
+<meta name="twitter:description" content="简介 线性基是一个一般用于处理集合中异或相关的问题，其时间复杂度和空间复杂度都是 $\operatorname{O}(\log a)$ 级别，$a$ 为值域。
+线性基最常用的做法是兹瓷以下三个操作：
+ 向集合内插入一个数。 查询集合内若干数能异或得到的最大值。 查询一个数是否能被集合内若干数异或得到。  当然它还有很多副效果，比如还可以用来……
+ 查询集合内若干数能异或得到的最小值。 查询集合内若干数能异或得到的第 $k$ 小值。 查询集合内若干数能异或得到的第 $k$ 大值。  等等，你可以尽情扩展，只要你能做到。
+本文章 $\LaTeX$ 完全按照数学标准进行，例如信息学的赋值语句不会使用 $a=b$ 表示而会表示为 $a\leftarrow b$。如有造成阅读困难，那是你自己的事，不要找我。
+若无特殊注明，一个数的某一位默认为二进制下而非十进制下，没有特殊标明和特判就不考虑 $0$。
+线性基基本操作 从一个例题引入已经是典中典了吧。
+ 例 1：维护一个集合，支持两种操作：
+ 插入一个数。 查询集合内若干数能异或得到的最大值。  $n\leqslant 10^6,1\leqslant a_i\leqslant 2^{50}$
+ 你发现这两个操作就是前面说的基本操作的前两个……
+暴力做法非常显然，复杂度是 $2^n$ 的，没必要多说。直接开正题。
+线性基基本原理 线性基只需要用数组实现，记为 ${p}$。其中 $p_i$ 的最高位的 $1$ 在第 $i$ 位。
+用线性基维护一个数组，我们只需要考虑能让原数组 ${a}$ 可以通过 ${p}$ 经过异或得到即可。
+求线性基的时候，先考虑插入一个数 $x$。我们优先找到 $x$ 的 $1$ 的最高位（设为 $i$），如果线性基中没有对应的位，则把 $x$ 插入到线性基内，令 $p_i\leftarrow x$。"/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/Walker_68145" target="_blank">
+            <img class="img-circle img-rotate" src="https://walker68145/Arahc.github.io/avatar.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Arahc</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Arahc&#39;s home</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Changsha, China</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/Arahc.github.io/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/Arahc.github.io/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/Arahc.github.io/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/Arahc.github.io/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/Arahc.github.io/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content"><p>博客已经由 Walker_68145.github.io 转移到此处，原页面保留，为此带来的不便请大家谅解。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link" rel="1">k进制<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link" rel="1">stl<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link" rel="2">二分三分<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link" rel="3">分治<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link" rel="8">动态规划<span
+               class="tag-list-count">8</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link" rel="7">图论<span
+               class="tag-list-count">7</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link" rel="1">字符串<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link" rel="10">数学<span
+               class="tag-list-count">10</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link" rel="9">数据结构<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link" rel="4">暴力<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link" rel="1">莫队<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link" rel="3">贪心<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link" rel="2">随机化<span
+               class="tag-list-count">2</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E6%9D%82%E9%A1%B9/" class="category-list-link">杂项</a><span class="category-list-count">3</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/" class="category-list-link">笔记</a><span class="category-list-count">11</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E9%A2%98%E8%A7%A3/" class="category-list-link">题解</a><span class="category-list-count">20</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link">k进制</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link">stl</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link">二分三分</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link">分治</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link">动态规划</a><span
+                    class="tag-list-count">8</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link">图论</a><span
+                    class="tag-list-count">7</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link">字符串</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link">数学</a><span
+                    class="tag-list-count">10</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link">数据结构</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link">暴力</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link">莫队</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link">贪心</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link">随机化</a><span
+                    class="tag-list-count">2</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/" class="title">P5633最小度限制生成树 题解</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-28 21:43:22 &#43;0800 CST" itemprop="datePublished">2021-12-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/" class="title">线性基入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-22 21:47:24 &#43;0800 CST" itemprop="datePublished">2021-12-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/" class="title">Markdown 入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-30 18:41:00 &#43;0800 CST" itemprop="datePublished">2021-11-30</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/" class="title">OI 相关的非切题内容</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-28 21:42:04 &#43;0800 CST" itemprop="datePublished">2021-11-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E4%B8%8Ekdtree/" class="title">替罪羊与KDTree</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-25 21:48:19 &#43;0800 CST" itemprop="datePublished">2021-11-25</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/"
+    >线性基入门</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/" class="article-date">
+  <time datetime="2021-12-22 21:47:24 &#43;0800 CST" itemprop="datePublished">2021-12-22</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/"> 笔记 </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"> 数据结构 </a>
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/"> 数学 </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 694 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 4 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <h2 id="简介">简介</h2>
+<p>线性基是一个一般用于处理集合中异或相关的问题，其时间复杂度和空间复杂度都是 $\operatorname{O}(\log a)$ 级别，$a$ 为值域。</p>
+<p>线性基最常用的做法是兹瓷以下三个操作：</p>
+<ul>
+<li>向集合内插入一个数。</li>
+<li>查询集合内若干数能异或得到的最大值。</li>
+<li>查询一个数是否能被集合内若干数异或得到。</li>
+</ul>
+<p>当然它还有很多副效果，比如还可以用来……</p>
+<ul>
+<li>查询集合内若干数能异或得到的最小值。</li>
+<li>查询集合内若干数能异或得到的第 $k$ 小值。</li>
+<li>查询集合内若干数能异或得到的第 $k$ 大值。</li>
+</ul>
+<p>等等，你可以尽情扩展，只要你能做到。</p>
+<p>本文章 $\LaTeX$ 完全按照数学标准进行，例如信息学的赋值语句不会使用 $a=b$ 表示而会表示为 $a\leftarrow b$。如有造成阅读困难，那是你自己的事，不要找我。</p>
+<p>若无特殊注明，一个数的某一位默认为二进制下而非十进制下，没有特殊标明和特判就不考虑 $0$。</p>
+<h2 id="线性基基本操作">线性基基本操作</h2>
+<p>从一个例题引入已经是典中典了吧。</p>
+<blockquote>
+<p>例 1：维护一个集合，支持两种操作：</p>
+<ol>
+<li>插入一个数。</li>
+<li>查询集合内若干数能异或得到的最大值。</li>
+</ol>
+<p>$n\leqslant 10^6,1\leqslant a_i\leqslant 2^{50}$</p>
+</blockquote>
+<p>你发现这两个操作就是前面说的基本操作的前两个……</p>
+<p>暴力做法非常显然，复杂度是 $2^n$ 的，没必要多说。直接开正题。</p>
+<h3 id="线性基基本原理">线性基基本原理</h3>
+<p>线性基只需要用数组实现，记为 ${p}$。其中 $p_i$ 的最高位的 $1$ 在第 $i$ 位。</p>
+<p>用线性基维护一个数组，我们只需要考虑能让原数组 ${a}$ 可以通过 ${p}$ 经过异或得到即可。</p>
+<p>求线性基的时候，先考虑插入一个数 $x$。我们优先找到 $x$ 的 $1$ 的最高位（设为 $i$），如果线性基中没有对应的位，则把 $x$ 插入到线性基内，令 $p_i\leftarrow x$。</p>
+<p>如果不是的时候，考虑如何插入。这里要从线性基维护的东西入手，因为维护线性基需要满足 ${p}$ 的元素可以异或得到 ${a}$ 的元素，从插入一个数线性基的影响的角度看，如果插入的数已经可以被线性基中的元素表示了。也就是说 $x$ 已经可以表示为若干个 $p_i$ 异或得到了，还需要更新线性基吗？</p>
+<p>所以，从 $x$ 完全对线性基没有贡献这一特性考虑，如果 $x=p_{k_1}\oplus p_{k_2}\oplus\cdots\oplus p_{k_m}$，线性基没有变化。因此来推共性，如果最高位 $i$ 已经有数字占用了，就令 $x\leftarrow x\oplus p_i$，然后继续考虑新的 $x$ 的最高位。因为 $p_i$ 的第 $i$ 位为 $1$，$x$ 的最高位为 $i$，所以显然更新后 $x$ 的最高位小于 $i$。</p>
+<p>如果一直更新 $x$ 直到 $x=0$ 了，都没有加入线性基，正好就说明 $x$ 已经可以被线性基内元素异或得到了，本来就不应该插入到线性基内（即对线性基造成影响），与前面对特性的推理符合。</p>
+<p>按照这种方式插入，不难发现线性基内的数 ${p}$ 就可以表示原数组了，而且下标已经按照最高位排好序了，后续很多操作都会变得很方便，很多一部分操作都是按照低位到高位或者高位到低位顺序处理的，一些操作还带有明显的贪心性质。</p>
+<p>不难得到线性基的数是无法异或出 $0$ 的，因此如果题目中可以有 $0$，需要特判一下。</p>
+<p>这里提出的构造方法是<strong>不严谨</strong>的，它不满足一些线性基有的性质，对于有的题目如此构造将会无法用线性基解决，但是对于很多题目，这样直接构造即可。而且这种方法好写，写出 bug 率低。后文会指出线性基的线性代数意义和其用高斯消元构造的严谨构造法。</p>
+<h3 id="插入">插入</h3>
+<p>插入的原理在前面已经有描述，不再重复。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">insert</span>(<span style="color:#66d9ef">int</span> x){
+    <span style="color:#66d9ef">if</span>(x<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>){
+        zero<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>; <span style="color:#75715e">// 有 0 特判，后文会提为什么
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+    }
+    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span>n;i<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span>;<span style="color:#f92672">--</span>i) <span style="color:#75715e">// 保证先枚举到的是最高位
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&amp;</span>(<span style="color:#ae81ff">1LL</span><span style="color:#f92672">&lt;&lt;</span>i)){ <span style="color:#75715e">// 枚举 x 的是 1 的位
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>p[i]){ <span style="color:#75715e">// 线性基内没有本元素
+</span><span style="color:#75715e"></span>                <span style="color:#f92672">++</span>cnt,p[i]<span style="color:#f92672">=</span>x; <span style="color:#75715e">// 线性基内插入，cnt 维护线性基内元素个数
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>; <span style="color:#75715e">// 成功插入
+</span><span style="color:#75715e"></span>            }
+            x<span style="color:#f92672">^=</span>p[i];
+        }
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>; <span style="color:#75715e">// 插入失败，原值已经可以被线性基的元素表示
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>这么简单的代码几乎每一行都有注释，简直是保姆级教学了。</p>
+<h3 id="查询异或最大值">查询异或最大值</h3>
+<p>因为已经按位排好了，那么高位大的数值更大，所以按照高位往低位贪心地选即可。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">askmax</span>(){
+    <span style="color:#66d9ef">int</span> res<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span>n;i<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span>;<span style="color:#f92672">--</span>i)
+        res<span style="color:#f92672">=</span>max(res,res<span style="color:#f92672">^</span>p[i]);
+    <span style="color:#66d9ef">return</span> res;
+}
+</code></pre></div><h3 id="查询一个数能否异或得到">查询一个数能否异或得到</h3>
+<p>根据前面插入的基本原理，如果这个数本身就可以被表示为线性基若干数的异或，则对线性基无影响。</p>
+<p>反过来也成立，如果一个数插入线性基时无影响，说明它已经可以被表示为线性基若干个数的异或了。</p>
+<p>回到线性基的性质，线性基 ${p}$ 可以表示所有原集合 ${a}$ 的元素，可以认为这两个集合在选取若干数异或的意义下相同，因此如果这个数不能被 ${p}$ 异或得到，那么也不能被 ${a}$ 异或得到。</p>
+<p>因此和插入差不多，不需要真的插入，直接判能不能即可。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">askcan</span>(<span style="color:#66d9ef">int</span> x){<span style="color:#75715e">// 和插入差不多
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span>n;i<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span>;<span style="color:#f92672">--</span>i)
+        <span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&amp;</span>(<span style="color:#ae81ff">1LL</span><span style="color:#f92672">&lt;&lt;</span>i)){
+            <span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>p[i])
+                <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+            x<span style="color:#f92672">^=</span>p[i];
+        }
+    <span style="color:#66d9ef">return</span> x<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><h2 id="线性基扩展">线性基扩展</h2>
+<p>上面那三个在理解线性基的原理后都是小菜。在真正来大的之前，我们再看看如何查询异或最小值。</p>
+<h3 id="查询异或最小值">查询异或最小值</h3>
+<p>因为 ${p}$ 是 ${a}$ 在我们自定义的“若干异或条件下”是等价的，因此 ${a}$ 的异或最小值就是 ${p}$ 的最小元素。</p>
+<p>值得注意的是如果 ${a}$ 中插入了 $0$，那么异或最小值应该是 $0$，这就是前面特判的原因。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">askmin</span>() {
+    <span style="color:#66d9ef">if</span>(zero) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">// 有 0 特判
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i) <span style="color:#75715e">// 找最小值
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span>(p[i])
+            <span style="color:#66d9ef">return</span> p[i];
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">// 事实上这个 return 不可能实现
+</span><span style="color:#75715e"></span>}
+</code></pre></div><h3 id="线性基的线性代数意义">线性基的线性代数意义</h3>
+<p>这里开始难起来了。</p>
+<p>这里本应该有对线性代数部分知识的详解，但这种前置知识不应占太多版面，已经全部转移到我的另一个博客：<a href="https://walker68145.github.io/post/qian-tan-xian-xing-dai-shu/">浅谈线性代数</a>。</p>
+<p>搞定了这些前置知识之后，我们回头把线性基在线性代数上的意义过一下：</p>
+<p>根据前面的方法，我们对线性基的认识是：通过原集合 $S$ 中的某一个最小子集 $S_1$ 组成，使得 $S_1$ 内元素相互异或得到的值域和 $S$ 得到的值域相同。</p>
+<p>进一步，我们需要把原集合的 $n$ 个数放在二进制下，看成 $n$ 个向量，每个向量的每个元素都是 $0$ 或 $1$（即一个数的二进制位形成它代表的向量）。如果一些向量中任意一个向量能被其它向量通过异或运算得到，说明这些向量（在异或意义下）<strong>线性相关</strong>。线性基中所有的向量是线性无关的。</p>
+<p>也就是说，线性基的线性代数意义应该是：一个向量集合的极小的线性无关子集，满足线性基中元素异或得到的值域和原向量集合相同。</p>
+<p>（这里用到了基的性质，即可以表示出原空间内所有点，在这里空间内所有点表示的是原集合异或得到的值域。）</p>
+<p>然后把基本的东西搞完，看看几个扩展性质：</p>
+<ol>
+<li>线性基能异或出的每一个数的组成方案是唯一的。即对于任意两个不同的线性基能异或出来的数，异或出这两个数的方案一定不同且唯一。</li>
+<li>由性质 $1$，设线性基内有 $cnt$ 个元素，那么线性基能异或得到的数的集合大小为 $2^{cnt}-1$。</li>
+</ol>
+<p>下面提到的线性基的方法，全部使用其线性代数意义解决。</p>
+<h3 id="线性基的消元构造法">线性基的消元构造法</h3>
+<blockquote>
+<p>例 2：你需要维护一个集合，支持两种操作：</p>
+<ol>
+<li>插入一个数。</li>
+<li>查询集合内元素能通过选若干个数异或得到的所有数中，第 $k$ 小的数是哪个。</li>
+</ol>
+<p>$n\leqslant 10^4,a_i\leqslant 2^{50}$。</p>
+</blockquote>
+<p>我们发现线性基是按照每个二进制最高位是多少存数字的，是不是可以对 $k$ 二进值分解呢？</p>
+<p>分解之后就可以直接二进制原理做了，但应该要保证 $p_i$ 的最高位是 $i$，而且 $p_i$ 要尽量小。</p>
+<p>我们发现前面的构造方法是不能满足新加入的这个条件的。因此我们需要改进线性基的构造方法。</p>
+<p>我们先假设原向量集合的基 $\mathfrak{B}$ 就是原向量集合 ${a}$，记原向量集合的张成为 $V$。然后进行如下操作：</p>
+<ol>
+<li>如果 $a_1=0$，在 $\mathfrak{B}$ 中去掉 $a_1$。</li>
+<li>如果 $a_j\in\operatorname{span}(a_1,\cdots,a_{j-1})$，其中 $j\in[2,n]$，则在 $\mathfrak{B}$ 中去掉 $a_j$。</li>
+</ol>
+<p>因为每次去掉的向量都属于其前面若干向量的张成，因此它和前面的相邻线性相关，去掉就保证了 $\mathfrak{B}$ 的元素线性无关。且最后 $\mathfrak{B}$ 一定可以张成 $V$，因此 $\mathfrak{B}$ 就是原向量集合的基。</p>
+<p>用高斯消元法可以判断一个向量能否被若干个向量张成。我们每次维护一个对角矩阵，考虑到 $a_i$ 的时候，从高到低枚举 $a_i$ 为 $1$ 的二进制位 $j$。如果 $j$ 这一行的对角线处已经是 $1$，则不能加入（即线性基这个位置已经有人选了）。因为其为对角矩阵，需要把第 $j$ 行的行向量异或 $a_i$；如果 $j$ 这一行对角线处为 $0$，就把 $a_i$ 加入到这一行，在加入一个数的时候应该要消元（维护三角性质），先用下面的数消自己，再用自己消上面的数。</p>
+<p>我们发现除了对角线上的 $1$，别的 $1$ 能消掉就消掉，不就是让每行的数字最小吗？也就是说这样的构造方法是可以满足条件的。</p>
+<p>举个例子，我们维护五个数的线性基：${a}={(111)_2,(001)_2,(100)_2,(011)_2,(101)_2}$。
+$$
+\begin{bmatrix}
+0 &amp; 0 &amp; 0 \
+0 &amp; 0 &amp; 0 \
+0 &amp; 0 &amp; 0 \
+\end{bmatrix}
+$$
+$a_1=(111)_2\neq 0$，最高位 $1$ 在最高位，插入到第一行：
+$$
+\begin{bmatrix}
+1 &amp; 1 &amp; 1 \
+0 &amp; 0 &amp; 0 \
+0 &amp; 0 &amp; 0 \
+\end{bmatrix}
+$$
+$a_2=(001)_2$ 不能被 $a_1$ 张成，最高位 $1$ 在其最低为，插入到最后一行：
+$$
+\begin{bmatrix}
+1 &amp; 1 &amp; 1 \
+0 &amp; 0 &amp; 0 \
+0 &amp; 0 &amp; 1 \
+\end{bmatrix}
+$$
+我们需要维护对角矩阵，用下面的数消掉上面的数，当然还有一个 $1$ 不在对角线上，反正现在消不掉，暂时不管它：
+$$
+\begin{bmatrix}
+1 &amp; 1 &amp; 0 \
+0 &amp; 0 &amp; 0 \
+0 &amp; 0 &amp; 1 \
+\end{bmatrix}
+$$
+$a_3=(100)_2$，最高位 $1$ 在最高位。但是最高位已经有一个数了，所以令 $a_3$ 异或最高位的数，得到 $(010)_2$，最高位 $1$ 在第二位，加入：
+$$
+\begin{bmatrix}
+1 &amp; 1 &amp; 0 \
+0 &amp; 1 &amp; 0 \
+0 &amp; 0 &amp; 1 \
+\end{bmatrix}
+$$
+先看下面的行能不能消这一行的 $1$，发现不能；再看这一行的 $1$ 能不能消上面的行，发现可以消掉第一行的第二列的 $1$：
+$$
+\begin{bmatrix}
+1 &amp; 0 &amp; 0 \
+0 &amp; 1 &amp; 0 \
+0 &amp; 0 &amp; 1 \
+\end{bmatrix}
+$$
+对角矩阵完全形成，剩下的数字必然无法插入了。</p>
+<p>这样选上的 $a_i$（即 $a_1=7,a_2=1,a_3=4$ 这三个）就是 $V$ 的一个基 $\mathfrak{B}$。只不过我们还进行了高斯消元变换得到了这个矩阵。众所周知初等行变换不影响线性无关性，且初等行变换后这些向量仍然能张成原有的向量空间。</p>
+<p>因此矩阵里的这些数，对应下来就是 $p_1=4,p_2=2,p_3=1$，也是原向量空间 $V$ 的一个基。回想前面应该满足的性质，即 $p_i$ 应该是所有满足条件中的数的最小的那个，这个矩阵就告诉我们结果了。最后线性基 $\mathfrak{B}$ 就取这个矩阵的数 ${p}$ 即可。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">inline</span> <span style="color:#a6e22e">void</span> (<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>a,<span style="color:#66d9ef">int</span> m){<span style="color:#75715e">// 构造 a 的线性基，a 大小为 m
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>m;<span style="color:#f92672">++</span>i)
+        <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> j<span style="color:#f92672">=</span>n;j<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span>;<span style="color:#f92672">--</span>j)
+            <span style="color:#66d9ef">if</span>(a[i]<span style="color:#f92672">&amp;</span>(<span style="color:#ae81ff">1LL</span><span style="color:#f92672">&lt;&lt;</span>j)){
+                <span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>p[j]){
+                    p[j]<span style="color:#f92672">=</span>a[i];
+                    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> k<span style="color:#f92672">=</span>j<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;k<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span>;<span style="color:#f92672">--</span>k) <span style="color:#75715e">// 先下面消这一行
+</span><span style="color:#75715e"></span>                        <span style="color:#66d9ef">if</span>(p[j]<span style="color:#f92672">&amp;</span>(<span style="color:#ae81ff">1LL</span><span style="color:#f92672">&lt;&lt;</span>k))
+                            p[j]<span style="color:#f92672">^=</span>p[k];
+                    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> k<span style="color:#f92672">=</span>j<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;k<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>k) <span style="color:#75715e">// 再这一行消上面
+</span><span style="color:#75715e"></span>                        <span style="color:#66d9ef">if</span>(p[k]<span style="color:#f92672">&amp;</span>(<span style="color:#ae81ff">1LL</span><span style="color:#f92672">&lt;&lt;</span>j))
+                            p[k]<span style="color:#f92672">^=</span>p[j];
+                    <span style="color:#66d9ef">break</span>;
+                }
+                a[i]<span style="color:#f92672">^=</span>p[j];
+            }
+}
+</code></pre></div><h3 id="查询异或第-k-小">查询异或第 k 小</h3>
+<p>现在终于可以回来解决这个例题了。</p>
+<p>我们按照消元法求出一组线性基 $\mathfrak{B}$，从小到大记为 $p_1,p_2,\cdots,p_{cnt}$，将 $k$ 二进制拆分，从低位到高位分别记为 $a_1,a_2,\cdots,a_x$，则第 $k$ 小的数为：
+$$
+a_1\cdot p_1\oplus a_2\cdot p_2\oplus\cdots\oplus a_x\cdot p_x
+$$
+因为这样构造后，记 $p_i$ 为 $\mathfrak{B}$ 中最高二进制为 $i$ 的数， $p_i\oplus p_j$ 在第 $j$ 位及其更低的位的部分的数已经到达理论最小值，结合二进制原理，$p_i\oplus p_j$ 是第 $2^{i-1}+2^{j-1}$ 大异或和。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getkmin</span>(<span style="color:#66d9ef">int</span> k){
+    <span style="color:#66d9ef">if</span>(zero) <span style="color:#f92672">--</span>k; <span style="color:#75715e">// 特判 0
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> res<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,x<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,tmp<span style="color:#f92672">=</span>k;
+    <span style="color:#66d9ef">while</span>(tmp){
+        d[<span style="color:#f92672">++</span>x]<span style="color:#f92672">=</span>(tmp<span style="color:#f92672">&amp;</span><span style="color:#ae81ff">1LL</span>); <span style="color:#75715e">// 求 k 的二进制拆分
+</span><span style="color:#75715e"></span>        tmp<span style="color:#f92672">&gt;&gt;=</span><span style="color:#ae81ff">1</span>;
+    }
+    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,j<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n <span style="color:#f92672">&amp;&amp;</span> j<span style="color:#f92672">&lt;=</span>x;<span style="color:#f92672">++</span>i)
+        <span style="color:#66d9ef">if</span>(p[i]){
+            res<span style="color:#f92672">^=</span>p[i]<span style="color:#f92672">*</span>d[j];
+            <span style="color:#f92672">++</span>j;
+        }
+    <span style="color:#66d9ef">return</span> res;
+}
+</code></pre></div><h3 id="查询异或第-k-大">查询异或第 k 大</h3>
+<p>和查询第 $k$ 小差不多，类比一下即可。</p>
+<p>当然还有不需要脑子的做法，因为我们重点讨论了如何求第 $k$ 小，又知道总共可以得到 $2^{cnt}-1$ 种不同的异或和……</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getkmax</span>(<span style="color:#66d9ef">int</span> k){
+    <span style="color:#66d9ef">return</span> getkmin((<span style="color:#ae81ff">1LL</span><span style="color:#f92672">&lt;&lt;</span>cnt)<span style="color:#f92672">-</span>k);
+}
+</code></pre></div><h2 id="例题">例题</h2>
+<h3 id="luogu3812-线性基">luogu3812 线性基</h3>
+<p><a href="https://www.luogu.com.cn/problem/P3812">题目连接</a>，是本文例 1 的弱化版。</p>
+<h3 id="hdu3949-xor">HDU3949 XOR</h3>
+<p><a href="http://acm.hdu.edu.cn/showproblem.php?pid=3949">题目连接</a>，是本文例 2。</p>
+<h3 id="luogu3857-彩灯">luogu3857 彩灯</h3>
+<p><a href="https://www.luogu.com.cn/problem/P3857">题目连接</a>，大致题意如下：</p>
+<p>一个初值为 $0$ 的数，给定 $n$ 个数，你可以用这 $n$ 个数任意地异或它，求可以得到多少种不同的数。</p>
+<!-- raw HTML omitted -->
+<h3 id="luogu4301-新-nim-游戏">luogu4301 新 Nim 游戏</h3>
+<p><a href="https://www.luogu.com.cn/problem/P4301">题目连接</a>，大致题意如下：</p>
+<p>$n$ 堆石子，先手先取走任意整数堆石子，后手再取走任意整数堆石子，然后按照 Nim 游戏进行。求先手必胜时最少拿走多少堆石子。</p>
+<!-- raw HTML omitted -->
+<h3 id="bzoj2115-xor">BZOJ2115 Xor</h3>
+<p><a href="https://hydro.ac/d/bzoj/p/2115">题目连接</a>，大致题意如下：</p>
+<p>$n$ 点 $m$ 边的带权无向图，求一条 $1$ 到 $n$ 的路径，使得边权异或和最大。求出最大值即可。</p>
+<!-- raw HTML omitted -->
+<h3 id="cf1100f-ivan-and-burgers">CF1100F Ivan and Burgers</h3>
+<p><a href="https://codeforces.com/contest/1100/problem/F">题目连接</a>，大致题意如下：</p>
+<p>给定一个序列，多组询问，查询 $[l,r]$ 区间中的数的异或最大值。</p>
+<!-- raw HTML omitted -->
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/" title="线性基入门" target="_blank" rel="external">https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/Walker_68145" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://walker68145/Arahc.github.io/avatar.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/Walker_68145" target="_blank"><span class="text-dark">Arahc</span><small class="ml-1x">Arahc&#39;s home</small></a></h3>
+        <div>咕↘咕↗咕——→</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://walker68145/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/" title="Markdown 入门"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/"
+                    title="P5633最小度限制生成树 题解"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/Walker_68145" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://walker68145/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/C&#43;&#43;.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://walker68145/Arahc.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://walker68145/Arahc.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/walker68145\/Arahc.github.io',
+            CONTENT_URL: 'https:\/\/walker68145\/Arahc.github.io\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://walker68145/Arahc.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>

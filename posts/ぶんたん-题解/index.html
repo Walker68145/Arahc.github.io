@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        ぶんたん 题解 - Arahc&#39;s blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="题目传送门
+本题没有样例，这里随便先给四个样例供各位测试，一个正常样例，两个特殊样例，一个大样例：
+样例1： $in:$ 30，$out:$ 3
+样例2： $in:$ 13，$out:$ 1
+样例3： $in:$ 1，$out:$ 1
+样例4： $in:$ 314159265，$out:$ 11
+都能过就差不多了
+ 看到“同一个数可以使用多次”就可以推测出这题是贪心了。
+不然$10^{10}$的数据你也不好$DP$，再说这道题很明显就具备贪心选择性。
+这道题可以直接推出来斐波那契数列，反正复杂度不高。
+不过既然斐波那契数列递推不是很麻烦，所以可以提前打表，避免毒瘤出题人出的卡常数优化的数据。
+虽然这道题不需要表，但这是一个技巧，考试可以用到。
+所以先贴上打表代码：
+#include&amp;lt;bits/stdc&#43;&#43;.h&amp;gt;using namespace std; long long f[65]; int main(){ f[0]=f[1]=1; printf(&amp;#34;1,1,&amp;#34;); for(register int i=2;i&amp;lt;65;&#43;&#43;i){ f[i]=f[i-1]&#43;f[i-2];	//斐波那契递推公式  printf(&amp;#34;%lld,&amp;#34;,f[i]); } return 0; } 把表运行一下，简单整理即可
+现在来处理贪心策略：
+既然我要让最终结果，也就是选的数量尽量少，该怎么办呢？
+结论是：每次选择中选数字尽量大的。
+本来这里想写我不会证的，本着做良心题解的观念，我摸索出了大致的证明：
+ 证明：
+首先直接上$\color{purple}\text{齐肯多夫定理}$：
+齐肯多夫定理表示任何正整数都可以表示成若干个不连续的斐波那契数（不包括第一个斐波那契数）之和。这种和式称为齐肯多夫表述法。
+齐肯多夫表述法可以通过贪心得到：每次选最大的。 现在证明为什么这样是个数最小的：
+假设有两个数相邻：
+直接$f_{i}&#43;f_{i&#43;1}=f_{i&#43;2}$ 合并。
+所以不是齐肯多夫表述法的分解方法一定不是最小的。
+继续证……
+假设一个斐波那契数$m$，在不超过$m$的斐波那契数中选若干不连续的，最大和是多少呢？
+举个例子，$m=13$。在$1,1,2,3,5,8$里面怎么选呢？当然是$8&#43;3&#43;1=12$。
+这是一个简单的结论，在不超过$m$的斐波那契数中选若干不连续的，最大和是$m-1$
+所以一个数$i$，我想找到它的$2$种齐肯多夫表述法，现已用贪心找到一种。
+假设贪心出来要分$f_{j}$，但我不想分$f_{j}$，那么剩下的分法中，最大和是？
+当然是$f_{j-1}&#43;f_{j-3}&#43;f_{j-5}&#43;&amp;hellip;&amp;hellip;&#43;1$。
+这一坨加起来是$f_{j}-1$。" />
+    <meta name="generator" content="Hugo 0.91.2 with theme pure" />
+    <title>ぶんたん 题解 - Arahc&#39;s blog</title>
+    
+    
+    <link rel="stylesheet" href="https://walker68145/Arahc.github.io/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="ぶんたん 题解" />
+<meta property="og:description" content="题目传送门
+本题没有样例，这里随便先给四个样例供各位测试，一个正常样例，两个特殊样例，一个大样例：
+样例1： $in:$ 30，$out:$ 3
+样例2： $in:$ 13，$out:$ 1
+样例3： $in:$ 1，$out:$ 1
+样例4： $in:$ 314159265，$out:$ 11
+都能过就差不多了
+ 看到“同一个数可以使用多次”就可以推测出这题是贪心了。
+不然$10^{10}$的数据你也不好$DP$，再说这道题很明显就具备贪心选择性。
+这道题可以直接推出来斐波那契数列，反正复杂度不高。
+不过既然斐波那契数列递推不是很麻烦，所以可以提前打表，避免毒瘤出题人出的卡常数优化的数据。
+虽然这道题不需要表，但这是一个技巧，考试可以用到。
+所以先贴上打表代码：
+#include&lt;bits/stdc&#43;&#43;.h&gt;using namespace std; long long f[65]; int main(){ f[0]=f[1]=1; printf(&#34;1,1,&#34;); for(register int i=2;i&lt;65;&#43;&#43;i){ f[i]=f[i-1]&#43;f[i-2];	//斐波那契递推公式  printf(&#34;%lld,&#34;,f[i]); } return 0; } 把表运行一下，简单整理即可
+现在来处理贪心策略：
+既然我要让最终结果，也就是选的数量尽量少，该怎么办呢？
+结论是：每次选择中选数字尽量大的。
+本来这里想写我不会证的，本着做良心题解的观念，我摸索出了大致的证明：
+ 证明：
+首先直接上$\color{purple}\text{齐肯多夫定理}$：
+齐肯多夫定理表示任何正整数都可以表示成若干个不连续的斐波那契数（不包括第一个斐波那契数）之和。这种和式称为齐肯多夫表述法。
+齐肯多夫表述法可以通过贪心得到：每次选最大的。 现在证明为什么这样是个数最小的：
+假设有两个数相邻：
+直接$f_{i}&#43;f_{i&#43;1}=f_{i&#43;2}$ 合并。
+所以不是齐肯多夫表述法的分解方法一定不是最小的。
+继续证……
+假设一个斐波那契数$m$，在不超过$m$的斐波那契数中选若干不连续的，最大和是多少呢？
+举个例子，$m=13$。在$1,1,2,3,5,8$里面怎么选呢？当然是$8&#43;3&#43;1=12$。
+这是一个简单的结论，在不超过$m$的斐波那契数中选若干不连续的，最大和是$m-1$
+所以一个数$i$，我想找到它的$2$种齐肯多夫表述法，现已用贪心找到一种。
+假设贪心出来要分$f_{j}$，但我不想分$f_{j}$，那么剩下的分法中，最大和是？
+当然是$f_{j-1}&#43;f_{j-3}&#43;f_{j-5}&#43;&hellip;&hellip;&#43;1$。
+这一坨加起来是$f_{j}-1$。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://walker68145/Arahc.github.io/posts/%E3%81%B6%E3%82%93%E3%81%9F%E3%82%93-%E9%A2%98%E8%A7%A3/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-01-15T21:32:54+08:00" />
+<meta property="article:modified_time" content="2020-01-15T21:32:54+08:00" />
+
+<meta itemprop="name" content="ぶんたん 题解">
+<meta itemprop="description" content="题目传送门
+本题没有样例，这里随便先给四个样例供各位测试，一个正常样例，两个特殊样例，一个大样例：
+样例1： $in:$ 30，$out:$ 3
+样例2： $in:$ 13，$out:$ 1
+样例3： $in:$ 1，$out:$ 1
+样例4： $in:$ 314159265，$out:$ 11
+都能过就差不多了
+ 看到“同一个数可以使用多次”就可以推测出这题是贪心了。
+不然$10^{10}$的数据你也不好$DP$，再说这道题很明显就具备贪心选择性。
+这道题可以直接推出来斐波那契数列，反正复杂度不高。
+不过既然斐波那契数列递推不是很麻烦，所以可以提前打表，避免毒瘤出题人出的卡常数优化的数据。
+虽然这道题不需要表，但这是一个技巧，考试可以用到。
+所以先贴上打表代码：
+#include&lt;bits/stdc&#43;&#43;.h&gt;using namespace std; long long f[65]; int main(){ f[0]=f[1]=1; printf(&#34;1,1,&#34;); for(register int i=2;i&lt;65;&#43;&#43;i){ f[i]=f[i-1]&#43;f[i-2];	//斐波那契递推公式  printf(&#34;%lld,&#34;,f[i]); } return 0; } 把表运行一下，简单整理即可
+现在来处理贪心策略：
+既然我要让最终结果，也就是选的数量尽量少，该怎么办呢？
+结论是：每次选择中选数字尽量大的。
+本来这里想写我不会证的，本着做良心题解的观念，我摸索出了大致的证明：
+ 证明：
+首先直接上$\color{purple}\text{齐肯多夫定理}$：
+齐肯多夫定理表示任何正整数都可以表示成若干个不连续的斐波那契数（不包括第一个斐波那契数）之和。这种和式称为齐肯多夫表述法。
+齐肯多夫表述法可以通过贪心得到：每次选最大的。 现在证明为什么这样是个数最小的：
+假设有两个数相邻：
+直接$f_{i}&#43;f_{i&#43;1}=f_{i&#43;2}$ 合并。
+所以不是齐肯多夫表述法的分解方法一定不是最小的。
+继续证……
+假设一个斐波那契数$m$，在不超过$m$的斐波那契数中选若干不连续的，最大和是多少呢？
+举个例子，$m=13$。在$1,1,2,3,5,8$里面怎么选呢？当然是$8&#43;3&#43;1=12$。
+这是一个简单的结论，在不超过$m$的斐波那契数中选若干不连续的，最大和是$m-1$
+所以一个数$i$，我想找到它的$2$种齐肯多夫表述法，现已用贪心找到一种。
+假设贪心出来要分$f_{j}$，但我不想分$f_{j}$，那么剩下的分法中，最大和是？
+当然是$f_{j-1}&#43;f_{j-3}&#43;f_{j-5}&#43;&hellip;&hellip;&#43;1$。
+这一坨加起来是$f_{j}-1$。"><meta itemprop="datePublished" content="2020-01-15T21:32:54+08:00" />
+<meta itemprop="dateModified" content="2020-01-15T21:32:54+08:00" />
+<meta itemprop="wordCount" content="165">
+<meta itemprop="keywords" content="贪心," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ぶんたん 题解"/>
+<meta name="twitter:description" content="题目传送门
+本题没有样例，这里随便先给四个样例供各位测试，一个正常样例，两个特殊样例，一个大样例：
+样例1： $in:$ 30，$out:$ 3
+样例2： $in:$ 13，$out:$ 1
+样例3： $in:$ 1，$out:$ 1
+样例4： $in:$ 314159265，$out:$ 11
+都能过就差不多了
+ 看到“同一个数可以使用多次”就可以推测出这题是贪心了。
+不然$10^{10}$的数据你也不好$DP$，再说这道题很明显就具备贪心选择性。
+这道题可以直接推出来斐波那契数列，反正复杂度不高。
+不过既然斐波那契数列递推不是很麻烦，所以可以提前打表，避免毒瘤出题人出的卡常数优化的数据。
+虽然这道题不需要表，但这是一个技巧，考试可以用到。
+所以先贴上打表代码：
+#include&lt;bits/stdc&#43;&#43;.h&gt;using namespace std; long long f[65]; int main(){ f[0]=f[1]=1; printf(&#34;1,1,&#34;); for(register int i=2;i&lt;65;&#43;&#43;i){ f[i]=f[i-1]&#43;f[i-2];	//斐波那契递推公式  printf(&#34;%lld,&#34;,f[i]); } return 0; } 把表运行一下，简单整理即可
+现在来处理贪心策略：
+既然我要让最终结果，也就是选的数量尽量少，该怎么办呢？
+结论是：每次选择中选数字尽量大的。
+本来这里想写我不会证的，本着做良心题解的观念，我摸索出了大致的证明：
+ 证明：
+首先直接上$\color{purple}\text{齐肯多夫定理}$：
+齐肯多夫定理表示任何正整数都可以表示成若干个不连续的斐波那契数（不包括第一个斐波那契数）之和。这种和式称为齐肯多夫表述法。
+齐肯多夫表述法可以通过贪心得到：每次选最大的。 现在证明为什么这样是个数最小的：
+假设有两个数相邻：
+直接$f_{i}&#43;f_{i&#43;1}=f_{i&#43;2}$ 合并。
+所以不是齐肯多夫表述法的分解方法一定不是最小的。
+继续证……
+假设一个斐波那契数$m$，在不超过$m$的斐波那契数中选若干不连续的，最大和是多少呢？
+举个例子，$m=13$。在$1,1,2,3,5,8$里面怎么选呢？当然是$8&#43;3&#43;1=12$。
+这是一个简单的结论，在不超过$m$的斐波那契数中选若干不连续的，最大和是$m-1$
+所以一个数$i$，我想找到它的$2$种齐肯多夫表述法，现已用贪心找到一种。
+假设贪心出来要分$f_{j}$，但我不想分$f_{j}$，那么剩下的分法中，最大和是？
+当然是$f_{j-1}&#43;f_{j-3}&#43;f_{j-5}&#43;&hellip;&hellip;&#43;1$。
+这一坨加起来是$f_{j}-1$。"/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/Walker_68145" target="_blank">
+            <img class="img-circle img-rotate" src="https://walker68145/Arahc.github.io/avatar.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Arahc</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Arahc&#39;s home</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Changsha, China</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/Arahc.github.io/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/Arahc.github.io/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/Arahc.github.io/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/Arahc.github.io/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/Arahc.github.io/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content"><p>博客已经由 Walker_68145.github.io 转移到此处，原页面保留，为此带来的不便请大家谅解。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link" rel="1">k进制<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link" rel="1">stl<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link" rel="2">二分三分<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link" rel="3">分治<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link" rel="8">动态规划<span
+               class="tag-list-count">8</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link" rel="7">图论<span
+               class="tag-list-count">7</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link" rel="1">字符串<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link" rel="10">数学<span
+               class="tag-list-count">10</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link" rel="9">数据结构<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link" rel="4">暴力<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link" rel="1">莫队<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link" rel="3">贪心<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link" rel="2">随机化<span
+               class="tag-list-count">2</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E6%9D%82%E9%A1%B9/" class="category-list-link">杂项</a><span class="category-list-count">3</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/" class="category-list-link">笔记</a><span class="category-list-count">11</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E9%A2%98%E8%A7%A3/" class="category-list-link">题解</a><span class="category-list-count">20</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link">k进制</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link">stl</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link">二分三分</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link">分治</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link">动态规划</a><span
+                    class="tag-list-count">8</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link">图论</a><span
+                    class="tag-list-count">7</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link">字符串</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link">数学</a><span
+                    class="tag-list-count">10</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link">数据结构</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link">暴力</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link">莫队</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link">贪心</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link">随机化</a><span
+                    class="tag-list-count">2</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/" class="title">P5633最小度限制生成树 题解</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-28 21:43:22 &#43;0800 CST" itemprop="datePublished">2021-12-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/" class="title">线性基入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-22 21:47:24 &#43;0800 CST" itemprop="datePublished">2021-12-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/" class="title">Markdown 入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-30 18:41:00 &#43;0800 CST" itemprop="datePublished">2021-11-30</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/" class="title">OI 相关的非切题内容</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-28 21:42:04 &#43;0800 CST" itemprop="datePublished">2021-11-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E4%B8%8Ekdtree/" class="title">替罪羊与KDTree</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-25 21:48:19 &#43;0800 CST" itemprop="datePublished">2021-11-25</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/Arahc.github.io/posts/%E3%81%B6%E3%82%93%E3%81%9F%E3%82%93-%E9%A2%98%E8%A7%A3/"
+    >ぶんたん 题解</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://walker68145/Arahc.github.io/posts/%E3%81%B6%E3%82%93%E3%81%9F%E3%82%93-%E9%A2%98%E8%A7%A3/" class="article-date">
+  <time datetime="2020-01-15 21:32:54 &#43;0800 CST" itemprop="datePublished">2020-01-15</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/Arahc.github.io/categories/%E9%A2%98%E8%A7%A3/"> 题解 </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/"> 贪心 </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 165 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 1 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p><a href="https://www.luogu.com.cn/problem/AT269">题目传送门</a></p>
+<p>本题没有样例，这里随便先给四个样例供各位测试，一个正常样例，两个特殊样例，一个大样例：</p>
+<p>样例1：
+$in:$ 30，$out:$ 3</p>
+<p>样例2：
+$in:$ 13，$out:$ 1</p>
+<p>样例3：
+$in:$ 1，$out:$ 1</p>
+<p>样例4：
+$in:$ 314159265，$out:$ 11</p>
+<p>都能过就差不多了</p>
+<hr>
+<p>看到“同一个数可以使用多次”就可以推测出这题是贪心了。</p>
+<p>不然$10^{10}$的数据你也不好$DP$，再说这道题很明显就具备贪心选择性。</p>
+<p>这道题可以直接推出来斐波那契数列，反正复杂度不高。</p>
+<p>不过既然斐波那契数列递推不是很麻烦，所以可以提前打表，避免毒瘤出题人出的卡常数优化的数据。</p>
+<p>虽然这道题不需要表，但这是一个技巧，考试可以用到。</p>
+<p>所以先贴上打表代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+<span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> f[<span style="color:#ae81ff">65</span>];
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+  f[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">=</span>f[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;
+  printf(<span style="color:#e6db74">&#34;1,1,&#34;</span>);
+  <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>;i<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">65</span>;<span style="color:#f92672">++</span>i){
+   	f[i]<span style="color:#f92672">=</span>f[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">+</span>f[i<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>];	<span style="color:#75715e">//斐波那契递推公式
+</span><span style="color:#75715e"></span>   	printf(<span style="color:#e6db74">&#34;%lld,&#34;</span>,f[i]);
+   }
+   <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+
+</code></pre></div><p>把表运行一下，简单整理即可</p>
+<p>现在来处理贪心策略：</p>
+<p>既然我要让最终结果，也就是选的数量尽量少，该怎么办呢？</p>
+<p>结论是：每次选择中选数字尽量大的。</p>
+<p>本来这里想写我不会证的，本着做良心题解的观念，我摸索出了大致的证明：</p>
+<hr>
+<p><strong>证明：</strong></p>
+<p>首先直接上$\color{purple}\text{齐肯多夫定理}$：</p>
+<p>齐肯多夫定理表示任何正整数都可以表示成若干个不连续的斐波那契数（不包括第一个斐波那契数）之和。这种和式称为齐肯多夫表述法。</p>
+<h4 id="齐肯多夫表述法可以通过贪心得到每次选最大的">齐肯多夫表述法可以通过贪心得到：每次选最大的。</h4>
+<p>现在证明为什么这样是个数最小的：</p>
+<p>假设有两个数相邻：</p>
+<p>直接$f_{i}+f_{i+1}=f_{i+2}$ 合并。</p>
+<p>所以不是齐肯多夫表述法的分解方法一定不是最小的。</p>
+<p>继续证……</p>
+<p>假设一个斐波那契数$m$，在不超过$m$的斐波那契数中选若干不连续的，最大和是多少呢？</p>
+<p>举个例子，$m=13$。在$1,1,2,3,5,8$里面怎么选呢？当然是$8+3+1=12$。</p>
+<p>这是一个简单的结论，在不超过$m$的斐波那契数中选若干不连续的，最大和是$m-1$</p>
+<p>所以一个数$i$，我想找到它的$2$种齐肯多夫表述法，现已用贪心找到一种。</p>
+<p>假设贪心出来要分$f_{j}$，但我不想分$f_{j}$，那么剩下的分法中，最大和是？</p>
+<p>当然是$f_{j-1}+f_{j-3}+f_{j-5}+&hellip;&hellip;+1$。</p>
+<p>这一坨加起来是$f_{j}-1$。</p>
+<p>所以如果我不分出$f_{j}$，随我怎么分我也凑不出一个$f_{j}$。</p>
+<p>到这里我们证了一个推论：齐肯多夫分解是唯一的。</p>
+<p>而刚刚我们还证出不是齐肯多夫表述法的分解方法一定不是最小的。</p>
+<p>所以得出结论了，齐肯多夫表述法的分解方法一定是最小的，而且是唯一的。</p>
+<p>这个齐肯多夫表述法怎么来的？看看上文……</p>
+<p>用贪心，每次选最大的。</p>
+<p>得证：每次选最大的数的策略一定可以得到最少的分解数字数量。</p>
+<hr>
+<p>那么找到比$n$小（或相等）的最大的斐波那契数，顺序查找、二分、STL……都可以解决。</p>
+<p>既然其他题解都是顺序查找，那我上一个$\color{Green}\text{二分}$代码吧，顺带练习二分。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">bs</span>(){
+   <span style="color:#66d9ef">int</span> l<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,r<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span>;  <span style="color:#75715e">//待会解释为什么是0和64
+</span><span style="color:#75715e"></span>   <span style="color:#66d9ef">while</span>(l<span style="color:#f92672">&lt;=</span>r){
+   	<span style="color:#66d9ef">int</span> m<span style="color:#f92672">=</span>(l<span style="color:#f92672">+</span>r)<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>;  <span style="color:#75715e">//位运算，等价于（l+r）/2
+</span><span style="color:#75715e"></span>   	<span style="color:#66d9ef">if</span>(f[m]<span style="color:#f92672">&lt;=</span>a <span style="color:#f92672">&amp;&amp;</span> f[m<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">&gt;</span>a) <span style="color:#66d9ef">return</span> m;
+   	<span style="color:#66d9ef">if</span>(f[m]<span style="color:#f92672">&lt;=</span>a) l<span style="color:#f92672">=</span>m<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;
+   	<span style="color:#66d9ef">else</span> r<span style="color:#f92672">=</span>m<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+   }
+}
+</code></pre></div><p>$\color{Green}\text{最终代码（注释版）：}$</p>
+<p>（注意：代码不完整，缺少快读快写函数和那张超级丑的表）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt; //万能头，CSP可以用，亲测</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+
+<span style="color:#75715e">// 省去快读快写函数
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> a;<span style="color:#75715e">// 省去表
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> n,s;
+
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">bs</span>(){
+   <span style="color:#66d9ef">int</span> l<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,r<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span>;  <span style="color:#75715e">//0和64分别为数组的首项与末项下标
+</span><span style="color:#75715e"></span>   <span style="color:#66d9ef">while</span>(l<span style="color:#f92672">&lt;=</span>r){
+   	<span style="color:#66d9ef">int</span> m<span style="color:#f92672">=</span>(l<span style="color:#f92672">+</span>r)<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>;
+   	<span style="color:#66d9ef">if</span>(f[m]<span style="color:#f92672">&lt;=</span>a <span style="color:#f92672">&amp;&amp;</span> f[m<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">&gt;</span>a) <span style="color:#66d9ef">return</span> m;
+   	<span style="color:#66d9ef">if</span>(f[m]<span style="color:#f92672">&lt;=</span>a) l<span style="color:#f92672">=</span>m<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;
+   	<span style="color:#66d9ef">else</span> r<span style="color:#f92672">=</span>m<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+   }
+}
+
+<span style="color:#75715e">// 二分，不熟练者可以请教神犇或者直接百度
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+
+   a<span style="color:#f92672">=</span>read(); <span style="color:#75715e">//已经很少遇见如此简单的输入了
+</span><span style="color:#75715e"></span>  
+   <span style="color:#66d9ef">while</span>(a<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span>){
+       n<span style="color:#f92672">=</span>bs();	<span style="color:#75715e">// 二分找到小于等于 a 的最大的斐波那契数是第几项
+</span><span style="color:#75715e"></span>       a<span style="color:#f92672">-=</span>f[n];	<span style="color:#75715e">// 贪心，直接减不用管
+</span><span style="color:#75715e"></span>       s<span style="color:#f92672">++</span>;	<span style="color:#75715e">//统计我选了几个数
+</span><span style="color:#75715e"></span>   }
+
+  write(s),putchar(<span style="color:#e6db74">&#39;\n&#39;</span>);
+ 
+<span style="color:#75715e">// 不要忘记AT的题目在末尾要输出一个换行，不然会WA
+</span><span style="color:#75715e"></span>   <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+
+</code></pre></div><p>结果：AC，全部 1ms。</p>
+<hr>
+<p>题解修改史：</p>
+<p>updata：$2020.1.15$ 修改了一个错别字和部分句子</p>
+<p>updata：$2020.1.15$（深夜）题解审核失败，原因【排版不整齐】，修改了题解部分内容</p>
+<p>$2020.1.18$ 再次丑拒，放弃本题。</p>
+<p>updata：$2020.1.27$ 抱着最后一丝希望，重构题解，提交……</p>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://walker68145/Arahc.github.io/posts/%E3%81%B6%E3%82%93%E3%81%9F%E3%82%93-%E9%A2%98%E8%A7%A3/" title="ぶんたん 题解" target="_blank" rel="external">https://walker68145/Arahc.github.io/posts/%E3%81%B6%E3%82%93%E3%81%9F%E3%82%93-%E9%A2%98%E8%A7%A3/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/Walker_68145" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://walker68145/Arahc.github.io/avatar.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/Walker_68145" target="_blank"><span class="text-dark">Arahc</span><small class="ml-1x">Arahc&#39;s home</small></a></h3>
+        <div>咕↘咕↗咕——→</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://walker68145/Arahc.github.io/posts/%E8%8A%B1%E7%94%9F%E9%87%87%E6%91%98-%E9%A2%98%E8%A7%A3/" title="花生采摘 题解"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://walker68145/Arahc.github.io/posts/%E8%B4%B4%E6%B5%B7%E6%8A%A5-%E9%A2%98%E8%A7%A3/"
+                    title="贴海报 题解"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/Walker_68145" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://walker68145/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/C&#43;&#43;.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://walker68145/Arahc.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://walker68145/Arahc.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/walker68145\/Arahc.github.io',
+            CONTENT_URL: 'https:\/\/walker68145\/Arahc.github.io\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://walker68145/Arahc.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>

@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        多项式基本运算 - Arahc&#39;s blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="前言  在数学中，由若干个单项式相加组成的代数式叫做多项式（若有减法：减一个数等于加上它的相反数）。多项式中的每个单项式叫做多项式的项，这些单项式中的最高项次数，就是这个多项式的次数。其中多项式中不含字母的项叫做常数项。 在数学中，多项式（polynomial）是指由变量、系数以及它们之间的加、减、乘、幂运算（非负整数次方）得到的表达式。对于比较广义的定义，一个或零个单项式的和也算多项式。按这个定义，多项式就是整式。实际上，还没有一个只对狭义多项式起作用，对单项式不起作用的定理。$0$ 作为多项式时，次数定义为负无穷大（或 $0$）。单项式和多项式统称为整式。 （摘自：百度百科）
+ 多项式的定义初中就有，没必要多说吧。本文将会积累所有学了的有关多项式的知识，不定期更新内容。
+本博客全文所有内容均不属于提高组考试范围，你要是硬说多项式加法可能有……那我也不能反驳。
+多项式求和，单项式乘多项式 合并同类项，没必要多说吧。多项式求差同理。
+单项式乘多项式就拆个括号。
+多项式求积 假设对于两个多项式 $A,B$，有：
+$$ A=\sum_{i=0}^{n-1} a_ix^i \ B=\sum_{i=0}^{m-1} b_ix^i $$
+考虑如何求出两个多项式的积 $C=A\ast B$。
+系数表示法，点值表示法 考虑上面的这两个式子，如果我们暴力地求解，不难得到最后的结果为：
+$$C=\sum_{i=0}^{n&#43;m-2} \sum_{j=0}^i a_j b_{i-j}x^i$$
+暴力求解是 $\operatorname{O}(n^2)$ 的，复杂度不太能接受的亚子。我们考虑优化。
+我们知道这种表示多项式的方法是最常见的，叫做系数表示法，众所不周知多项式的表示还可以用一种方法叫做点值表示法。根据初中数学知识，两点确定一个一次函数，三点确定一个二次函数……于是伟大的数学家们证明了一个定理：$n$ 个互异的点确定一个 $n-1$ 次函数。我们把 $A,B$ 用点值表示法表示就是：
+$$A={ (x_1,\operatorname{f}(x_1)),(x_2,\operatorname{f}(x_2)),(x_3,\operatorname{f}(x_3)),\cdots,(x_n,\operatorname{f}(x_n)) } \ B={ (x_1,\operatorname{g}(x_1)),(x_2,\operatorname{g}(x_2)),(x_3,\operatorname{g}(x_3)),\cdots,(x_n,\operatorname{g}(x_n)) }$$
+然后考虑 $C$ 如何表达。我们举个例子，假设一次多项式 $A={(0,-1),(2,5)}$，一次多项式 $B={(0,3),(2,-1)}$。不难得出系数表示法 $A=3x-1,B=-x&#43;3$，根据系数表示法，得出它们的乘积 $C=-3x^2&#43;10x-3$（假设记为函数 $\operatorname{h}$）。画下来：
+我们发现一个现象：对于 $\forall x\in R$，$\operatorname{f}(x)\operatorname{g}(x)=\operatorname{h}(x)$。因此用点值表示法运算两个多项式的乘积的方法是：（后续 $n$ 均表示为两个多项式项数的较大值，且不足 $n$ 项的那个多项式，少的项全部视为用 $0x^k$ 补充成 $n$ 项）
+$$C={ (x_i,\operatorname{f}(x_i)\operatorname{g}(x_i))\mid i\in N^&#43;,i\in[1,n] }$$" />
+    <meta name="generator" content="Hugo 0.91.2 with theme pure" />
+    <title>多项式基本运算 - Arahc&#39;s blog</title>
+    
+    
+    <link rel="stylesheet" href="https://walker68145/Arahc.github.io/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="多项式基本运算" />
+<meta property="og:description" content="前言  在数学中，由若干个单项式相加组成的代数式叫做多项式（若有减法：减一个数等于加上它的相反数）。多项式中的每个单项式叫做多项式的项，这些单项式中的最高项次数，就是这个多项式的次数。其中多项式中不含字母的项叫做常数项。 在数学中，多项式（polynomial）是指由变量、系数以及它们之间的加、减、乘、幂运算（非负整数次方）得到的表达式。对于比较广义的定义，一个或零个单项式的和也算多项式。按这个定义，多项式就是整式。实际上，还没有一个只对狭义多项式起作用，对单项式不起作用的定理。$0$ 作为多项式时，次数定义为负无穷大（或 $0$）。单项式和多项式统称为整式。 （摘自：百度百科）
+ 多项式的定义初中就有，没必要多说吧。本文将会积累所有学了的有关多项式的知识，不定期更新内容。
+本博客全文所有内容均不属于提高组考试范围，你要是硬说多项式加法可能有……那我也不能反驳。
+多项式求和，单项式乘多项式 合并同类项，没必要多说吧。多项式求差同理。
+单项式乘多项式就拆个括号。
+多项式求积 假设对于两个多项式 $A,B$，有：
+$$ A=\sum_{i=0}^{n-1} a_ix^i \ B=\sum_{i=0}^{m-1} b_ix^i $$
+考虑如何求出两个多项式的积 $C=A\ast B$。
+系数表示法，点值表示法 考虑上面的这两个式子，如果我们暴力地求解，不难得到最后的结果为：
+$$C=\sum_{i=0}^{n&#43;m-2} \sum_{j=0}^i a_j b_{i-j}x^i$$
+暴力求解是 $\operatorname{O}(n^2)$ 的，复杂度不太能接受的亚子。我们考虑优化。
+我们知道这种表示多项式的方法是最常见的，叫做系数表示法，众所不周知多项式的表示还可以用一种方法叫做点值表示法。根据初中数学知识，两点确定一个一次函数，三点确定一个二次函数……于是伟大的数学家们证明了一个定理：$n$ 个互异的点确定一个 $n-1$ 次函数。我们把 $A,B$ 用点值表示法表示就是：
+$$A={ (x_1,\operatorname{f}(x_1)),(x_2,\operatorname{f}(x_2)),(x_3,\operatorname{f}(x_3)),\cdots,(x_n,\operatorname{f}(x_n)) } \ B={ (x_1,\operatorname{g}(x_1)),(x_2,\operatorname{g}(x_2)),(x_3,\operatorname{g}(x_3)),\cdots,(x_n,\operatorname{g}(x_n)) }$$
+然后考虑 $C$ 如何表达。我们举个例子，假设一次多项式 $A={(0,-1),(2,5)}$，一次多项式 $B={(0,3),(2,-1)}$。不难得出系数表示法 $A=3x-1,B=-x&#43;3$，根据系数表示法，得出它们的乘积 $C=-3x^2&#43;10x-3$（假设记为函数 $\operatorname{h}$）。画下来：
+我们发现一个现象：对于 $\forall x\in R$，$\operatorname{f}(x)\operatorname{g}(x)=\operatorname{h}(x)$。因此用点值表示法运算两个多项式的乘积的方法是：（后续 $n$ 均表示为两个多项式项数的较大值，且不足 $n$ 项的那个多项式，少的项全部视为用 $0x^k$ 补充成 $n$ 项）
+$$C={ (x_i,\operatorname{f}(x_i)\operatorname{g}(x_i))\mid i\in N^&#43;,i\in[1,n] }$$" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://walker68145/Arahc.github.io/posts/%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-10-19T09:37:55+08:00" />
+<meta property="article:modified_time" content="2021-10-19T09:37:55+08:00" />
+
+<meta itemprop="name" content="多项式基本运算">
+<meta itemprop="description" content="前言  在数学中，由若干个单项式相加组成的代数式叫做多项式（若有减法：减一个数等于加上它的相反数）。多项式中的每个单项式叫做多项式的项，这些单项式中的最高项次数，就是这个多项式的次数。其中多项式中不含字母的项叫做常数项。 在数学中，多项式（polynomial）是指由变量、系数以及它们之间的加、减、乘、幂运算（非负整数次方）得到的表达式。对于比较广义的定义，一个或零个单项式的和也算多项式。按这个定义，多项式就是整式。实际上，还没有一个只对狭义多项式起作用，对单项式不起作用的定理。$0$ 作为多项式时，次数定义为负无穷大（或 $0$）。单项式和多项式统称为整式。 （摘自：百度百科）
+ 多项式的定义初中就有，没必要多说吧。本文将会积累所有学了的有关多项式的知识，不定期更新内容。
+本博客全文所有内容均不属于提高组考试范围，你要是硬说多项式加法可能有……那我也不能反驳。
+多项式求和，单项式乘多项式 合并同类项，没必要多说吧。多项式求差同理。
+单项式乘多项式就拆个括号。
+多项式求积 假设对于两个多项式 $A,B$，有：
+$$ A=\sum_{i=0}^{n-1} a_ix^i \ B=\sum_{i=0}^{m-1} b_ix^i $$
+考虑如何求出两个多项式的积 $C=A\ast B$。
+系数表示法，点值表示法 考虑上面的这两个式子，如果我们暴力地求解，不难得到最后的结果为：
+$$C=\sum_{i=0}^{n&#43;m-2} \sum_{j=0}^i a_j b_{i-j}x^i$$
+暴力求解是 $\operatorname{O}(n^2)$ 的，复杂度不太能接受的亚子。我们考虑优化。
+我们知道这种表示多项式的方法是最常见的，叫做系数表示法，众所不周知多项式的表示还可以用一种方法叫做点值表示法。根据初中数学知识，两点确定一个一次函数，三点确定一个二次函数……于是伟大的数学家们证明了一个定理：$n$ 个互异的点确定一个 $n-1$ 次函数。我们把 $A,B$ 用点值表示法表示就是：
+$$A={ (x_1,\operatorname{f}(x_1)),(x_2,\operatorname{f}(x_2)),(x_3,\operatorname{f}(x_3)),\cdots,(x_n,\operatorname{f}(x_n)) } \ B={ (x_1,\operatorname{g}(x_1)),(x_2,\operatorname{g}(x_2)),(x_3,\operatorname{g}(x_3)),\cdots,(x_n,\operatorname{g}(x_n)) }$$
+然后考虑 $C$ 如何表达。我们举个例子，假设一次多项式 $A={(0,-1),(2,5)}$，一次多项式 $B={(0,3),(2,-1)}$。不难得出系数表示法 $A=3x-1,B=-x&#43;3$，根据系数表示法，得出它们的乘积 $C=-3x^2&#43;10x-3$（假设记为函数 $\operatorname{h}$）。画下来：
+我们发现一个现象：对于 $\forall x\in R$，$\operatorname{f}(x)\operatorname{g}(x)=\operatorname{h}(x)$。因此用点值表示法运算两个多项式的乘积的方法是：（后续 $n$ 均表示为两个多项式项数的较大值，且不足 $n$ 项的那个多项式，少的项全部视为用 $0x^k$ 补充成 $n$ 项）
+$$C={ (x_i,\operatorname{f}(x_i)\operatorname{g}(x_i))\mid i\in N^&#43;,i\in[1,n] }$$"><meta itemprop="datePublished" content="2021-10-19T09:37:55+08:00" />
+<meta itemprop="dateModified" content="2021-10-19T09:37:55+08:00" />
+<meta itemprop="wordCount" content="1516">
+<meta itemprop="keywords" content="数学," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="多项式基本运算"/>
+<meta name="twitter:description" content="前言  在数学中，由若干个单项式相加组成的代数式叫做多项式（若有减法：减一个数等于加上它的相反数）。多项式中的每个单项式叫做多项式的项，这些单项式中的最高项次数，就是这个多项式的次数。其中多项式中不含字母的项叫做常数项。 在数学中，多项式（polynomial）是指由变量、系数以及它们之间的加、减、乘、幂运算（非负整数次方）得到的表达式。对于比较广义的定义，一个或零个单项式的和也算多项式。按这个定义，多项式就是整式。实际上，还没有一个只对狭义多项式起作用，对单项式不起作用的定理。$0$ 作为多项式时，次数定义为负无穷大（或 $0$）。单项式和多项式统称为整式。 （摘自：百度百科）
+ 多项式的定义初中就有，没必要多说吧。本文将会积累所有学了的有关多项式的知识，不定期更新内容。
+本博客全文所有内容均不属于提高组考试范围，你要是硬说多项式加法可能有……那我也不能反驳。
+多项式求和，单项式乘多项式 合并同类项，没必要多说吧。多项式求差同理。
+单项式乘多项式就拆个括号。
+多项式求积 假设对于两个多项式 $A,B$，有：
+$$ A=\sum_{i=0}^{n-1} a_ix^i \ B=\sum_{i=0}^{m-1} b_ix^i $$
+考虑如何求出两个多项式的积 $C=A\ast B$。
+系数表示法，点值表示法 考虑上面的这两个式子，如果我们暴力地求解，不难得到最后的结果为：
+$$C=\sum_{i=0}^{n&#43;m-2} \sum_{j=0}^i a_j b_{i-j}x^i$$
+暴力求解是 $\operatorname{O}(n^2)$ 的，复杂度不太能接受的亚子。我们考虑优化。
+我们知道这种表示多项式的方法是最常见的，叫做系数表示法，众所不周知多项式的表示还可以用一种方法叫做点值表示法。根据初中数学知识，两点确定一个一次函数，三点确定一个二次函数……于是伟大的数学家们证明了一个定理：$n$ 个互异的点确定一个 $n-1$ 次函数。我们把 $A,B$ 用点值表示法表示就是：
+$$A={ (x_1,\operatorname{f}(x_1)),(x_2,\operatorname{f}(x_2)),(x_3,\operatorname{f}(x_3)),\cdots,(x_n,\operatorname{f}(x_n)) } \ B={ (x_1,\operatorname{g}(x_1)),(x_2,\operatorname{g}(x_2)),(x_3,\operatorname{g}(x_3)),\cdots,(x_n,\operatorname{g}(x_n)) }$$
+然后考虑 $C$ 如何表达。我们举个例子，假设一次多项式 $A={(0,-1),(2,5)}$，一次多项式 $B={(0,3),(2,-1)}$。不难得出系数表示法 $A=3x-1,B=-x&#43;3$，根据系数表示法，得出它们的乘积 $C=-3x^2&#43;10x-3$（假设记为函数 $\operatorname{h}$）。画下来：
+我们发现一个现象：对于 $\forall x\in R$，$\operatorname{f}(x)\operatorname{g}(x)=\operatorname{h}(x)$。因此用点值表示法运算两个多项式的乘积的方法是：（后续 $n$ 均表示为两个多项式项数的较大值，且不足 $n$ 项的那个多项式，少的项全部视为用 $0x^k$ 补充成 $n$ 项）
+$$C={ (x_i,\operatorname{f}(x_i)\operatorname{g}(x_i))\mid i\in N^&#43;,i\in[1,n] }$$"/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/Walker_68145" target="_blank">
+            <img class="img-circle img-rotate" src="https://walker68145/Arahc.github.io/avatar.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Arahc</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Arahc&#39;s home</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Changsha, China</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/Arahc.github.io/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/Arahc.github.io/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/Arahc.github.io/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/Arahc.github.io/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/Arahc.github.io/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content"><p>博客已经由 Walker_68145.github.io 转移到此处，原页面保留，为此带来的不便请大家谅解。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link" rel="1">k进制<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link" rel="1">stl<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link" rel="2">二分三分<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link" rel="3">分治<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link" rel="8">动态规划<span
+               class="tag-list-count">8</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link" rel="7">图论<span
+               class="tag-list-count">7</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link" rel="1">字符串<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link" rel="10">数学<span
+               class="tag-list-count">10</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link" rel="9">数据结构<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link" rel="4">暴力<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link" rel="1">莫队<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link" rel="3">贪心<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link" rel="2">随机化<span
+               class="tag-list-count">2</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E6%9D%82%E9%A1%B9/" class="category-list-link">杂项</a><span class="category-list-count">3</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/" class="category-list-link">笔记</a><span class="category-list-count">11</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E9%A2%98%E8%A7%A3/" class="category-list-link">题解</a><span class="category-list-count">20</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link">k进制</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link">stl</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link">二分三分</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link">分治</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link">动态规划</a><span
+                    class="tag-list-count">8</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link">图论</a><span
+                    class="tag-list-count">7</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link">字符串</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link">数学</a><span
+                    class="tag-list-count">10</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link">数据结构</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link">暴力</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link">莫队</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link">贪心</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link">随机化</a><span
+                    class="tag-list-count">2</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/" class="title">P5633最小度限制生成树 题解</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-28 21:43:22 &#43;0800 CST" itemprop="datePublished">2021-12-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/" class="title">线性基入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-22 21:47:24 &#43;0800 CST" itemprop="datePublished">2021-12-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/" class="title">Markdown 入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-30 18:41:00 &#43;0800 CST" itemprop="datePublished">2021-11-30</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/" class="title">OI 相关的非切题内容</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-28 21:42:04 &#43;0800 CST" itemprop="datePublished">2021-11-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E4%B8%8Ekdtree/" class="title">替罪羊与KDTree</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-25 21:48:19 &#43;0800 CST" itemprop="datePublished">2021-11-25</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/Arahc.github.io/posts/%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97/"
+    >多项式基本运算</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://walker68145/Arahc.github.io/posts/%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97/" class="article-date">
+  <time datetime="2021-10-19 09:37:55 &#43;0800 CST" itemprop="datePublished">2021-10-19</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/"> 笔记 </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/"> 数学 </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1516 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 8 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <h2 id="前言">前言</h2>
+<blockquote>
+<p>在数学中，由若干个单项式相加组成的代数式叫做多项式（若有减法：减一个数等于加上它的相反数）。多项式中的每个单项式叫做多项式的项，这些单项式中的最高项次数，就是这个多项式的次数。其中多项式中不含字母的项叫做常数项。
+在数学中，多项式（polynomial）是指由变量、系数以及它们之间的加、减、乘、幂运算（非负整数次方）得到的表达式。对于比较广义的定义，一个或零个单项式的和也算多项式。按这个定义，多项式就是整式。实际上，还没有一个只对狭义多项式起作用，对单项式不起作用的定理。$0$ 作为多项式时，次数定义为负无穷大（或 $0$）。单项式和多项式统称为整式。
+（摘自：<a href="https://baike.baidu.com/item/%E5%A4%9A%E9%A1%B9%E5%BC%8F/10660961?fr=aladdin">百度百科</a>）</p>
+</blockquote>
+<p>多项式的定义初中就有，没必要多说吧。本文将会积累所有学了的有关多项式的知识，不定期更新内容。</p>
+<p>本博客全文所有内容均不属于提高组考试范围，你要是硬说多项式加法可能有……那我也不能反驳。</p>
+<h2 id="多项式求和单项式乘多项式">多项式求和，单项式乘多项式</h2>
+<p><strong>合并同类项</strong>，没必要多说吧。多项式求差同理。</p>
+<p>单项式乘多项式就拆个括号。</p>
+<h2 id="多项式求积">多项式求积</h2>
+<p>假设对于两个多项式 $A,B$，有：</p>
+<p>$$
+A=\sum_{i=0}^{n-1} a_ix^i \
+B=\sum_{i=0}^{m-1} b_ix^i
+$$</p>
+<p>考虑如何求出两个多项式的积 $C=A\ast B$。</p>
+<h3 id="系数表示法点值表示法">系数表示法，点值表示法</h3>
+<p>考虑上面的这两个式子，如果我们暴力地求解，不难得到最后的结果为：</p>
+<p>$$C=\sum_{i=0}^{n+m-2} \sum_{j=0}^i a_j b_{i-j}x^i$$</p>
+<p>暴力求解是 $\operatorname{O}(n^2)$ 的，复杂度不太能接受的亚子。我们考虑优化。</p>
+<p>我们知道这种表示多项式的方法是最常见的，叫做<strong>系数表示法</strong>，众所<del>不</del>周知多项式的表示还可以用一种方法叫做<strong>点值表示法</strong>。根据初中数学知识，两点确定一个一次函数，三点确定一个二次函数……于是伟大的数学家们证明了一个定理：$n$ 个互异的点确定一个 $n-1$ 次函数。我们把 $A,B$ 用点值表示法表示就是：</p>
+<p>$$A={ (x_1,\operatorname{f}(x_1)),(x_2,\operatorname{f}(x_2)),(x_3,\operatorname{f}(x_3)),\cdots,(x_n,\operatorname{f}(x_n)) } \ B={ (x_1,\operatorname{g}(x_1)),(x_2,\operatorname{g}(x_2)),(x_3,\operatorname{g}(x_3)),\cdots,(x_n,\operatorname{g}(x_n)) }$$</p>
+<p>然后考虑 $C$ 如何表达。我们举个例子，假设一次多项式 $A={(0,-1),(2,5)}$，一次多项式 $B={(0,3),(2,-1)}$。不难得出系数表示法 $A=3x-1,B=-x+3$，根据系数表示法，得出它们的乘积 $C=-3x^2+10x-3$（假设记为函数 $\operatorname{h}$）。画下来：</p>
+<p><img src="https://pic.imgdb.cn/item/616e31712ab3f51d917aeb41.png" alt=""></p>
+<p>我们发现一个现象：对于 $\forall x\in R$，$\operatorname{f}(x)\operatorname{g}(x)=\operatorname{h}(x)$。因此用点值表示法运算两个多项式的乘积的方法是：（后续 $n$ 均表示为两个多项式项数的较大值，且不足 $n$ 项的那个多项式，少的项全部视为用 $0x^k$ 补充成 $n$ 项）</p>
+<p>$$C={ (x_i,\operatorname{f}(x_i)\operatorname{g}(x_i))\mid i\in N^+,i\in[1,n] }$$</p>
+<p>时间复杂度是 $\operatorname{O}(n)$。也就是说如果、我们要求两个用系数表示法表示的多项式 $A,B$ 的积，可以把它们转化成点值表示法求积，然后转化回系数表示法。</p>
+<h3 id="dft">DFT</h3>
+<h4 id="复数">复数</h4>
+<p>形如 $a+bi$ 的数被称为<strong>复数</strong>，其中 $a$ 为<strong>实部</strong>，$b$ 为<strong>虚部</strong>，$i$ 为虚数单位（<strong>虚数单位不属于虚部</strong>）。当 $b=0$ 时，这个数就是实数，当 $a=0$ 时，它是个纯虚数。任何复数系多项式在复数部一定有根。复数的集合记作 $C$。</p>
+<p>初中里面 $\sqrt{-1}$ 无意义，在复数域里，我们记作 $\sqrt{-1}=i$，$i$ 就是前面提到的虚数单位，再比如，$\sqrt{-9}=3i,\sqrt{-5}=\sqrt{5}i$。</p>
+<p>将复数的实部和虚部分别用 $x$ 和 $y$ 表示，就得到了一个<strong>复平面直角坐标系</strong>，比如：</p>
+<p><img src="https://pic.imgdb.cn/item/616e37802ab3f51d917f6515.png" alt=""></p>
+<p>其中点 $A$ 是原点，表示 $(0,0)$，点 $B$ 为 $(1,2i)$，代表复数 $1+2i$。定义复数的<strong>模</strong>表示向量 $u$ 的大小，即 $\sqrt{a^2+b^2}$。在这里为 $\sqrt{2^2+1^2}=\sqrt{5}$。记复数的<strong>辐角</strong>（极角）为此处的 $\alpha$。复数的模和辐角构成<strong>极坐标</strong>，如 $B(\sqrt{5},\alpha)$。</p>
+<p>复数满足四则运算，既然复数可以用向量 $u$ 表示，也就说明了复数的加法满足平行四边形法则。复数 $z=a+b_i$ 的 <strong>共轭复数</strong> 为 $\overline{z}=a-bi$。至于乘法，也就是把括号拆开算了，通式如下：</p>
+<p>$$(a+bi)\ast(c+di)=(ac-bd)+(ad+bc)i$$</p>
+<p>在这里这对 DFT 没有什么帮助，但是如果我们举个例子画在坐标系上，记复数 $z_1=2+i,z_2=-1-i$，套式子得到它们的乘积 $z_3=-1-3i$，画下来：</p>
+<p><img src="https://pic.imgdb.cn/item/616e3bf02ab3f51d9182befc.png" alt=""></p>
+<p>为了避免太乱就没有把三个辐角都标出来了，其中 $u$ 的辐角是 $\alpha$，$v$ 的辐角是<strong>优角</strong> $\angle BAC+\alpha$，$w$ 的辐角是<strong>优角</strong> $\angle BAD +\alpha$。我们发现 $\alpha=\beta$，同时 $AB\cdot AC=AD$。所以得出另一个结论：</p>
+<p>两个复数相乘，<strong>模长相乘，辐角相加</strong>。</p>
+<h4 id="离散傅里叶变换">离散傅里叶变换</h4>
+<p>其实就是 DFT 的全称，考虑如何把一个系数表达式转化为点值表达式。</p>
+<p><strong>从这里开始，默认 $n$ 是 $2$ 的正整数次幂，如果不是的话，就把它补成高次项系数都是 $0$ 的形式。</strong></p>
+<p>显然可以随便选几个不同的 $x$，然后代入到多项式里面，求出对应的 $\operatorname{f}(x)$，就可以求出点值表达式了，因为要选出 $n$ 个点，多项式是 $n-1$ 次，有 $n$ 项，复杂度是 $n^3$ 级别的。用快速幂的话把复杂度优化为 $\operatorname{O}(n^2\log n)$，预处理 $x^1,x^2,x^3,\cdots,x^n$ 复杂度为 $\operatorname{O}(n^2)$。</p>
+<p>傅里叶觉得不行，随便选 $x$ 太随意了，生活要有仪式感。虽然 DFT 复杂度也是 $n^2$，但是他觉得我要是选一些点使得不要算那么多次乘方运算，好歹常数也小点。如果选择出来的一些 $x$，使得 $\exist p,x^p=1$，那么所有的乘方运算常数都可以大幅度地下降。显然 $\pm 1,\pm i$ 都可以满足，但是只有四个 $x$ 太少了，$n$ 大于 $4$ 就没掉了。傅里叶发现了一个性质：如果在复平面直角坐标系上，原点为圆心，$1$ 为半径画个圆，圆上的点都满足。</p>
+<p>这样就只需要在圆上面任取 $n$ 个点就可以了。傅里叶把这个圆 $n$ 等分了，假设 $n=8$，给一个图片方便后续的理解：</p>
+<p><img src="https://pic.imgdb.cn/item/616e68432ab3f51d91a48149.png" alt=""></p>
+<p>从 $(1,0)$ 开始，$(1,0)$ 为 $X_0$，然后逆时针标号直到 $X_{n-1}$。我们记 $\omega_n^k$ 表示 $X_k$ 对应的复数的值。根据复数相乘时，模长相乘辐角相加，不难得到 $(\omega_n^1)^k=\omega_n^k$。定义 $\omega_n^1$ 为 $n$ 次<strong>单位根</strong>。</p>
+<p>那么把 $\omega_n^0,\omega_n^2,\omega_n^3,\cdots,\omega_n^{n-1}$ 当作 $x_0,x_1,x_2,\cdots,x_{n-1}$ 带进多项式。因为 $(\omega_n^1)^k=\omega_n^k$，$\omega_n^n=\omega_n^0=1$，就可以转点值了。</p>
+<p>傅里叶觉得非常满足，很有仪式感地完成了系数表达转点值表达。总体复杂度 $\operatorname{O}(n^2)$。</p>
+<p>如何把点值转化为系数表达式呢？拉格朗日插值 $n^2$ 秒掉了。</p>
+<h3 id="fft">FFT</h3>
+<h4 id="快速傅里叶变换">快速傅里叶变换</h4>
+<p>子标题就是 FFT 的全称。</p>
+<p>傅里叶又觉得不行，$n^2$ 复杂度太拉了，于是有了 $n\log n$ 级别的优秀的 FFT。我们发现 $\omega_n^k$ 有以下几个优秀的性质：</p>
+<ul>
+<li>$(\omega_n^p)^k=\omega_n^{pk}$</li>
+<li>$\omega_n^n=\omega_n^0=1+0i=1$</li>
+<li>$\omega_n^k=\omega_{2n}^{2k}$</li>
+<li>$\omega_n^{k+\frac{n}{2}}=-\omega_n^k$</li>
+<li>$\omega_n^k\omega_n^p=\omega_n^{k+p}$</li>
+</ul>
+<p>第一个：相当于旋转了 $k$ 次辐角；第二个：相当于旋转一周回来了；第三个：相当于 $n$ 等分变成 $2n$ 等分；第四个：相当于转了 $180^\circ$；第五个：辐角直接加起来。</p>
+<p>重新考虑原系数表达式的形式，就分治的思想，按照指数的奇偶性分成两个部分，记原多项式为 $\operatorname{A}(x)$：</p>
+<p>$$
+\begin{aligned}
+\operatorname{A}(x)
+&amp;= \sum_{i=0}^{n-1} a_ix^i \
+&amp;= (a_0+a_2x^2+\cdots+a_{n-2}x^{n-2})+(a_1x+a_3x^3+\cdots+a_{n-1}x^{n-1}) \
+&amp;= (a_0+a_2x^2+\cdots+a_{n-2}x^{n-2})+x(a_1+a_3x^2+\cdots+a_{n-1}x^{n-2})
+\end{aligned}
+$$</p>
+<p>感觉两个部分长得差不多，考虑开两个多项式 $\operatorname{A_1}(x),\operatorname{A_2}(x)$：</p>
+<p>$$
+\operatorname{A_1}(x)=a_0+a_2x+a_4x^2+\cdots+a_{n-2}x^{\frac{n}{2}-1} \
+\operatorname{A_2}(x)=a_1+a_3x+a_5x^2+\cdots+a_{n-1}x^{\frac{n}{2}-1} \
+\therefore \operatorname{A}(x)=\operatorname{A_1}(x^2)+x\operatorname{A_2}(x^2)
+$$</p>
+<p>对于 $k&lt;\frac{n}{2}$，把 $x=\omega_n^k$ 代入原式：</p>
+<p>$$
+\begin{aligned}
+\operatorname{A_1}(x^2)+x\operatorname{A_2}(x^2)
+&amp;= \operatorname{A_1}[(\omega_n^k)^2]+\omega_n^k\operatorname{A_2}[(\omega_n^k)^2] \
+&amp;= \operatorname{A_1}(\omega_n^{2k})+\omega_n^k\operatorname{A_2}(\omega_n^{2k}) \
+&amp;= \operatorname{A_1}(\omega_{\frac{n}{2}}^k)+\omega_n^k\operatorname{A_2}(\omega_{\frac{n}{2}}^k)
+\end{aligned}
+$$</p>
+<p>考虑另一半（也就是 $k+\frac{n}{2}$），把 $x=\omega_n^{k+\frac{n}{2}}$ 代入原式：</p>
+<p>$$
+\begin{aligned}
+\operatorname{A_1}(x^2)+x\operatorname{A_2}(x^2)
+&amp;= \operatorname{A_1}[(\omega_n^{k+\frac{n}{2}})^2]+\omega_n^{k+\frac{n}{2}}\operatorname{A_2}[(\omega_n^{k+\frac{n}{2}})^2] \
+&amp;= \operatorname{A_1}[(-\omega_n^k)^2]-\omega_n^k\operatorname{A_2}[(-\omega_n^k)^2] \
+&amp;= \operatorname{A_1}(\omega_n^{2k})-\omega_n^k\operatorname{A_2}(\omega_n^{2k}) \
+&amp;= \operatorname{A_1}(\omega_{\frac{n}{2}}^k)-\omega_n^k\operatorname{A_2}(\omega_{\frac{n}{2}}^k)
+\end{aligned}
+$$</p>
+<p>和上面相比，只有第二项的符号不一样。如果我们知道了 $\operatorname{A_1}(\omega_{\frac{n}{2}}^k),\operatorname{A_2}(\omega_{\frac{n}{2}}^k),\omega_n^k$，就可以得到 $\operatorname{A}(\omega_n^k),\operatorname{A}(\omega_n^{k+\frac{n}{2}})$。</p>
+<p>考虑递归，每次只需要算出 $k\in[1,\frac{n}{2}]$ 的 $\operatorname{A_1}(\omega_n^k)$ 和 $\operatorname{A_2}(\omega_n^k)$ 以及 $\omega_n^k$，后面的 $k\in(\frac{n}{2},n]$ 的部分就可以直接 $\operatorname{O}(1)$ 得到。</p>
+<p>边界条件为 $k=1$，也就变成了单位根，$\operatorname{O}(1)$ 可以计算。换句话说当 $k=1$ 时直接 return，所以最终需要继续计算答案的递归状态是 $n=2$。递归时问题序列每次减半，时间复杂度是 $n\log_2 n$。</p>
+<h4 id="快速傅里叶逆变换">快速傅里叶逆变换</h4>
+<p>子标题是 IFFT 的简写。众所周知我们用 FFT 以 $n\log n$ 的优秀复杂度得到了点值表示法，$\operatorname{\Theta}(n)$  的更优秀的复杂度算完了乘积多项式的点值表示法，但是转回来还是只能拉格朗日插值 $\operatorname{O}(n^2)$，复杂度级别挂成和暴力 DFT 一样了。</p>
+<p>我们不仅仅需要一个快速换过去的方法，还要研究一个快速换回来的方法。为此我们还需要进一步研究 $\omega$ 有关的性质。回到原来的那个图片：</p>
+<p><img src="https://pic.imgdb.cn/item/616e68432ab3f51d91a48149.png" alt=""></p>
+<p>我们现在已经知道了从 $X_0$ 开始逆时针编号，得到的编号为 $k$ 的点对应复数大小是 $\omega_n^k$。在这种方式的定义下，$k$ 一定是大于 $0$ 的。而前面我们已经接受了 $k\geqslant n$ 的情况：相当于转了几圈回来。现在考虑 $k&lt;0$ 的情况。</p>
+<p>既然逆时针的编号是 $0,1,2,3,\cdots$，那么编号为负的不就相当于顺时针编号吗：$0,-1,-2,-3,\cdots$。</p>
+<p>用另一种方法来看，因为 $\omega_n^k\omega_n^p=\omega_n^{k+p}$，随便代个数：$\omega_n^2\omega_n^{-1}=\omega_n^1$，在图像上面表示，既可以视为是 $X_2$ 顺时针转了一个单位角度（一个单位角度的大小为 $X_1$ 的辐角的大小），也可以视为逆时针转了 $7$ 个单位角度。所以得到一个性质：$\omega_n^{-k}=\omega_n^{n-k}$。</p>
+<p>扩展了 $\omega_n^k$ 的定义之后，考虑怎么把一个点值表达式转化为系数表达式。假设我们点值表达式得到的每个点的点值（即 $(x,y)$ 中的 $y$）提出来，组成 $g_i$，系数表达式的每一个系数也提出来，组成 $a_i$。</p>
+<p>先上结论，再证明（因为我也不知道怎么推结论只会推式子）</p>
+<p>$$n\ast a_k=\sum_{p=0}^{n-1} g_p(\omega_n^{-k})^p$$</p>
+<hr>
+<p><strong>证明：</strong></p>
+<p>脑补一下 $g_i$ 都是怎么来的，$g_i$ 是原多项式的点值表示法的点值。点值是 $x=\omega_n^i$ 代入到原多项式得来的。原多项式的系数表示法是 $\sum_{k=0}^{n-1} a_kx^k$。把 $x=\omega_n^i$ 代入：</p>
+<p>$$g_i=\sum_{k=0}^{n-1} a_k(\omega_n^i)^k$$</p>
+<p>代入到要证明的式子的等号右边的东西：</p>
+<p>$$
+\begin{aligned}
+\sum_{p=0}^{n-1} g_p(\omega_n^{-k})^p
+&amp;= \sum_{p=0}^{n-1}\sum_{q=0}^{n-1} a_q(\omega_n^p)^q(\omega_n^{-k})^p \
+&amp;= \sum_{p=0}^{n-1}\sum_{q=0}^{n-1} a_q\omega_n^{pq}\omega_n^{-kp} \
+&amp;= \sum_{p=0}^{n-1}\sum_{q=0}^{n-1} a_q\omega_n^{p(q-k)}
+\end{aligned}
+$$</p>
+<p>分类讨论 $q,k$ 的关系：</p>
+<ol>
+<li>$q\neq k$ 设 $r=q-k$：</li>
+</ol>
+<p>考虑对于一个 $r$，对总和造成的贡献是：</p>
+<p>$$
+\begin{aligned}
+\sum_{p=0}^{n-1} a_{r+k}\omega_n^{pr}
+&amp;= a_{r+k}\sum_{p=0}^{n-1} \omega_n^p\omega_n^r \
+&amp;= a_{r+k}\omega_n^r \sum_{p=0}^{n-1}\omega_n^p
+\end{aligned}
+$$</p>
+<p>后面的求和就是等比数列求和，已经见很多次了吧，不多赘述了。注意 $\omega_n^n=1$：</p>
+<p>$$
+\begin{aligned}
+\sum_{p=0}^{n-1}\omega_n^p
+&amp;= \frac{(\omega_n^1)^{n-1+1}-1}{\omega_n^1-1} \
+&amp;= \frac{\omega_n^n-1}{\omega_n^1-1} \
+&amp;= \frac{0}{\omega_n^1-1} \
+&amp;= 0
+\end{aligned}
+$$</p>
+<p>也就是如果 $q\neq k$，式子对答案没有贡献。</p>
+<ol start="2">
+<li>$q=k$</li>
+</ol>
+<p>$$
+\begin{aligned}
+\sum_{p=0}^{n-1}\sum_{q=0}^{n-1} a_q\omega_n^{p(q-k)}[q=k]
+&amp;= \sum_{p=0}^{n-1} a_k\omega_n^0 \
+&amp;= \sum_{p=0}^{n-1} a_k \
+&amp;= na_k
+\end{aligned}
+$$</p>
+<p>因此我们得出，$n\ast a_k=\sum_{p=0}^{n-1} g_p(\omega_n^{-k})^p$。</p>
+<hr>
+<p>这个东西的本质就是单位根反演（没错，这玩意居然还能反演……）。</p>
+<p>我们再回顾一下怎么用 $a_i$ 求 $g_i$，对比一下怎么用 $g_i$ 求 $a_i$：</p>
+<p>$$
+g_i=\sum_{k=0}^{n-1} a_k(\omega_n^i)^k \
+n\ast a_i=\sum_{k=0}^{n-1} g_k(\omega_n^{-i})^k
+$$</p>
+<p>不就是原来 FFT 的过程，把代入的数字从 $\omega_n^i$ 换成 $\omega_n^{-i}$，最后结果再除个 $n$ 吗。</p>
+<p>因此 IFFT 和 FFT 过程几乎没差多少，一般都写在一个函数里面，开个 $type$ 判断我现在是求 FTT 还是 IFFT。</p>
+<h4 id="蝴蝶变换">蝴蝶变换</h4>
+<p>这是 FFT 的优化。只要你的常数是正常人的常数，没有刻意地卡常，而且写的分治是递归，应该会被<a href="https://www.luogu.com.cn/problem/P3803">模板题</a>卡成 $70\sim 90$，反正过不去。然后你就会发现，题解里面全部不是递归实现的，最优的解法都是循环实现的。</p>
+<p>我们考虑分治的时候怎么分治的：我们把下标（从 $0$ 开始标下标）是偶数的提出来放在前面，下标是奇数的提出来放在后面，然后往下递归：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">0</th>
+<th style="text-align:center">1</th>
+<th style="text-align:center">2</th>
+<th style="text-align:center">3</th>
+<th style="text-align:center">4</th>
+<th style="text-align:center">5</th>
+<th style="text-align:center">6</th>
+<th style="text-align:center">7</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">7</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">7</td>
+</tr>
+</tbody>
+</table>
+<p>第一行是原数组的下标顺序，最后一行是分治到最终位置后原数组的下标跑到哪里去了。看起来好像顺序挺乱的，但是我们考虑一下第一行和最后一行的二进制：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">第一行的数字</th>
+<th style="text-align:center">0</th>
+<th style="text-align:center">1</th>
+<th style="text-align:center">2</th>
+<th style="text-align:center">3</th>
+<th style="text-align:center">4</th>
+<th style="text-align:center">5</th>
+<th style="text-align:center">6</th>
+<th style="text-align:center">7</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">第一行对应位置的二进制</td>
+<td style="text-align:center">000</td>
+<td style="text-align:center">001</td>
+<td style="text-align:center">010</td>
+<td style="text-align:center">011</td>
+<td style="text-align:center">100</td>
+<td style="text-align:center">101</td>
+<td style="text-align:center">110</td>
+<td style="text-align:center">111</td>
+</tr>
+<tr>
+<td style="text-align:center">最后一行的数字</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">7</td>
+</tr>
+<tr>
+<td style="text-align:center">最后一行对应位置二进制</td>
+<td style="text-align:center">000</td>
+<td style="text-align:center">100</td>
+<td style="text-align:center">010</td>
+<td style="text-align:center">110</td>
+<td style="text-align:center">001</td>
+<td style="text-align:center">101</td>
+<td style="text-align:center">011</td>
+<td style="text-align:center">111</td>
+</tr>
+</tbody>
+</table>
+<p>我们发现<strong>每个位置分治后的最终位置为它的二进制倒过来得到的数字对应的位置</strong>。</p>
+<p>不妨记录好每一个数的最终位置 $rev_i$。$rev_i$ 的求法可以如下考虑：分类讨论 $i$ 的最后一位是不是 $1$：</p>
+<ol>
+<li>若最后一位是 $0$，$rev_i$ 相当于 $i$ 除去最后一位剩下的二进制翻过来。</li>
+<li>若最后一位是 $1$，$rev_i$ 相当于 $i$ 除去最后一位剩下的二进制翻过来，然后在最高位前面加上 $1$。</li>
+<li>递推顺序为从小到大顺序递推。</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp">rev[i]<span style="color:#f92672">=</span>(rev[i<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>) <span style="color:#f92672">|</span> ((i<span style="color:#f92672">&amp;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">&lt;&lt;</span>(lim<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>))
+<span style="color:#75715e">// lim 表示最高位
+</span></code></pre></div><p>这样子就省去了递归和数组复刻的常数了，时间进一步优化，可以过那个板子题了。</p>
+<h4 id="三次变两次优化">三次变两次优化</h4>
+<p>本优化默认需要计算的两个多项式系数都是实数。</p>
+<p>朴素的 FFT 求两个多项式 $A\ast B$ 的积 $C$（假设题目要求 $C$ 用系数表示法表示），那么就需要先对 $A$ 进行一次 FFT，$B$ 进行一次 FFT，$\operatorname{O}(n)$ 的点值表达式乘法求出 $C$ 后，对 $C$ 进行一次 IFFT。分治的函数（即 FFT 和 IFFT 使用的总次数）一共调用了三次。这玩意怎么优化呢？</p>
+<p>回到复数的表示，$z=a+bi$。如果求一下 $z^2$ 会怎样：</p>
+<p>$$
+\begin{aligned}
+(a+bi)^2
+&amp;=a^2+(bi)^2+2abi \
+&amp;= a^2-b^2+2abi
+\end{aligned}
+$$</p>
+<p>我们发现后面这个部分有一个 $2ab$，所以如果把 B 的系数当作 A 的系数的虚部，得到的新多项式记作 $A'$，计算一遍 $A'\ast A'$，结果的虚部提出来，也就是 $2ab$，然后除以 $2$，不就得出 $C$ 的系数了吗？</p>
+<p>也就是说，把 $B$ 的系数放在 $A$ 的虚部里，得到新的多项式 $A'$，计算 $A'\ast A'$，结果 IFFT 回系数表示法，然后虚部提出来除以 $2$ 就是 $C$ 的系数了。只需要 FFT 一次 $A'$，IFFT 一次 $A'\ast A'$，只需要两次就够了。</p>
+<p>常数大概优化为原来的 $\dfrac{2}{3}$。</p>
+<h3 id="ntt">NTT</h3>
+<h4 id="与-fft-的区别">与 FFT 的区别</h4>
+<p>NTT 的复杂度和 FFT 的复杂度都是一样的，都是 $n\log n$，为什么要有这个神奇的 NTT 呢？</p>
+<p>（下文加粗部分都是 FFT 的缺点）首先，多项式的问题往往需要对一个数取模（通常是 $998244353$），如果你用的是 FFT，众所周知<strong>复数是不能取模的</strong>，就会出问题。其次，FFT 用的只能是 double 类型的变量。假设给定的两个多项式，一个系数范围是 $[10^{-6},10^{-5}]$，另一个范围是 $[10^5,10^6]$，中间就跨了 $10^{12}$ 级别的精度，<strong>很容易出现精度误差</strong>，这种情况基本崩不住。最后，NTT 的运算是基于整数的，FFT 是基于浮点数的，众所周知有四则运算的变量类型里 int 常数最小，因此相比较 NTT，FFT <strong>常数较大</strong>。</p>
+<p>基于以上三点，人们又想出了一个能取模，没有精度误差，基于整数操作的，系数表示法和点值表示法互转的方法：<strong>快速数论变换算法</strong>——NTT。</p>
+<p>根据名字就可以猜出来，NTT 是基于数论的内容的，别转走，其实没那么多数论内容，而且很多地方和 FFT 是一样的。一般认为 NTT 是 FFT 的可取模升级版。至于效率，小数据下的运行效率和 FFT 相比快了不少，大数据差不太多。</p>
+<h4 id="原根">原根</h4>
+<p>这就是支撑 NTT 的数，它的重要性和 $\omega$ 在 FFT 里面的重要性一样。对于一个给定模数 $p$，如果有一个数 $g\in Z,g^{p-1}\equiv 1\pmod{p}$，其中 $g$ 满足 $\forall 0&lt;i&lt;j&lt;p,g^i\not\equiv g^j\pmod{p}$，则称 $g$ 是 $p$ 的一个<strong>原根</strong>。</p>
+<p>原根的确切的定义如下：</p>
+<p>首先定义<strong>阶</strong>：对于两个数 $a,p$，找到一个最小的整数 $k$ 使得 $a^k\equiv 1\pmod{p}$，则称 $k$ 为 $a$ 在模 $p$ 意义下的阶。用 $\delta_p(a)$（$\delta$ 读作 delta）表示。<strong>阶数等于幂的最小循环节</strong>（模意义下），不难理解吧。</p>
+<p><strong>原根</strong>的确切定义是：对于满足 $\delta_p(g)=\varphi(p)$ 的 $g$，我们称 $g$ 为 $p$ 的原根。</p>
+<p>只有 $2,4,2p^k,p^k$（其中 $p$ 是奇质数）这些数才有原根。</p>
+<p>在 FFT 中，用到了 $\omega_n$ 的以下基本性质：</p>
+<ul>
+<li>$(\omega_n^1) ^k=\omega_n^k$</li>
+<li>$\omega_n^k=\omega_{2n}^{2k}$</li>
+<li>$\omega_n^{k+n}=\omega_n^k$</li>
+<li>$\omega_n^{0\sim(n-1)}$ 互不相同</li>
+</ul>
+<p>其他的所有性质都基于这四个性质推出（可以对照前面的 FFT 试着推一下），由第一点、第三点、第四点，综合起来就等价于：$\omega_n^1$ 在模意义下阶恰好为 $n$。我们设题目给定的模数是 $p$，$g$ 是 $p$ 的一个原根。首先，显然 $p-1$ 不一定恰好等于 $n$（$p-1&gt;n$ 看起来好像可以，但实际上无法满足第三点性质，$p-1&lt;n$ 时一定会违背第四点），因此 $g$ 不能直接替代单位根。</p>
+<p>至于如何找到阶数为 $n$ 的点，需要用到一个有关阶的性质：若 $p$ 的原根是 $g$，则 $g^k$ 的阶为 $\dfrac{p-1}{\gcd(k,p-1)}$。考虑能否控制 $k$ 的值，使得阶数可以取 $n$：</p>
+<p>$$
+\begin{aligned}
+\frac{p-1}{\gcd(k,p-1)}=n
+&amp;\Rightarrow \gcd(k,p-1)=\frac{p-1}{n} \
+&amp;\Rightarrow k=\frac{p-1}{n}
+\end{aligned}
+$$</p>
+<p>当 $n \nmid (p-1)$ 时，无解。否则，当 $k=\frac{p-1}{n}$ 时，$g_k$ 的阶恰好为 $n$。既然如此，就说明 $g^k$ 已经满足了 $\omega$ 基本性质的第一、三、四点。还差第二点 $\omega_n^k=\omega_{2n}^{2k}$ 不知道是否满足，考虑证明。</p>
+<hr>
+<p><strong>证明：</strong></p>
+<p>先考虑 $\omega_n^k=\omega_{2n}^{2k}$ 能否进行一定的转换。我们抛出一个引理：</p>
+<blockquote>
+<p>$\omega_n^k=\omega_{2n}^{2k}$ 是 $(\omega_{2n}^1)^2=\omega_n^1$ 的充要条件。</p>
+</blockquote>
+<p>因为众所周知，$\omega_n^1\cdot \omega_n^1=\omega_n^2$，充分性必要性均显然。</p>
+<p>所以证明 $g^k$ 是否满足原性质，即证明其是否满足 $g^k=(g^{\frac{p-1}{2n}})^2$。将 $k=\frac{p-1}{n}$ 代入可得原式成立。证毕。</p>
+<hr>
+<p>因此当 $k=\frac{p-1}{n}$ 时，$g^k$ 符合所有的要求，可以用 $g^k$ 代替单位根进行分治。</p>
+<h4 id="快速数论变换算法">快速数论变换算法</h4>
+<p>FFT 之所以可以大大地优化 DFT，是因为傅里叶选的这些数太好了，$\omega$ 有非常多的神奇性质，使得我可以加以利用，进行分治。</p>
+<p>但是我们都知道那个圆上面的点，除了四个，别的点的直角坐标都至少有一个是小数，带来了 double 类型尴尬的精度误差。如果我能在整数里面找到一个有相同或类似性质的数，就可以解决这种问题。而刚刚提及的原根就恰好符合这些性质。</p>
+<p>在 NTT 下，一般题目都要求我们对一个数取模：$998244353$，而且不会是 $10^7+9,10^9+7$ 之类的这些质数，一定是 $998244353$。事实上，之所以 NTT 的题目模数都是这个数，是因为前面推过 $n\mid (p-1)$ 时，才能用原根构造单位根，而一般分治算法 $n$ 都是 $2$ 的若干次幂，因此我们期望找到一个质数 $p$，使得 $p-1$ 有很多因子 $2$，$998244353=2^{23}\times 7\times 17+1$，很完美地符合条件。再者，这个数的最小原根是 $3$，比较方便。</p>
+<p>然后把 FFT 有关单位根的东西全部换成 $g^{\frac{p-1}{n}}$ 即可。注意因为没有了实数和虚数部分，所以没有三变二优化，只有蝴蝶变换结论优化递归常数。</p>
+<p>虽然 NTT 的时间复杂度和 FTT 一样，但是没有毒瘤数据的情况下，比 FFT 快了约 $\dfrac{1}{5}$，预处理单位根（减少乘法运算）后又比原来快了约 $\dfrac{1}{5}$。常数已经非常可观了。</p>
+<p><strong>upd</strong>：封装后实测 NTT 用时为 FFT 的 $70%$，而且不知道为什么我写的 FFT 空间居然是 NTT 的 $7$ 倍，如图：</p>
+<p><img src="https://pic.imgdb.cn/item/617a4dcc2ab3f51d91d07db2.png" alt=""></p>
+<h3 id="mtt">MTT</h3>
+<p>考虑这样一个阴间的<a href="https://www.luogu.com.cn/problem/P4245">毒瘤题</a>。在这里我们需要取模，但是模数并不是很友好的 $998244353$。</p>
+<p>这里如果从 NTT 的角度出发，可以选择三个友好的模数，跑九次 NTT，最后的答案用中国剩余定理合并。假设求卷积前值域都小于 $p$，那么卷积后能产生的最大值域在本题就是 $p\times p\times n=10^{26}$，long long 也救不了你，只能手写高精度，不会有人想写吧。</p>
+<p>考虑如何用 FFT 的方法去做，常见的方法是拆系数。我们发现值域的范围是 $10^9$，不妨把一个系数 $a$ 拆成 $a=2^{15}p+q$ 的形式（反正 FFT 用的 double，没必要纠结能不能被 $2^{15}$ 整除吧），可以发现这样 $p,q\leqslant 2^{15}$。值域范围缩小为 $p\times n=10^{14}$。可以用 long long 存储，乘法运算时勤快取模防溢出就可以了。</p>
+<p>考虑这样子拆掉系数原式会变成什么：</p>
+<p>$$a_1a_2=(2^{15}p_1+q_1)(2^{15}p_2+q_2)=2^{30}p_1p_2+2^{15}p_1q_2+2^{15}p_2q_1+q_1q_2$$</p>
+<p>一次 FFT 要拆成四次 FFT，然后没有三到二的 FFT 板子需要跑三次 FFT，拆完之后总的 FFT 和 IFFT 次数就是 $12$ 次，常数关系已经让 $n\log n$ 的 FFT 差点赶上 $n\log^2 n$ 了。</p>
+<p>考虑如何优化。现在给定了四个多项式 $A_1,A_2,B_1,B_2$（所有多项式的系数都是实数）。不妨用三变二的思想，开一个多项式 $P$，$P$ 的实部是 $A_1$ 的系数，虚部是 $A_2$ 的系数。同理再开一个多项式 $Q$。</p>
+<p>$$C_1=P\ast Q=A_1B_1-A_2B_2+A_1B_2i+A_2B_1i$$</p>
+<p>有四项就很烦，但是考虑到i如果我能算出来一个 $C_2$ 和这里面有几项可以抵消掉，不就省了几次 FFT 吗？考虑再开一个 $R$，实部是 $A_1$，虚部是 $-A_2$。</p>
+<p>$$C_2=R\ast Q=A_1B_1+A_2B_2+A_1B_2i-A_2B_1i$$</p>
+<p>$$
+C_1+C_2=2(A_1B_1+A_1B_2i) \
+C_1-C_2=2(A_2B_1i-A_2B_2)
+$$</p>
+<p>分别取出这两个结果的实部和虚部就可以得到四个多项式两两的乘积分别是多少。代价是要求出 $P,Q,R$ 三个多项式中的 $P\ast Q,R\ast Q$。八次 FFT（拆完系数的两个多项式乱搞，如果先转可以变成四次）优化成了三次，还行。</p>
+<p>把 $A_1,B_1,A_2,B_2$ 当成拆系数后得到的四个多项式，然后利用虚实部转化为 $P,Q,R$ 三个多项式，对这三个求 FFT，得到 $C_1,C_2$，把 $C_1,C_2$ 给 IFFT 回来。然后提取 $a_1b_1,a_1b_2,a_2b_1,a_2b_2$，带到最前面的式子 $2^{30}p_1p_2+2^{15}p_1q_2+2^{15}p_2q_1+q_1q_2$，就解出最后的答案了。</p>
+<p>需要进行三次 FFT，两次 IFFT，常数不算那么不可观了。</p>
+<h2 id="多项式除法">多项式除法</h2>
+<p>不是字面意义的多项式除法，字面意义的多项式除法并没有在网络上找到很好的做法。本处的多项式除法参见<a href="https://www.luogu.com.cn/problem/P4238">多项式乘法逆元板子题</a>。</p>
+<p>众所周知，除一个数等于乘一个数的逆元。所以多项式除法可以转化为求一个多项式的逆元，然后套多项式乘法板子，FFT,NTT,MTT 复杂度都是 $n\log n$，其中 MTT 的常数是 FFT 的五倍，NTT 的理论常数最小，但是还是具体情况具体分析。</p>
+<p>考虑如何求 $A$ 的逆元。</p>
+<h3 id="多项式乘法逆元">多项式乘法逆元</h3>
+<p>设 $A$ 在模 $x^n$ 意义下的逆元为 $B_1$，在模 $x^{\left\lceil\frac{n}{2}\right\rceil}$ 意义下的逆元为 $B_2$。根据逆元定义：</p>
+<p>$$
+A\ast B_1\equiv 1\pmod{x^n} \
+A\ast B_2\equiv 1\pmod{x^{\left\lceil\frac{n}{2}\right\rceil}}
+$$</p>
+<p>上面这两个式子就是这样的形式：$ab=xp^2+1,ac=yp+1$，考虑作差：$ab-ac=xp^2-yp=p(xp-y)$，也就是说二者之差是 $p$ 的倍数。即 $a(b-c)\equiv 0\pmod{p}$。</p>
+<p>$$
+A\ast(B_1-B_2)\equiv 0\pmod{x^{\left\lceil\frac{n}{2}\right\rceil}} \
+\therefore B_1-B_2\equiv 0\pmod{x^{\left\lceil\frac{n}{2}\right\rceil}}
+$$</p>
+<p>我们知道，如果 $p$ 可以被 $a$ 整除，那么 $p^2$ 可以被 $a^2$ 整除。换句话说，如果 $p\equiv 0\pmod{a},p^2\equiv 0\pmod{a^2}$。所以：</p>
+<p>$$
+(B_1-B_2)^2\equiv 0\pmod{x^n} \
+B_1^2+B_2^2-2B_1B_2\equiv 0\pmod{x^n} \
+A\ast(B_1^2+B_2^2-2B_1B_2)\equiv 0\pmod{x^n}
+$$</p>
+<p>因为：$A\ast B_1\equiv 1\pmod{x^n}$，所以乘进去：</p>
+<p>$$
+B_1-2B_2+AB_2^2\equiv 0\pmod{x^n} \
+B_1\equiv 2B_2-AB_2^2\equiv 0\pmod{x^n}
+$$</p>
+<p>也就是说，对于 $A\ast B_1\equiv 1\pmod{x^n}$ 的求 $B_1$，可以通过求出使 $A\ast B_2\equiv 1\pmod{x^{\left\lceil\frac{n}{2}\right\rceil}}$ 的 $B_2$，然后加上多项式乘法来求。</p>
+<p>从上往下递归的常数传参要传多项式，非常恶心，不如直接从下往上递推，从 $x^1$ 推到第一个 $x^{2^k}$，满足 $2^k\geqslant n$ 的 $k$ 就行了。</p>
+<p>支撑主体的是 NTT 求逆，还用到了倍增。整体的复杂度是 $n\log n$。</p>
+<h2 id="代码">代码</h2>
+<p>多项式 FFT，NTT，MTT，求逆代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">namespace</span> DXS{ <span style="color:#75715e">// 封装
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">mi</span>(<span style="color:#66d9ef">int</span> x,<span style="color:#66d9ef">int</span> p){ <span style="color:#75715e">// 快速幂
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">int</span> res<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;
+		<span style="color:#66d9ef">while</span>(p){
+			<span style="color:#66d9ef">if</span>(p<span style="color:#f92672">&amp;</span><span style="color:#ae81ff">1</span>) res<span style="color:#f92672">*=</span>x,res<span style="color:#f92672">%=</span>mod;
+			x<span style="color:#f92672">*=</span>x,x<span style="color:#f92672">%=</span>mod,p<span style="color:#f92672">&gt;&gt;=</span><span style="color:#ae81ff">1</span>;
+		}
+		<span style="color:#66d9ef">return</span> res;
+	}
+	<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">com</span>{ <span style="color:#75715e">// 手写复数结构体，支持 +-* 三种运算
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">double</span> a,b; <span style="color:#75715e">// a+bi
+</span><span style="color:#75715e"></span>		com(<span style="color:#66d9ef">double</span> x<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">double</span> y<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>){a<span style="color:#f92672">=</span>x,b<span style="color:#f92672">=</span>y;}
+		com <span style="color:#66d9ef">operator</span> <span style="color:#f92672">+</span> (<span style="color:#66d9ef">const</span> com b) <span style="color:#66d9ef">const</span>{
+			com a<span style="color:#f92672">=*</span><span style="color:#66d9ef">this</span>,res;
+			res.a<span style="color:#f92672">=</span>a.a<span style="color:#f92672">+</span>b.a,res.b<span style="color:#f92672">=</span>a.b<span style="color:#f92672">+</span>b.b;
+			<span style="color:#66d9ef">return</span> res;
+		}
+		com <span style="color:#66d9ef">operator</span> <span style="color:#f92672">-</span> (<span style="color:#66d9ef">const</span> com b) <span style="color:#66d9ef">const</span>{
+			com a<span style="color:#f92672">=*</span><span style="color:#66d9ef">this</span>,res;
+			res.a<span style="color:#f92672">=</span>a.a<span style="color:#f92672">-</span>b.a,res.b<span style="color:#f92672">=</span>a.b<span style="color:#f92672">-</span>b.b;
+			<span style="color:#66d9ef">return</span> res;
+		}
+		com <span style="color:#66d9ef">operator</span> <span style="color:#f92672">*</span> (<span style="color:#66d9ef">const</span> com b) <span style="color:#66d9ef">const</span>{
+			com a<span style="color:#f92672">=*</span><span style="color:#66d9ef">this</span>,res;
+			res.a<span style="color:#f92672">=</span>a.a<span style="color:#f92672">*</span>b.a<span style="color:#f92672">-</span>a.b<span style="color:#f92672">*</span>b.b,
+			res.b<span style="color:#f92672">=</span>a.a<span style="color:#f92672">*</span>b.b<span style="color:#f92672">+</span>a.b<span style="color:#f92672">*</span>b.a;
+			<span style="color:#66d9ef">return</span> res;
+		}
+	};
+
+	<span style="color:#66d9ef">int</span> rev[max_n<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>]; <span style="color:#75715e">// 蝴蝶变换
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> mod<span style="color:#f92672">=</span><span style="color:#ae81ff">998244353</span>,G<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>,IG<span style="color:#f92672">=</span><span style="color:#ae81ff">332748118</span>; <span style="color:#75715e">// NTT 模数，原根和原根的逆元
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">double</span> Pi<span style="color:#f92672">=</span>acos(<span style="color:#f92672">-</span><span style="color:#ae81ff">1.0</span>); <span style="color:#75715e">// 圆周率，计算单位根用
+</span><span style="color:#75715e"></span>
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">NTT</span>(<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>g,<span style="color:#66d9ef">int</span> n,<span style="color:#66d9ef">bool</span> op){ <span style="color:#75715e">// 传入数组 g，op=1 表示转点值，0 表示转系数
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>n;<span style="color:#f92672">++</span>i) <span style="color:#66d9ef">if</span>(i<span style="color:#f92672">&lt;</span>rev[i])
+			swap(g[i],g[rev[i]]);
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> mid<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;mid<span style="color:#f92672">&lt;</span>n;mid<span style="color:#f92672">&lt;&lt;=</span><span style="color:#ae81ff">1LL</span>){
+			<span style="color:#66d9ef">int</span> omega<span style="color:#f92672">=</span>mi(op<span style="color:#f92672">?</span>G:IG,(mod<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">/</span>(mid<span style="color:#f92672">+</span>mid));
+			<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>n;i<span style="color:#f92672">+=</span>mid<span style="color:#f92672">+</span>mid){
+				<span style="color:#66d9ef">int</span> w<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;
+				<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> j<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;j<span style="color:#f92672">&lt;</span>mid;<span style="color:#f92672">++</span>j,w<span style="color:#f92672">=</span>(w<span style="color:#f92672">*</span>omega)<span style="color:#f92672">%</span>mod){
+					<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span>g[i<span style="color:#f92672">+</span>j],y<span style="color:#f92672">=</span>w<span style="color:#f92672">*</span>g[i<span style="color:#f92672">+</span>j<span style="color:#f92672">+</span>mid]<span style="color:#f92672">%</span>mod;
+					g[i<span style="color:#f92672">+</span>j]<span style="color:#f92672">=</span>(x<span style="color:#f92672">+</span>y)<span style="color:#f92672">%</span>mod,
+					g[i<span style="color:#f92672">+</span>j<span style="color:#f92672">+</span>mid]<span style="color:#f92672">=</span>(x<span style="color:#f92672">-</span>y<span style="color:#f92672">+</span>mod)<span style="color:#f92672">%</span>mod;
+				}
+			}
+		}
+		<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>op){
+			<span style="color:#66d9ef">int</span> iv<span style="color:#f92672">=</span>mi(n,mod<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>);
+			<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>n;<span style="color:#f92672">++</span>i)
+				g[i]<span style="color:#f92672">=</span>g[i]<span style="color:#f92672">*</span>iv<span style="color:#f92672">%</span>mod;
+		}
+	}
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">FFT</span>(com <span style="color:#f92672">*</span>g,<span style="color:#66d9ef">int</span> n,<span style="color:#66d9ef">bool</span> op){ <span style="color:#75715e">// 传入数组 g，op=1 表示转点值，0 表示转系数
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>n;<span style="color:#f92672">++</span>i) <span style="color:#66d9ef">if</span>(i<span style="color:#f92672">&lt;</span>rev[i])
+			swap(g[i],g[rev[i]]);
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> mid<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;mid<span style="color:#f92672">&lt;</span>n;mid<span style="color:#f92672">&lt;&lt;=</span><span style="color:#ae81ff">1LL</span>){
+			com omega(cos(Pi<span style="color:#f92672">/</span>mid),sin(Pi<span style="color:#f92672">/</span>mid)<span style="color:#f92672">*</span>(op<span style="color:#f92672">?</span><span style="color:#ae81ff">1</span><span style="color:#f92672">:-</span><span style="color:#ae81ff">1</span>));
+			<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>n;i<span style="color:#f92672">+=</span>mid<span style="color:#f92672">+</span>mid){
+				com w(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>);
+				<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> j<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;j<span style="color:#f92672">&lt;</span>mid;<span style="color:#f92672">++</span>j,w<span style="color:#f92672">=</span>w<span style="color:#f92672">*</span>omega){
+					com x<span style="color:#f92672">=</span>g[i<span style="color:#f92672">+</span>j],y<span style="color:#f92672">=</span>w<span style="color:#f92672">*</span>g[i<span style="color:#f92672">+</span>j<span style="color:#f92672">+</span>mid];
+					g[i<span style="color:#f92672">+</span>j]<span style="color:#f92672">=</span>x<span style="color:#f92672">+</span>y,
+					g[i<span style="color:#f92672">+</span>j<span style="color:#f92672">+</span>mid]<span style="color:#f92672">=</span>x<span style="color:#f92672">-</span>y;
+				}
+			}
+		}
+	}
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">mulNTT</span>(<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>f,<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>g,<span style="color:#66d9ef">int</span> n,<span style="color:#66d9ef">int</span> m){ <span style="color:#75715e">// 传入系数表示数组 f,g，计算 f=f*g
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">int</span> len<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;
+		<span style="color:#66d9ef">while</span>(len<span style="color:#f92672">&lt;</span>n<span style="color:#f92672">+</span>m) len<span style="color:#f92672">&lt;&lt;=</span><span style="color:#ae81ff">1LL</span>;
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>len;<span style="color:#f92672">++</span>i)
+			rev[i]<span style="color:#f92672">=</span>(rev[i<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">|</span>((i<span style="color:#f92672">&amp;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">?</span>len<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">0</span>);
+		NTT(f,len,<span style="color:#ae81ff">1</span>),NTT(g,len,<span style="color:#ae81ff">1</span>);
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>len;<span style="color:#f92672">++</span>i)
+			f[i]<span style="color:#f92672">*=</span>g[i],f[i]<span style="color:#f92672">%=</span>mod;
+		NTT(f,len,<span style="color:#ae81ff">0</span>);
+	}
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">mulFFT</span>(<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>f,<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>g,<span style="color:#66d9ef">int</span> n,<span style="color:#66d9ef">int</span> m){ <span style="color:#75715e">// 传入系数表示数组 f,g，计算 f=f*g
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">static</span> com F[max_n],G[max_n];
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>n;<span style="color:#f92672">++</span>i)
+			F[i].a<span style="color:#f92672">=</span>f[i],F[i].b<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>m;<span style="color:#f92672">++</span>i)
+			G[i].a<span style="color:#f92672">=</span>g[i],G[i].b<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+		<span style="color:#66d9ef">int</span> len<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;
+		<span style="color:#66d9ef">while</span>(len<span style="color:#f92672">&lt;</span>n<span style="color:#f92672">+</span>m) len<span style="color:#f92672">&lt;&lt;=</span><span style="color:#ae81ff">1LL</span>;
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>len;<span style="color:#f92672">++</span>i)
+			rev[i]<span style="color:#f92672">=</span>(rev[i<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">|</span>((i<span style="color:#f92672">&amp;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">?</span>len<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">0</span>);
+		FFT(F,len,<span style="color:#ae81ff">1</span>),FFT(G,len,<span style="color:#ae81ff">1</span>);
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>len;<span style="color:#f92672">++</span>i)
+			F[i]<span style="color:#f92672">=</span>F[i]<span style="color:#f92672">*</span>G[i];
+		FFT(F,len,<span style="color:#ae81ff">0</span>);
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>len;<span style="color:#f92672">++</span>i)
+			f[i]<span style="color:#f92672">=</span>(<span style="color:#66d9ef">int</span>)(F[i].a<span style="color:#f92672">/</span>len<span style="color:#f92672">+</span><span style="color:#ae81ff">0.5</span>);
+	}
+	<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> K<span style="color:#f92672">=</span><span style="color:#ae81ff">32768</span>,S<span style="color:#f92672">=</span>K<span style="color:#f92672">*</span>K;
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">mulMTT</span>(<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>f,<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>g,<span style="color:#66d9ef">int</span> n,<span style="color:#66d9ef">int</span> m,<span style="color:#66d9ef">int</span> mod){ <span style="color:#75715e">// 传入系数表示数组 f,g，计算 f=f*g
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">static</span> com P[max_n],Q[max_n],R[max_n];
+		memset(P,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">sizeof</span>(P)),
+		memset(Q,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">sizeof</span>(Q)),
+		memset(R,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">sizeof</span>(R));
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>n;<span style="color:#f92672">++</span>i){
+			P[i].a<span style="color:#f92672">=</span>f[i]<span style="color:#f92672">/</span>K,
+			P[i].b<span style="color:#f92672">=</span>f[i]<span style="color:#f92672">%</span>K;
+			R[i].a<span style="color:#f92672">=</span>f[i]<span style="color:#f92672">/</span>K,
+			R[i].b<span style="color:#f92672">=-</span>f[i]<span style="color:#f92672">%</span>K;
+		}
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>m;<span style="color:#f92672">++</span>i){
+			Q[i].a<span style="color:#f92672">=</span>g[i]<span style="color:#f92672">/</span>K,
+			Q[i].b<span style="color:#f92672">=</span>g[i]<span style="color:#f92672">%</span>K;
+		}
+		<span style="color:#66d9ef">int</span> len<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;
+		<span style="color:#66d9ef">while</span>(len<span style="color:#f92672">&lt;</span>n<span style="color:#f92672">+</span>m) len<span style="color:#f92672">&lt;&lt;=</span><span style="color:#ae81ff">1LL</span>;
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>len;<span style="color:#f92672">++</span>i)
+			rev[i]<span style="color:#f92672">=</span>(rev[i<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">|</span>((i<span style="color:#f92672">&amp;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">?</span>len<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">0</span>);
+
+		FFT(P,len,<span style="color:#ae81ff">1</span>),FFT(Q,len,<span style="color:#ae81ff">1</span>),FFT(R,len,<span style="color:#ae81ff">1</span>);
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>len;<span style="color:#f92672">++</span>i){
+			Q[i].a<span style="color:#f92672">/=</span>len,
+			Q[i].b<span style="color:#f92672">/=</span>len;
+		}
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>len;<span style="color:#f92672">++</span>i){
+			P[i]<span style="color:#f92672">=</span>P[i]<span style="color:#f92672">*</span>Q[i],
+			R[i]<span style="color:#f92672">=</span>R[i]<span style="color:#f92672">*</span>Q[i];
+		}
+		FFT(P,len,<span style="color:#ae81ff">0</span>),FFT(R,len,<span style="color:#ae81ff">0</span>);
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,a1b1<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,a1b2<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,a2b1<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,a2b2<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>len;<span style="color:#f92672">++</span>i){
+			a1b1<span style="color:#f92672">=</span>(<span style="color:#66d9ef">int</span>)floor((P[i].a<span style="color:#f92672">+</span>R[i].a)<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">0.5</span>)<span style="color:#f92672">%</span>mod,
+			a1b2<span style="color:#f92672">=</span>(<span style="color:#66d9ef">int</span>)floor((P[i].b<span style="color:#f92672">+</span>R[i].b)<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span><span style="color:#f92672">+</span><span style="color:#ae81ff">0.5</span>)<span style="color:#f92672">%</span>mod,
+			a2b1<span style="color:#f92672">=</span>((<span style="color:#66d9ef">int</span>)floor(P[i].b<span style="color:#f92672">+</span><span style="color:#ae81ff">0.5</span>)<span style="color:#f92672">-</span>a1b2)<span style="color:#f92672">%</span>mod,
+			a2b2<span style="color:#f92672">=</span>((<span style="color:#66d9ef">int</span>)floor(R[i].a<span style="color:#f92672">+</span><span style="color:#ae81ff">0.5</span>)<span style="color:#f92672">-</span>a1b1)<span style="color:#f92672">%</span>mod;
+			f[i]<span style="color:#f92672">=</span>(a1b1<span style="color:#f92672">*</span>S<span style="color:#f92672">%</span>mod<span style="color:#f92672">+</span>(a1b2<span style="color:#f92672">+</span>a2b1)<span style="color:#f92672">%</span>mod<span style="color:#f92672">*</span>K<span style="color:#f92672">%</span>mod<span style="color:#f92672">+</span>a2b2)<span style="color:#f92672">%</span>mod;
+			<span style="color:#66d9ef">while</span>(f[i]<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>) f[i]<span style="color:#f92672">+=</span>mod;
+			f[i]<span style="color:#f92672">%=</span>mod;
+		}
+	}
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">invNTT</span>(<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>f,<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>g,<span style="color:#66d9ef">int</span> n){ <span style="color:#75715e">// 用 NTT 计算逆元
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span>(n<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>){
+			g[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">=</span>mi(f[<span style="color:#ae81ff">0</span>],mod<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>);
+			<span style="color:#66d9ef">return</span>;
+		}
+		invNTT(f,g,(n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>);
+		<span style="color:#66d9ef">int</span> len<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;
+		<span style="color:#66d9ef">while</span>(len<span style="color:#f92672">&lt;</span>n<span style="color:#f92672">+</span>n) len<span style="color:#f92672">&lt;&lt;=</span><span style="color:#ae81ff">1LL</span>;
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>len;<span style="color:#f92672">++</span>i)
+			rev[i]<span style="color:#f92672">=</span>(rev[i<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">|</span>((i<span style="color:#f92672">&amp;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">?</span>len<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">0</span>);
+		<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> h[max_n];memset(h,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">sizeof</span>(h));
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>n;<span style="color:#f92672">++</span>i)
+			h[i]<span style="color:#f92672">=</span>f[i];
+		NTT(h,len,<span style="color:#ae81ff">1</span>),NTT(g,len,<span style="color:#ae81ff">1</span>);
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>len;<span style="color:#f92672">++</span>i)
+			g[i]<span style="color:#f92672">*=</span>(<span style="color:#ae81ff">2</span><span style="color:#f92672">-</span>h[i]<span style="color:#f92672">*</span>g[i]<span style="color:#f92672">%</span>mod<span style="color:#f92672">+</span>mod)<span style="color:#f92672">%</span>mod,
+			g[i]<span style="color:#f92672">%=</span>mod;
+		NTT(g,len,<span style="color:#ae81ff">0</span>);
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span>n;i<span style="color:#f92672">&lt;</span>len;<span style="color:#f92672">++</span>i) g[i]<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+	}
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">invMTT</span>(<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>f,<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>g,<span style="color:#66d9ef">int</span> n,<span style="color:#66d9ef">int</span> mod){ <span style="color:#75715e">// 用 MTT 计算逆元
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span>(n<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span>){
+			g[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">=</span>mi(f[<span style="color:#ae81ff">0</span>],mod<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>);
+			<span style="color:#66d9ef">return</span>;
+		}
+		invMTT(f,g,(n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>,mod);
+		<span style="color:#66d9ef">int</span> len<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;
+		<span style="color:#66d9ef">while</span>(len<span style="color:#f92672">&lt;</span>n<span style="color:#f92672">+</span>n) len<span style="color:#f92672">&lt;&lt;=</span><span style="color:#ae81ff">1LL</span>;
+		<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> h[max_n<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>];memset(h,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">sizeof</span>(h));
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>len;<span style="color:#f92672">++</span>i)
+			h[i]<span style="color:#f92672">=</span>f[i];
+		mulMTT(h,g,n,n,mod),
+		mulMTT(h,g,n,n,mod);
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>n;<span style="color:#f92672">++</span>i)
+			g[i]<span style="color:#f92672">=</span>(g[i]<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span><span style="color:#f92672">-</span>h[i]<span style="color:#f92672">+</span>mod)<span style="color:#f92672">%</span>mod;
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span>n;i<span style="color:#f92672">&lt;</span>len;<span style="color:#f92672">++</span>i) g[i]<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+	}
+}
+</code></pre></div>
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://walker68145/Arahc.github.io/posts/%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97/" title="多项式基本运算" target="_blank" rel="external">https://walker68145/Arahc.github.io/posts/%E5%A4%9A%E9%A1%B9%E5%BC%8F%E5%9F%BA%E6%9C%AC%E8%BF%90%E7%AE%97/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/Walker_68145" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://walker68145/Arahc.github.io/avatar.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/Walker_68145" target="_blank"><span class="text-dark">Arahc</span><small class="ml-1x">Arahc&#39;s home</small></a></h3>
+        <div>咕↘咕↗咕——→</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://walker68145/Arahc.github.io/posts/cf643c-%E9%A2%98%E8%A7%A3/" title="CF643C 题解"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://walker68145/Arahc.github.io/posts/csp2021%E5%BB%8A%E6%A1%A5%E5%88%86%E9%85%8D-%E9%A2%98%E8%A7%A3/"
+                    title="CSP2021廊桥分配 题解"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/Walker_68145" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://walker68145/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/C&#43;&#43;.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://walker68145/Arahc.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://walker68145/Arahc.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/walker68145\/Arahc.github.io',
+            CONTENT_URL: 'https:\/\/walker68145\/Arahc.github.io\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://walker68145/Arahc.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>

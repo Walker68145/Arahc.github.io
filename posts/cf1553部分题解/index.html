@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        CF1553部分题解 - Arahc&#39;s blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="前言 这一会 CF1553 的 vp 截取的是 DEFG 四道题目，因为 AC 两题我也做出来了，所以会放在一起。另外有一个 B 算法显然。因此本次题解包含 CF1553-ACDEFG 的解释加代码，以及 CF1553-B 的口胡。
+总结 考试策略 CF 当天的考试写出了 AC，B 算法非常显然，也知道怎么做但是并没有写，因为看错数据范围了以为过不去。后面的时间一直在写 F 但是写不出来。vp 的时候第一个就去做 F，随后开始写 D，写完 D 后口胡出 G 的算法但是没来得及写了。E 是考后看题解知道的算法。
+自我感觉整体策略还行，但是有一些瑕疵，比如看错数据范围之类，因为“个人恩怨”选择先写 F，放着别的题不管。
+目前 vp 涉及的题目 DEFG 已经全部改对。
+问题 看错数据范围错失良机。以及推演题目的过程较慢，严重拖慢了时间。实际上本来不需要这么慢。
+打 vp 的时候尤其凸显。而且因为个人对一道题的兴趣和本来没做出来的怒气决定先做 F 这样一个恶心数论，而没有选择从最简单的 D 开始入手击破，是最大的问题所在。考场上不宜使用。
+同时因为打 cf 的时候老师提出来了，特此注意：打 cf 的时候不要只拘泥于 ABC 这样的题目，否则能力无法得到训练，要多尝试往上走的难题，得到真正的训练，而不是划水试地做完一些是个人都会的签到题就不管了。
+题解 CF1553A  定义 $\operatorname{S}(x)$ 为 $x$ 在十进制下各位数字之和。共 $T$ 次询问，每次询问给定一个数 $n$，求有多少不超过 $n$ 的正整数满足 $\operatorname{S}(x)&amp;gt;\operatorname{S}(x&#43;1)$。$T\leqslant 10^3,n\leqslant 10^9$。" />
+    <meta name="generator" content="Hugo 0.91.2 with theme pure" />
+    <title>CF1553部分题解 - Arahc&#39;s blog</title>
+    
+    
+    <link rel="stylesheet" href="https://walker68145/Arahc.github.io/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="CF1553部分题解" />
+<meta property="og:description" content="前言 这一会 CF1553 的 vp 截取的是 DEFG 四道题目，因为 AC 两题我也做出来了，所以会放在一起。另外有一个 B 算法显然。因此本次题解包含 CF1553-ACDEFG 的解释加代码，以及 CF1553-B 的口胡。
+总结 考试策略 CF 当天的考试写出了 AC，B 算法非常显然，也知道怎么做但是并没有写，因为看错数据范围了以为过不去。后面的时间一直在写 F 但是写不出来。vp 的时候第一个就去做 F，随后开始写 D，写完 D 后口胡出 G 的算法但是没来得及写了。E 是考后看题解知道的算法。
+自我感觉整体策略还行，但是有一些瑕疵，比如看错数据范围之类，因为“个人恩怨”选择先写 F，放着别的题不管。
+目前 vp 涉及的题目 DEFG 已经全部改对。
+问题 看错数据范围错失良机。以及推演题目的过程较慢，严重拖慢了时间。实际上本来不需要这么慢。
+打 vp 的时候尤其凸显。而且因为个人对一道题的兴趣和本来没做出来的怒气决定先做 F 这样一个恶心数论，而没有选择从最简单的 D 开始入手击破，是最大的问题所在。考场上不宜使用。
+同时因为打 cf 的时候老师提出来了，特此注意：打 cf 的时候不要只拘泥于 ABC 这样的题目，否则能力无法得到训练，要多尝试往上走的难题，得到真正的训练，而不是划水试地做完一些是个人都会的签到题就不管了。
+题解 CF1553A  定义 $\operatorname{S}(x)$ 为 $x$ 在十进制下各位数字之和。共 $T$ 次询问，每次询问给定一个数 $n$，求有多少不超过 $n$ 的正整数满足 $\operatorname{S}(x)&gt;\operatorname{S}(x&#43;1)$。$T\leqslant 10^3,n\leqslant 10^9$。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://walker68145/Arahc.github.io/posts/cf1553%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-08-15T21:33:57+08:00" />
+<meta property="article:modified_time" content="2021-08-15T21:33:57+08:00" />
+
+<meta itemprop="name" content="CF1553部分题解">
+<meta itemprop="description" content="前言 这一会 CF1553 的 vp 截取的是 DEFG 四道题目，因为 AC 两题我也做出来了，所以会放在一起。另外有一个 B 算法显然。因此本次题解包含 CF1553-ACDEFG 的解释加代码，以及 CF1553-B 的口胡。
+总结 考试策略 CF 当天的考试写出了 AC，B 算法非常显然，也知道怎么做但是并没有写，因为看错数据范围了以为过不去。后面的时间一直在写 F 但是写不出来。vp 的时候第一个就去做 F，随后开始写 D，写完 D 后口胡出 G 的算法但是没来得及写了。E 是考后看题解知道的算法。
+自我感觉整体策略还行，但是有一些瑕疵，比如看错数据范围之类，因为“个人恩怨”选择先写 F，放着别的题不管。
+目前 vp 涉及的题目 DEFG 已经全部改对。
+问题 看错数据范围错失良机。以及推演题目的过程较慢，严重拖慢了时间。实际上本来不需要这么慢。
+打 vp 的时候尤其凸显。而且因为个人对一道题的兴趣和本来没做出来的怒气决定先做 F 这样一个恶心数论，而没有选择从最简单的 D 开始入手击破，是最大的问题所在。考场上不宜使用。
+同时因为打 cf 的时候老师提出来了，特此注意：打 cf 的时候不要只拘泥于 ABC 这样的题目，否则能力无法得到训练，要多尝试往上走的难题，得到真正的训练，而不是划水试地做完一些是个人都会的签到题就不管了。
+题解 CF1553A  定义 $\operatorname{S}(x)$ 为 $x$ 在十进制下各位数字之和。共 $T$ 次询问，每次询问给定一个数 $n$，求有多少不超过 $n$ 的正整数满足 $\operatorname{S}(x)&gt;\operatorname{S}(x&#43;1)$。$T\leqslant 10^3,n\leqslant 10^9$。"><meta itemprop="datePublished" content="2021-08-15T21:33:57+08:00" />
+<meta itemprop="dateModified" content="2021-08-15T21:33:57+08:00" />
+<meta itemprop="wordCount" content="1096">
+<meta itemprop="keywords" content="贪心,数学,暴力," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CF1553部分题解"/>
+<meta name="twitter:description" content="前言 这一会 CF1553 的 vp 截取的是 DEFG 四道题目，因为 AC 两题我也做出来了，所以会放在一起。另外有一个 B 算法显然。因此本次题解包含 CF1553-ACDEFG 的解释加代码，以及 CF1553-B 的口胡。
+总结 考试策略 CF 当天的考试写出了 AC，B 算法非常显然，也知道怎么做但是并没有写，因为看错数据范围了以为过不去。后面的时间一直在写 F 但是写不出来。vp 的时候第一个就去做 F，随后开始写 D，写完 D 后口胡出 G 的算法但是没来得及写了。E 是考后看题解知道的算法。
+自我感觉整体策略还行，但是有一些瑕疵，比如看错数据范围之类，因为“个人恩怨”选择先写 F，放着别的题不管。
+目前 vp 涉及的题目 DEFG 已经全部改对。
+问题 看错数据范围错失良机。以及推演题目的过程较慢，严重拖慢了时间。实际上本来不需要这么慢。
+打 vp 的时候尤其凸显。而且因为个人对一道题的兴趣和本来没做出来的怒气决定先做 F 这样一个恶心数论，而没有选择从最简单的 D 开始入手击破，是最大的问题所在。考场上不宜使用。
+同时因为打 cf 的时候老师提出来了，特此注意：打 cf 的时候不要只拘泥于 ABC 这样的题目，否则能力无法得到训练，要多尝试往上走的难题，得到真正的训练，而不是划水试地做完一些是个人都会的签到题就不管了。
+题解 CF1553A  定义 $\operatorname{S}(x)$ 为 $x$ 在十进制下各位数字之和。共 $T$ 次询问，每次询问给定一个数 $n$，求有多少不超过 $n$ 的正整数满足 $\operatorname{S}(x)&gt;\operatorname{S}(x&#43;1)$。$T\leqslant 10^3,n\leqslant 10^9$。"/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/Walker_68145" target="_blank">
+            <img class="img-circle img-rotate" src="https://walker68145/Arahc.github.io/avatar.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Arahc</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Arahc&#39;s home</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Changsha, China</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/Arahc.github.io/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/Arahc.github.io/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/Arahc.github.io/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/Arahc.github.io/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/Arahc.github.io/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content"><p>博客已经由 Walker_68145.github.io 转移到此处，原页面保留，为此带来的不便请大家谅解。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link" rel="1">k进制<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link" rel="1">stl<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link" rel="2">二分三分<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link" rel="3">分治<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link" rel="8">动态规划<span
+               class="tag-list-count">8</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link" rel="7">图论<span
+               class="tag-list-count">7</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link" rel="1">字符串<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link" rel="10">数学<span
+               class="tag-list-count">10</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link" rel="9">数据结构<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link" rel="4">暴力<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link" rel="1">莫队<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link" rel="3">贪心<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link" rel="2">随机化<span
+               class="tag-list-count">2</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E6%9D%82%E9%A1%B9/" class="category-list-link">杂项</a><span class="category-list-count">3</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/" class="category-list-link">笔记</a><span class="category-list-count">11</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E9%A2%98%E8%A7%A3/" class="category-list-link">题解</a><span class="category-list-count">20</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link">k进制</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link">stl</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link">二分三分</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link">分治</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link">动态规划</a><span
+                    class="tag-list-count">8</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link">图论</a><span
+                    class="tag-list-count">7</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link">字符串</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link">数学</a><span
+                    class="tag-list-count">10</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link">数据结构</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link">暴力</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link">莫队</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link">贪心</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link">随机化</a><span
+                    class="tag-list-count">2</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/" class="title">P5633最小度限制生成树 题解</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-28 21:43:22 &#43;0800 CST" itemprop="datePublished">2021-12-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/" class="title">线性基入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-22 21:47:24 &#43;0800 CST" itemprop="datePublished">2021-12-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/" class="title">Markdown 入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-30 18:41:00 &#43;0800 CST" itemprop="datePublished">2021-11-30</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/" class="title">OI 相关的非切题内容</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-28 21:42:04 &#43;0800 CST" itemprop="datePublished">2021-11-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E4%B8%8Ekdtree/" class="title">替罪羊与KDTree</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-25 21:48:19 &#43;0800 CST" itemprop="datePublished">2021-11-25</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/Arahc.github.io/posts/cf1553%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/"
+    >CF1553部分题解</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://walker68145/Arahc.github.io/posts/cf1553%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/" class="article-date">
+  <time datetime="2021-08-15 21:33:57 &#43;0800 CST" itemprop="datePublished">2021-08-15</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/Arahc.github.io/categories/%E9%A2%98%E8%A7%A3/"> 题解 </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/"> 贪心 </a>
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/"> 数学 </a>
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/"> 暴力 </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1096 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 6 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <h2 id="前言">前言</h2>
+<p>这一会 CF1553 的 vp 截取的是 DEFG 四道题目，因为 AC 两题我也做出来了，所以会放在一起。另外有一个 B 算法显然。因此本次题解包含 CF1553-ACDEFG 的解释加代码，以及 CF1553-B 的口胡。</p>
+<h2 id="总结">总结</h2>
+<h3 id="考试策略">考试策略</h3>
+<p>CF 当天的考试写出了 AC，B 算法非常显然，也知道怎么做但是并没有写，因为看错数据范围了以为过不去。后面的时间一直在写 F 但是写不出来。vp 的时候第一个就去做 F，随后开始写 D，写完 D 后口胡出 G 的算法但是没来得及写了。E 是考后看题解知道的算法。</p>
+<p>自我感觉整体策略还行，但是有一些瑕疵，比如看错数据范围之类，因为“个人恩怨”选择先写 F，放着别的题不管。</p>
+<p>目前 vp 涉及的题目 DEFG 已经全部改对。</p>
+<h3 id="问题">问题</h3>
+<p>看错数据范围错失良机。以及推演题目的过程较慢，严重拖慢了时间。实际上本来不需要这么慢。</p>
+<p>打 vp 的时候尤其凸显。而且因为个人对一道题的兴趣和本来没做出来的怒气决定先做 F 这样一个恶心数论，而没有选择从最简单的 D 开始入手击破，是最大的问题所在。考场上不宜使用。</p>
+<p>同时因为打 cf 的时候老师提出来了，特此注意：打 cf 的时候不要只拘泥于 ABC 这样的题目，否则能力无法得到训练，要多尝试往上走的难题，得到真正的训练，而不是划水试地做完一些是个人都会的签到题就不管了。</p>
+<h2 id="题解">题解</h2>
+<h3 id="cf1553a">CF1553A</h3>
+<blockquote>
+<p>定义 $\operatorname{S}(x)$ 为 $x$ 在十进制下各位数字之和。共 $T$ 次询问，每次询问给定一个数 $n$，求有多少不超过 $n$ 的正整数满足 $\operatorname{S}(x)&gt;\operatorname{S}(x+1)$。$T\leqslant 10^3,n\leqslant 10^9$。</p>
+</blockquote>
+<p>考虑到对于一个数，将这个数加 $1$ 后，要么进位要么不进位。不进位的情况，也就是个位比原来多 $1$，其他位不变，也就是 $\operatorname{S}(x)=\operatorname{S}(x+1)-1$。不符合题意。考虑进位的情况，此时个位本来是 $9$，现在变成 $0$，也就是减去 $9$。第二位要么和个位一样从 $9$ 变成 $0$，要么顶多也只会加一。所以总的 $\operatorname{S}$ 值一定是减少的。</p>
+<p>因此题目转化为求 $[1,n]$ 内有几个数的个位数是 $9$。不难得出有 $\left\lfloor\dfrac{n+1}{10}\right\rfloor$ 个。</p>
+<p>代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">read</span>(){
+	<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">bool</span> w<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">char</span> c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&lt;</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">||</span> c<span style="color:#f92672">&gt;</span><span style="color:#e6db74">&#39;9&#39;</span>) w<span style="color:#f92672">|=</span>c<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;-&#39;</span>,c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&gt;=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> c<span style="color:#f92672">&lt;=</span><span style="color:#e6db74">&#39;9&#39;</span>) x<span style="color:#f92672">=</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">+</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">3</span>)<span style="color:#f92672">+</span>(c<span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>),c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">return</span> w<span style="color:#f92672">?-</span>x:x;
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">write</span>(<span style="color:#66d9ef">int</span> x){
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>) x<span style="color:#f92672">=-</span>x,putchar(<span style="color:#e6db74">&#39;-&#39;</span>);
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">9</span>) write(x<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>);
+	putchar(x<span style="color:#f92672">%</span><span style="color:#ae81ff">10</span><span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>);
+}
+ 
+<span style="color:#66d9ef">int</span> T,x;
+ 
+<span style="color:#66d9ef">signed</span> <span style="color:#a6e22e">main</span>(){
+	T<span style="color:#f92672">=</span>read();
+	<span style="color:#66d9ef">while</span>(T<span style="color:#f92672">--</span>){
+		<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span>read();
+		write((x<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>),putchar(<span style="color:#e6db74">&#39;\n&#39;</span>);
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><h3 id="cf1553b">CF1553B</h3>
+<blockquote>
+<p>给定字符串 $s$，选定一个位置，放一个棋子，可以先将棋子向右移动若干次（可以不移动），再向左移动若干次（可以不移动），将棋子到过的字符（包括最开始选的位置）依次记录，求得到的字符串能否恰好为字符串 $t$。$1\leqslant \left| s \right|\leqslant 500,1\leqslant \left| t \right|\leqslant 2\times\left| s \right| -1$。</p>
+</blockquote>
+<p>口胡一下做法。因为 $s$ 的长度极小，可以考虑枚举最开始放的位置，枚举向左移动到哪里。然后还需要移动多少次就向右移动多少次。每个枚举出的情况跑一遍验证。复杂度是 $\operatorname{O}(n^3)$ 的。</p>
+<p>实际上可以进行进一步优化。我们不需要管开始和结束的位置，只枚举中间转折点的位置。不难得出 $t$ 串应该由两个可以为空的子串组成：起始点到转折点的部分，和终点到转折点的翻转串。对于前一部分，从起点到枚举出的转折点进行一次 kmp，对于后一部分，可以先提前预处理 $s$ 的翻转串方便操作，然后再跑一遍 kmp。两次都能匹配到说明可以。</p>
+<h3 id="cf1553c">CF1553C</h3>
+<blockquote>
+<p>$T$ 组询问，每次询问给定一个长为 $10$ 的字符串，下标为 $1\sim 10$，由 $0$ 或 $1$ 或 $?$ 组成。如果这个数是 $1$，则若其下标为奇数，A 队得一分，否则 B 队得一分。若即使将后面所有的结果都变成一方不得分另一方得分，得分方分数也小于不得分方，比赛结束，$10$ 轮结束时比赛也会结束。给每一个 $?$ 赋为 $0$ 或 $1$，使得比赛结束得尽量早，输出最早第几轮结束。$T\leqslant 10^3$。</p>
+</blockquote>
+<p>因为字符串的长度最多为 $10$，枚举每一个 $?$ 赋哪个数，然后线性跑一遍判断第几轮结束，每次取一个最小值即可。总的复杂度是 $\operatorname{O}(T\times 2^{10}\times 10)$。可以通过。</p>
+<p>不难发现不需要二进制枚举，直接贪心即可。贪心的做法十分显然，假设我们要让比赛尽早结束，无疑是让两队分差尽早拉开，所以我们可以先假设 A 队优势更大，对于每一个奇数位置的 $?$ 赋为 $1$，偶数位置为 $0$，让 A 更多地拿分，B 更少地拿分。得到一个结束时间。然后让 B 队优势更大，同理进行一遍，奇数位置的 $?$ 为 $0$，偶数位置为 $1$。得到结束时间。答案就是这两个结束时间之间的最小值。</p>
+<p>因为对于每一个 $?$ 都是独立判断且是 $\operatorname{O}(1)$ 的，因此总的复杂度级别是 $\operatorname{O}(10T)$ 的，如果字符串长度不是 $10$ 而是 $n$，复杂度就是 $\operatorname{O}(Tn)$，达到理论上界。</p>
+<p>代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">read</span>(){
+	<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">bool</span> w<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">char</span> c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&lt;</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">||</span> c<span style="color:#f92672">&gt;</span><span style="color:#e6db74">&#39;9&#39;</span>) w<span style="color:#f92672">|=</span>c<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;-&#39;</span>,c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&gt;=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> c<span style="color:#f92672">&lt;=</span><span style="color:#e6db74">&#39;9&#39;</span>) x<span style="color:#f92672">=</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">+</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">3</span>)<span style="color:#f92672">+</span>(c<span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>),c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">return</span> w<span style="color:#f92672">?-</span>x:x;
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">readk</span>(){ <span style="color:#75715e">// 读入字符串内的信息
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">char</span> c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">!=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> c<span style="color:#f92672">!=</span><span style="color:#e6db74">&#39;1&#39;</span> <span style="color:#f92672">&amp;&amp;</span> c<span style="color:#f92672">!=</span><span style="color:#e6db74">&#39;?&#39;</span>) c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">if</span>(c<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;0&#39;</span>) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+	<span style="color:#66d9ef">if</span>(c<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;1&#39;</span>) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">2</span>;
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">3</span>;
+} <span style="color:#75715e">// 1 表示 0，2 表示 1，3 表示 ?
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">write</span>(<span style="color:#66d9ef">int</span> x){
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>) x<span style="color:#f92672">=-</span>x,putchar(<span style="color:#e6db74">&#39;-&#39;</span>);
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">9</span>) write(x<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>);
+	putchar(x<span style="color:#f92672">%</span><span style="color:#ae81ff">10</span><span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>);
+}
+ 
+<span style="color:#66d9ef">int</span> cnt[<span style="color:#ae81ff">6</span>],a[<span style="color:#ae81ff">15</span>],ans;
+ 
+<span style="color:#66d9ef">signed</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#66d9ef">int</span> T<span style="color:#f92672">=</span>read();
+	<span style="color:#66d9ef">while</span>(T<span style="color:#f92672">--</span>){
+		cnt[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">=</span>cnt[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">=</span>cnt[<span style="color:#ae81ff">2</span>]<span style="color:#f92672">=</span>cnt[<span style="color:#ae81ff">3</span>]<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+		ans<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>; <span style="color:#75715e">// 初始化为 10 避免不必要的麻烦
+</span><span style="color:#75715e"></span>		memset(a,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">sizeof</span>(a));
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">10</span>;<span style="color:#f92672">++</span>i)
+			a[i]<span style="color:#f92672">=</span>readk();
+        <span style="color:#75715e">// cnt0 A 队已经确定的得分
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// cnt1 A 队没有确定的得分，即 A 队 ? 数量
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// cnt2 B 队已经确定的得分
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// cnt3 B 队没有确定的得分，即 B 队 ? 数量
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">10</span>;<span style="color:#f92672">++</span>i){
+			<span style="color:#66d9ef">if</span>(i<span style="color:#f92672">&amp;</span><span style="color:#ae81ff">1</span>){
+				<span style="color:#66d9ef">if</span>(a[i]<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span>) <span style="color:#f92672">++</span>cnt[<span style="color:#ae81ff">0</span>];
+				<span style="color:#66d9ef">if</span>(a[i]<span style="color:#f92672">==</span><span style="color:#ae81ff">3</span>) <span style="color:#f92672">++</span>cnt[<span style="color:#ae81ff">1</span>];
+			}
+			<span style="color:#66d9ef">else</span>{
+				<span style="color:#66d9ef">if</span>(a[i]<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span>) <span style="color:#f92672">++</span>cnt[<span style="color:#ae81ff">2</span>];
+				<span style="color:#66d9ef">if</span>(a[i]<span style="color:#f92672">==</span><span style="color:#ae81ff">3</span>) <span style="color:#f92672">++</span>cnt[<span style="color:#ae81ff">3</span>];
+			}
+			<span style="color:#66d9ef">if</span>(cnt[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">+</span>cnt[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">&gt;</span>cnt[<span style="color:#ae81ff">2</span>]<span style="color:#f92672">+</span>(<span style="color:#ae81ff">11</span><span style="color:#f92672">-</span>i)<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>){ <span style="color:#75715e">// 达到条件，A 胜
+</span><span style="color:#75715e"></span>				ans<span style="color:#f92672">=</span>i;
+				<span style="color:#66d9ef">break</span>;
+			}
+			<span style="color:#66d9ef">if</span>(cnt[<span style="color:#ae81ff">2</span>]<span style="color:#f92672">+</span>cnt[<span style="color:#ae81ff">3</span>]<span style="color:#f92672">&gt;</span>cnt[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">+</span>(<span style="color:#ae81ff">10</span><span style="color:#f92672">-</span>i)<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>){ <span style="color:#75715e">// 达到条件，B 胜
+</span><span style="color:#75715e"></span>				ans<span style="color:#f92672">=</span>i;
+				<span style="color:#66d9ef">break</span>;
+			}
+		}
+		write(ans),putchar(<span style="color:#e6db74">&#39;\n&#39;</span>);
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><h3 id="cf1553d">CF1553D</h3>
+<blockquote>
+<p>给定两个字符串 $s,t$，长度分别为 $n,m$，询问能否将 $s$ 的若干字符换位退格符（退格符表示删掉前一个输入的字符，没有字符则没有效果），得到字符串 $t$。（$1\leqslant m\leqslant n\leqslant 2\times 10^5$）</p>
+</blockquote>
+<p>对于不是在第一个字符位置的退格符，显然将一个字符换位退格符的作用等价于连续删掉 $s$ 的两个字符。那么什么时候要删掉第一个字符呢，显然因为后面的一次只能删掉两个字符，长度的奇偶性不变。因此如果 $n,m$ 奇偶性不同，就要删掉第一个字符，否则不需要删掉第一个字符。</p>
+<p>后面的话，可以将 $s$ 的每一位和 $t$ 匹配，如果和上一个匹配点之间是偶数个多余字符，那么这些字符可以删掉，当前点匹配成功，否则不能匹配。跑完后如果 $t$ 数组每一位在 $s$ 上都匹配到了，就可行，否则不可行。</p>
+<p>代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> max_n<span style="color:#f92672">=</span><span style="color:#ae81ff">200005</span>;
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">read</span>(){
+	<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">bool</span> w<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">char</span> c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&lt;</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">||</span> c<span style="color:#f92672">&gt;</span><span style="color:#e6db74">&#39;9&#39;</span>) w<span style="color:#f92672">|=</span>c<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;-&#39;</span>,c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&gt;=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> c<span style="color:#f92672">&lt;=</span><span style="color:#e6db74">&#39;9&#39;</span>) x<span style="color:#f92672">=</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">+</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">3</span>)<span style="color:#f92672">+</span>(c<span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>),c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">return</span> w<span style="color:#f92672">?-</span>x:x;
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">write</span>(<span style="color:#66d9ef">int</span> x){
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>) x<span style="color:#f92672">=-</span>x,putchar(<span style="color:#e6db74">&#39;-&#39;</span>);
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">9</span>) write(x<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>);
+	putchar(x<span style="color:#f92672">%</span><span style="color:#ae81ff">10</span><span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>);
+}
+
+<span style="color:#66d9ef">int</span> n,m;
+
+string a,b;
+
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">check</span>(<span style="color:#66d9ef">int</span> st){
+	<span style="color:#66d9ef">int</span> j<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span>st;i<span style="color:#f92672">&lt;</span>n <span style="color:#f92672">&amp;&amp;</span> j<span style="color:#f92672">&lt;</span>m;<span style="color:#f92672">++</span>i){ <span style="color:#75715e">// 匹配
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span>(a[i]<span style="color:#f92672">==</span>b[j])
+			<span style="color:#f92672">++</span>j;
+		<span style="color:#66d9ef">else</span>
+			<span style="color:#f92672">++</span>i;
+	}
+	<span style="color:#66d9ef">return</span> j<span style="color:#f92672">&gt;=</span>m;
+}
+
+<span style="color:#66d9ef">signed</span> <span style="color:#a6e22e">main</span>(){
+	ios<span style="color:#f92672">::</span>sync_with_stdio(false);
+	cin.tie(<span style="color:#ae81ff">0</span>);
+	<span style="color:#66d9ef">int</span> T;cin<span style="color:#f92672">&gt;&gt;</span>T;
+	<span style="color:#66d9ef">while</span>(T<span style="color:#f92672">--</span>){ <span style="color:#75715e">// 多组数据
+</span><span style="color:#75715e"></span>		cin<span style="color:#f92672">&gt;&gt;</span>a<span style="color:#f92672">&gt;&gt;</span>b;
+		n<span style="color:#f92672">=</span>a.size(),m<span style="color:#f92672">=</span>b.size();
+		<span style="color:#66d9ef">if</span>((n<span style="color:#f92672">&amp;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">!=</span>(m<span style="color:#f92672">&amp;</span><span style="color:#ae81ff">1</span>)){ <span style="color:#75715e">// 奇偶性不相同
+</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">if</span>(check(<span style="color:#ae81ff">1</span>)) <span style="color:#75715e">// 从第二个数开始匹配，表示删掉第一个数
+</span><span style="color:#75715e"></span>				puts(<span style="color:#e6db74">&#34;YES&#34;</span>);
+			<span style="color:#66d9ef">else</span>
+				puts(<span style="color:#e6db74">&#34;NO&#34;</span>);
+		}
+		<span style="color:#66d9ef">else</span>{
+			<span style="color:#66d9ef">if</span>(check(<span style="color:#ae81ff">0</span>)) <span style="color:#75715e">// 从开头开始匹配，表示不删
+</span><span style="color:#75715e"></span>				puts(<span style="color:#e6db74">&#34;YES&#34;</span>);
+			<span style="color:#66d9ef">else</span>
+				puts(<span style="color:#e6db74">&#34;NO&#34;</span>);
+		}
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><h3 id="cf1553e">CF1553E</h3>
+<blockquote>
+<p>给定一个大小为 $n$ 的排列，初始时是单调递增的。定义一次循环移动是将第 $i$ 个数移到第 $i+1$ 个数的位置上，第 $n$ 个数移到第一个数的位置上；一次交换为选择两个位置，交换这两个位置上的数。先对初始排列循环移动 $k$ 次，再交换 $m$ 次，得到排列 $a$。给出 $n,m,a$，求所有可能的 $k$ 值。$1\leqslant n\leqslant 3\times 10^5,0\leqslant m\leqslant \dfrac{n}{3}$。</p>
+</blockquote>
+<p>假设我们现在已经循环移动完了，最多交换 $m$ 次能不能达到目标状态呢？因为一次交换是改变了两个位置，所以最多只能改变 $2\cdot m$ 次。如果现在没有匹配到（这里匹配指相同位置上数字相同）的数字超过 $2\cdot m$，那就不可能了。</p>
+<p>因此如果有解，则有 匹配成功数大于等于 $n-2\times m$，因为 $m\leqslant \dfrac{n}{3}$，所以匹配数恒大于等于 $\dfrac{n}{3}$。进一步的值，答案不超过 $3$。</p>
+<p>发现了这样一个问题就特别好办了。现在可以枚举 $k$ 值，每次将当前排列的 $a_i$ 向目标排列 $p_i$ 链接无向边，最后判联通块个数，$n$ 减去联通块个数就是最小交换数。</p>
+<p>代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> max_n<span style="color:#f92672">=</span><span style="color:#ae81ff">300005</span>;
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">read</span>(){
+	<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">bool</span> w<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">char</span> c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&lt;</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">||</span> c<span style="color:#f92672">&gt;</span><span style="color:#e6db74">&#39;9&#39;</span>) w<span style="color:#f92672">|=</span>c<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;-&#39;</span>,c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&gt;=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> c<span style="color:#f92672">&lt;=</span><span style="color:#e6db74">&#39;9&#39;</span>) x<span style="color:#f92672">=</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">+</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">3</span>)<span style="color:#f92672">+</span>(c<span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>),c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">return</span> w<span style="color:#f92672">?-</span>x:x;
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">write</span>(<span style="color:#66d9ef">int</span> x){
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>) x<span style="color:#f92672">=-</span>x,putchar(<span style="color:#e6db74">&#39;-&#39;</span>);
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">9</span>) write(x<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>);
+	putchar(x<span style="color:#f92672">%</span><span style="color:#ae81ff">10</span><span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>);
+}
+
+<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">graph</span>{
+	<span style="color:#66d9ef">int</span> ct,hd[max_n],nx[max_n<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>],to[max_n<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>];
+	graph(){ct<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;}
+
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">clear</span>(<span style="color:#66d9ef">int</span> n){
+		ct<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i)
+			hd[i]<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+	}
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">int</span> u,<span style="color:#66d9ef">int</span> v){
+		nx[<span style="color:#f92672">++</span>ct]<span style="color:#f92672">=</span>hd[u],hd[u]<span style="color:#f92672">=</span>ct,to[ct]<span style="color:#f92672">=</span>v;
+	}
+}e;
+
+<span style="color:#66d9ef">int</span> n,m,a[max_n],t[max_n];
+
+<span style="color:#66d9ef">bool</span> vis[max_n];
+
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">dfs</span>(<span style="color:#66d9ef">int</span> x){ <span style="color:#75715e">// 找联通块的 dfs
+</span><span style="color:#75715e"></span>	vis[x]<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span>e.hd[x];i;i<span style="color:#f92672">=</span>e.nx[i]){
+		<span style="color:#66d9ef">int</span> v<span style="color:#f92672">=</span>e.to[i];
+		<span style="color:#66d9ef">if</span>(vis[v]) <span style="color:#66d9ef">continue</span>;
+		dfs(v);
+	}
+}
+
+<span style="color:#66d9ef">signed</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#66d9ef">int</span> T<span style="color:#f92672">=</span>read();
+	<span style="color:#66d9ef">while</span>(T<span style="color:#f92672">--</span>){
+		n<span style="color:#f92672">=</span>read(),m<span style="color:#f92672">=</span>read();
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i){
+			<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span>read();
+			a[x]<span style="color:#f92672">=</span>i;
+			<span style="color:#f92672">++</span>t[(i<span style="color:#f92672">-</span>x<span style="color:#f92672">+</span>n)<span style="color:#f92672">%</span>n];
+		}
+		<span style="color:#66d9ef">int</span> s<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,ans[<span style="color:#ae81ff">5</span>];<span style="color:#75715e">// 答案数不超过 3
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>n;<span style="color:#f92672">++</span>i){
+			<span style="color:#66d9ef">if</span>(t[i]<span style="color:#f92672">&lt;</span>n<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>m) <span style="color:#66d9ef">continue</span>;
+			<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> j<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;j<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>j)
+				vis[j]<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+			e.clear(n); <span style="color:#75715e">// 重置
+</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> j<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;j<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>j){
+				<span style="color:#66d9ef">int</span> p<span style="color:#f92672">=</span>(i<span style="color:#f92672">+</span>j<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">%</span>n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;
+				<span style="color:#66d9ef">if</span>(a[j]<span style="color:#f92672">!=</span>p)
+					e.add(p,a[j]); <span style="color:#75715e">// 连边
+</span><span style="color:#75715e"></span>			}
+			<span style="color:#66d9ef">int</span> cnt<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+			<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> j<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;j<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>j){
+				<span style="color:#66d9ef">int</span> p<span style="color:#f92672">=</span>(i<span style="color:#f92672">+</span>j<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">%</span>n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;
+				<span style="color:#66d9ef">if</span>(a[j]<span style="color:#f92672">!=</span>p <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>vis[p]){
+					<span style="color:#f92672">++</span>cnt;
+					dfs(p); <span style="color:#75715e">// 数联通块个数
+</span><span style="color:#75715e"></span>				}
+			}
+			<span style="color:#66d9ef">if</span>(n<span style="color:#f92672">-</span>t[i]<span style="color:#f92672">-</span>cnt<span style="color:#f92672">&lt;=</span>m) <span style="color:#75715e">// 是答案
+</span><span style="color:#75715e"></span>				ans[<span style="color:#f92672">++</span>s]<span style="color:#f92672">=</span>i;
+		}
+		write(s),putchar(<span style="color:#e6db74">&#39; &#39;</span>);
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>s;<span style="color:#f92672">++</span>i)
+			write(ans[i]),putchar(<span style="color:#e6db74">&#39; &#39;</span>);
+		putchar(<span style="color:#e6db74">&#39;\n&#39;</span>);
+
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i) t[i]<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><h3 id="cf1553f">CF1553F</h3>
+<blockquote>
+<p>对于一个长度为 $n$ 的，由互不相同的正整数组成的序列 $a$，构造一个数组 $p$，其中：
+$$p_k=\sum_{i=1}^{k}\sum_{j=1}^k a_i\bmod{a_j}$$
+求 $p$ 数组。（$n\leqslant 2\times 10^5,a_i\leqslant 3\times 10^5$）</p>
+</blockquote>
+<p>考虑到 $p_i$ 不和 $i+1$ 及之后的位置有关系。所以不妨考虑差分 $p$ 数组。显然，有：</p>
+<p>$$p_k=p_{k-1}+\sum_{i=1}^{k-1}(a_i\bmod{a_k})+\sum_{i=1}^{k-1}(a_k\bmod{a_i})$$</p>
+<p>先来考虑前一个部分，我们知道，如果有一个倍数 $b$，使得 $a_i\in[ba_k,(b+1)a_k)$，那么有 $a_i\bmod{a_k}=a_i-ba_k$。不妨开一个树状数组，枚举一个倍数 $b$，查询 $[ba_k,(b+1)a_k)$ 中间有多少个数字，然后用 $\sum_{j=1}^{k-1}a_j$ 减去它即可。</p>
+<p>第二个部分更加显得复杂。考虑到 $a_k\bmod{a_i}=a_k-a_i\left\lfloor\dfrac{a_k}{a_i}\right\rfloor$，结合手推，不妨再开一个树状数组 $b$，每次查询 $\sum_{j=1}^{a_i} b_j$，则这一部分就是 $k\times a_k$ 减去查询的结果。</p>
+<p>枚举倍数看起来是非常耗时间的，但是考虑到所有的数字互不相同，假设值域范围是 $m$，对于每个数美爵倍数，而且不超过 $m$，总的复杂度是 $\ln m$，而每次树状数组的范围也是值域，总的复杂度就是 $\operatorname{O}(n\ln m\log m)$，完全可过。</p>
+<p>代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;cstdio&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#define int long long
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> max_n<span style="color:#f92672">=</span><span style="color:#ae81ff">300005</span>;
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">read</span>(){
+	<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">bool</span> w<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">char</span> c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&lt;</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">||</span> c<span style="color:#f92672">&gt;</span><span style="color:#e6db74">&#39;9&#39;</span>) w<span style="color:#f92672">|=</span>c<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;-&#39;</span>,c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&gt;=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> c<span style="color:#f92672">&lt;=</span><span style="color:#e6db74">&#39;9&#39;</span>) x<span style="color:#f92672">=</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">+</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">3</span>)<span style="color:#f92672">+</span>(c<span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>),c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">return</span> w<span style="color:#f92672">?-</span>x:x;
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">write</span>(<span style="color:#66d9ef">int</span> x){
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>) x<span style="color:#f92672">=-</span>x,putchar(<span style="color:#e6db74">&#39;-&#39;</span>);
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">9</span>) write(x<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>);
+	putchar(x<span style="color:#f92672">%</span><span style="color:#ae81ff">10</span><span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>);
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">max</span>(<span style="color:#66d9ef">int</span> a,<span style="color:#66d9ef">int</span> b){<span style="color:#66d9ef">return</span> a<span style="color:#f92672">&gt;</span>b<span style="color:#f92672">?</span>a:b;}
+
+<span style="color:#66d9ef">int</span> n,a[max_n],s[max_n],p[max_n],mx;
+
+<span style="color:#75715e">#define lb(x) (x&amp;-x)
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">BIT</span>{ <span style="color:#75715e">// 封装后的树状数组
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">int</span> a[max_n];
+
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">int</span> i,<span style="color:#66d9ef">int</span> x){
+		<span style="color:#66d9ef">for</span>(;i<span style="color:#f92672">&lt;=</span>mx;i<span style="color:#f92672">+=</span>lb(i))
+			a[i]<span style="color:#f92672">+=</span>x;
+	}
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">sum</span>(<span style="color:#66d9ef">int</span> i){
+		<span style="color:#66d9ef">int</span> res<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+		<span style="color:#66d9ef">for</span>(;i;i<span style="color:#f92672">-=</span>lb(i))
+			res<span style="color:#f92672">+=</span>a[i];
+		<span style="color:#66d9ef">return</span> res;
+	}
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">ask</span>(<span style="color:#66d9ef">int</span> l,<span style="color:#66d9ef">int</span> r){
+		<span style="color:#66d9ef">if</span>(r<span style="color:#f92672">&gt;</span>mx) r<span style="color:#f92672">=</span>mx;
+		<span style="color:#66d9ef">return</span> sum(r)<span style="color:#f92672">-</span>sum(l<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
+	}
+}bit1,bit2;
+<span style="color:#75715e">#undef lb
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">signed</span> <span style="color:#a6e22e">main</span>(){ <span style="color:#75715e">// 都是公式，没什么好注释的
+</span><span style="color:#75715e"></span>	n<span style="color:#f92672">=</span>read();
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i){
+		a[i]<span style="color:#f92672">=</span>read();
+		s[i]<span style="color:#f92672">=</span>s[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">+</span>a[i],
+		mx<span style="color:#f92672">=</span>max(mx,a[i]);
+	}
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i){
+		p[i]<span style="color:#f92672">=</span>p[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>];
+
+		p[i]<span style="color:#f92672">+=</span>a[i]<span style="color:#f92672">*</span>(i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>),
+		p[i]<span style="color:#f92672">-=</span>bit2.ask(<span style="color:#ae81ff">1</span>,a[i]);
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> k<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;a[i]<span style="color:#f92672">*</span>k<span style="color:#f92672">&lt;=</span>mx;<span style="color:#f92672">++</span>k)
+			bit2.add(a[i]<span style="color:#f92672">*</span>k,a[i]);
+
+		p[i]<span style="color:#f92672">+=</span>s[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>];
+		
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> k<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;a[i]<span style="color:#f92672">*</span>k<span style="color:#f92672">&lt;=</span>mx;<span style="color:#f92672">++</span>k){
+			<span style="color:#66d9ef">int</span> tmp<span style="color:#f92672">=</span>bit1.ask(a[i]<span style="color:#f92672">*</span>k,a[i]<span style="color:#f92672">*</span>(k<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
+			p[i]<span style="color:#f92672">-=</span>tmp<span style="color:#f92672">*</span>a[i]<span style="color:#f92672">*</span>k;
+		}
+		bit1.add(a[i],<span style="color:#ae81ff">1</span>);
+	}
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i)
+		write(p[i]),putchar(<span style="color:#e6db74">&#39; &#39;</span>);
+	putchar(<span style="color:#e6db74">&#39;\n&#39;</span>);
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><h3 id="cf1553g">CF1553G</h3>
+<blockquote>
+<p>一个 $n$ 个节点的无向图，节点编号 $1\sim n$。每个点有一个权值 $a_i$，对于两点 $i,j$，若 $\gcd(i,j)&gt;1$，则 $i,j$ 之间有一条边，否则没有边。你可以创建任意多个节点，创建方法为先选定正整数参数 $p(1\leqslant p\leqslant n)$，然后创建一个权值为 $a_p(a_p+1)$ 的节点，并按上述方法连边。求从 $s$ 号点到 $t$ 号点最少要创建几个节点。共 $q$ 次询问，询问之间独立。$n\leqslant 1.5\times 10^5,q\leqslant 3\times 10^5,a_i\leqslant 10^6$。</p>
+</blockquote>
+<p>显然这不是一个标准的图论算法，因为连边的方式很显然偏数论。首先显然 $a_i(a_i+1)$ 一定是个偶数，因此所有的 $a_i(a_i+1)$ 都能被 $2$ 整除，所有的 $a_i(a_i+1)$ 都有一个公共的因子是 $2$。因此最多我只要 $s$ 创建一个，$t$ 创建一个就行。因此答案范围锁定为 $0,1,2$。</p>
+<p>考虑什么情况下答案为 $0$，显然两个点一开始就在联通块里面，就可以直接走到。开一个并查集维护即可。</p>
+<p>考虑什么时候答案为 $1$。注意到一个值域在 $10^6$ 内的数字，它最多有几个不同的质因数呢？$2\times 3\times 5\times 7\times 11\times 13\times 17\approx 5\times 10^5$，也就是最多 $7$ 个。显然含有相同质因子的数在相同联通块，对于每一个 $a_i$，找出其所在的联通块，以及 $a_i+1$ 的每个质因子对应的联通块，开一个 map 标记一下表示这两个联通块可以通过创建一个节点连通。查询的时候，如果他们的联通块被标记，答案为 $1$。</p>
+<p>答案不是 $0$ 也不是 $1$ 那就是 $2$。代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#define int long long
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> max_n<span style="color:#f92672">=</span><span style="color:#ae81ff">1000006</span>;
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">read</span>(){
+	<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">bool</span> w<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">char</span> c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&lt;</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">||</span> c<span style="color:#f92672">&gt;</span><span style="color:#e6db74">&#39;9&#39;</span>) w<span style="color:#f92672">|=</span>c<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;-&#39;</span>,c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&gt;=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> c<span style="color:#f92672">&lt;=</span><span style="color:#e6db74">&#39;9&#39;</span>) x<span style="color:#f92672">=</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">+</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">3</span>)<span style="color:#f92672">+</span>(c<span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>),c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">return</span> w<span style="color:#f92672">?-</span>x:x;
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">write</span>(<span style="color:#66d9ef">int</span> x){
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>) x<span style="color:#f92672">=-</span>x,putchar(<span style="color:#e6db74">&#39;-&#39;</span>);
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">9</span>) write(x<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>);
+	putchar(x<span style="color:#f92672">%</span><span style="color:#ae81ff">10</span><span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>);
+}
+
+<span style="color:#66d9ef">int</span> n,a[max_n],t[max_n],pr[max_n];
+
+<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">unionfind</span>{
+	<span style="color:#66d9ef">int</span> fa[max_n],sz[max_n];
+	
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">clear</span>(){
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i)
+			fa[i]<span style="color:#f92672">=</span>i;
+	}
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">find</span>(<span style="color:#66d9ef">int</span> x){
+		<span style="color:#66d9ef">if</span>(fa[x]<span style="color:#f92672">==</span>x) <span style="color:#66d9ef">return</span> x;
+		<span style="color:#66d9ef">return</span> fa[x]<span style="color:#f92672">=</span>find(fa[x]);
+	}
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">merge</span>(<span style="color:#66d9ef">int</span> x,<span style="color:#66d9ef">int</span> y){
+		x<span style="color:#f92672">=</span>find(x),y<span style="color:#f92672">=</span>find(y);
+		<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">==</span>y) <span style="color:#66d9ef">return</span>;
+		fa[x]<span style="color:#f92672">=</span>y;
+	}
+}uf; <span style="color:#75715e">// 并查集维护联通块
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">int</span> c[max_n],d[max_n];
+
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">getpr</span>(){ <span style="color:#75715e">// 筛质数的时候合并联通块
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>;i<span style="color:#f92672">&lt;</span>max_n;<span style="color:#f92672">++</span>i)
+		<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>pr[i])
+			<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> j<span style="color:#f92672">=</span>i,k<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;j<span style="color:#f92672">&lt;</span>max_n;j<span style="color:#f92672">+=</span>i){
+				<span style="color:#66d9ef">if</span>(t[j]){
+					<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>k)
+						c[i]<span style="color:#f92672">=</span>uf.find(t[j]);
+					<span style="color:#66d9ef">else</span>
+						uf.merge(k,t[j]);
+					k<span style="color:#f92672">=</span>t[j];
+				}
+				pr[j]<span style="color:#f92672">=</span>i;	
+			}
+}
+
+map<span style="color:#f92672">&lt;</span>pair<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span>,<span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span>,<span style="color:#66d9ef">bool</span><span style="color:#f92672">&gt;</span> mp; <span style="color:#75715e">// 能用一个节点连起来的标记
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">signed</span> <span style="color:#a6e22e">main</span>(){
+	n<span style="color:#f92672">=</span>read();<span style="color:#66d9ef">int</span> T<span style="color:#f92672">=</span>read();
+	uf.clear(); <span style="color:#75715e">// 不要忘记初始化
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i){
+		a[i]<span style="color:#f92672">=</span>read();
+		t[a[i]]<span style="color:#f92672">=</span>i;
+	}
+	getpr();
+
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>;i<span style="color:#f92672">&lt;</span>max_n;<span style="color:#f92672">++</span>i)
+		<span style="color:#66d9ef">if</span>(pr[i]<span style="color:#f92672">==</span>i)
+			c[i]<span style="color:#f92672">=</span>uf.find(c[i]); <span style="color:#75715e">// 得到每个质数对应的联通块
+</span><span style="color:#75715e"></span>
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i){
+		<span style="color:#66d9ef">int</span> j<span style="color:#f92672">=</span>a[i]<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,cnt<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+		d[<span style="color:#f92672">++</span>cnt]<span style="color:#f92672">=</span>uf.find(i);
+		<span style="color:#66d9ef">while</span>(j<span style="color:#f92672">!=</span><span style="color:#ae81ff">1</span>){ <span style="color:#75715e">// 分解质因数
+</span><span style="color:#75715e"></span>			d[<span style="color:#f92672">++</span>cnt]<span style="color:#f92672">=</span>c[pr[j]];
+			j<span style="color:#f92672">/=</span>pr[j];
+		}
+		sort(d<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,d<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">+</span>cnt),cnt<span style="color:#f92672">=</span>unique(d<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,d<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">+</span>cnt)<span style="color:#f92672">-</span>d<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>; <span style="color:#75715e">// 排序去重
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> j<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;j<span style="color:#f92672">&lt;</span>cnt;<span style="color:#f92672">++</span>j)
+			<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> k<span style="color:#f92672">=</span>j<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;k<span style="color:#f92672">&lt;=</span>cnt;<span style="color:#f92672">++</span>k)
+				mp[make_pair(d[j],d[k])]<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>; <span style="color:#75715e">// 打标记
+</span><span style="color:#75715e"></span>	}
+
+	<span style="color:#66d9ef">while</span>(T<span style="color:#f92672">--</span>){
+		<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span>read(),y<span style="color:#f92672">=</span>read();
+		x<span style="color:#f92672">=</span>uf.find(x),y<span style="color:#f92672">=</span>uf.find(y);
+		<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">==</span>y){ <span style="color:#75715e">// 在同一联通块
+</span><span style="color:#75715e"></span>			puts(<span style="color:#e6db74">&#34;0&#34;</span>);
+			<span style="color:#66d9ef">continue</span>;
+		}
+		<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&gt;</span>y) x<span style="color:#f92672">^=</span>y<span style="color:#f92672">^=</span>x<span style="color:#f92672">^=</span>y; <span style="color:#75715e">// 不要忘记了
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span>(mp[make_pair(x,y)]) puts(<span style="color:#e6db74">&#34;1&#34;</span>); <span style="color:#75715e">// 这两个联通块有标记
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">else</span> puts(<span style="color:#e6db74">&#34;2&#34;</span>);
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div>
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://walker68145/Arahc.github.io/posts/cf1553%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/" title="CF1553部分题解" target="_blank" rel="external">https://walker68145/Arahc.github.io/posts/cf1553%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/Walker_68145" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://walker68145/Arahc.github.io/avatar.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/Walker_68145" target="_blank"><span class="text-dark">Arahc</span><small class="ml-1x">Arahc&#39;s home</small></a></h3>
+        <div>咕↘咕↗咕——→</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://walker68145/Arahc.github.io/posts/%E5%85%A8%E7%9C%9F%E6%A8%A1%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/" title="全真模部分题解"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://walker68145/Arahc.github.io/posts/lcp-%E5%92%8C%E5%90%8E%E7%BC%80%E6%95%B0%E7%BB%84/"
+                    title="LCP 和后缀数组"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/Walker_68145" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://walker68145/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/C&#43;&#43;.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://walker68145/Arahc.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://walker68145/Arahc.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/walker68145\/Arahc.github.io',
+            CONTENT_URL: 'https:\/\/walker68145\/Arahc.github.io\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://walker68145/Arahc.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>

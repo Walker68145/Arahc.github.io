@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        RmqProblem 题解 - Arahc&#39;s blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="题目大意 题目传送门
+给定一个静态区间，有多次询问，每次询问查询一段区间 $[l,r]$ 的 $\operatorname{mex}$。（一个区间的 $\operatorname{mex}$ 为最小的没有出现在这个区间的数字中的自然数）
+题目大意一句话可还行
+$1\leqslant n,m\leqslant 2\times 10^5$，值域与 $n,m$ 相同。
+题目分析 暴力求解 考虑到本题的数据范围整体较小，可以使用莫队进行。不带修的莫队的复杂度约为 $\operatorname{O}(n\sqrt{n})$ 的，但是还要乘上一个求 $\operatorname{mex}$ 的复杂度。
+如果我们打出这样的代码：
+inline void add(int pos){ &#43;&#43;cnt[a[pos]]; // cnt 表示这个数字出现的次数，a 是原数组 } inline void del(int pos){ --cnt[a[pos]]; } inline int mex(){ // O(n) 跑一遍暴力求mex 	for(register int i=0;i&amp;lt;=max_n;&#43;&#43;i) if(cnt[i]&amp;lt;=0) return i; return max_n&#43;1; // 不会超过值域，所以可以这么写 } inline void moque(){ sort(q&#43;1,q&#43;1&#43;m,cmp1); // cmp1：按照莫队的排序方法排序  int l=1,r=0; for(register int i=1;i&amp;lt;=m;&#43;&#43;i){ // 莫队板子 	int ql=q[i]." />
+    <meta name="generator" content="Hugo 0.91.2 with theme pure" />
+    <title>RmqProblem 题解 - Arahc&#39;s blog</title>
+    
+    
+    <link rel="stylesheet" href="https://walker68145/Arahc.github.io/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="RmqProblem 题解" />
+<meta property="og:description" content="题目大意 题目传送门
+给定一个静态区间，有多次询问，每次询问查询一段区间 $[l,r]$ 的 $\operatorname{mex}$。（一个区间的 $\operatorname{mex}$ 为最小的没有出现在这个区间的数字中的自然数）
+题目大意一句话可还行
+$1\leqslant n,m\leqslant 2\times 10^5$，值域与 $n,m$ 相同。
+题目分析 暴力求解 考虑到本题的数据范围整体较小，可以使用莫队进行。不带修的莫队的复杂度约为 $\operatorname{O}(n\sqrt{n})$ 的，但是还要乘上一个求 $\operatorname{mex}$ 的复杂度。
+如果我们打出这样的代码：
+inline void add(int pos){ &#43;&#43;cnt[a[pos]]; // cnt 表示这个数字出现的次数，a 是原数组 } inline void del(int pos){ --cnt[a[pos]]; } inline int mex(){ // O(n) 跑一遍暴力求mex 	for(register int i=0;i&lt;=max_n;&#43;&#43;i) if(cnt[i]&lt;=0) return i; return max_n&#43;1; // 不会超过值域，所以可以这么写 } inline void moque(){ sort(q&#43;1,q&#43;1&#43;m,cmp1); // cmp1：按照莫队的排序方法排序  int l=1,r=0; for(register int i=1;i&lt;=m;&#43;&#43;i){ // 莫队板子 	int ql=q[i]." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://walker68145/Arahc.github.io/posts/rmqproblem-%E9%A2%98%E8%A7%A3/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-08-02T21:46:14+08:00" />
+<meta property="article:modified_time" content="2021-08-02T21:46:14+08:00" />
+
+<meta itemprop="name" content="RmqProblem 题解">
+<meta itemprop="description" content="题目大意 题目传送门
+给定一个静态区间，有多次询问，每次询问查询一段区间 $[l,r]$ 的 $\operatorname{mex}$。（一个区间的 $\operatorname{mex}$ 为最小的没有出现在这个区间的数字中的自然数）
+题目大意一句话可还行
+$1\leqslant n,m\leqslant 2\times 10^5$，值域与 $n,m$ 相同。
+题目分析 暴力求解 考虑到本题的数据范围整体较小，可以使用莫队进行。不带修的莫队的复杂度约为 $\operatorname{O}(n\sqrt{n})$ 的，但是还要乘上一个求 $\operatorname{mex}$ 的复杂度。
+如果我们打出这样的代码：
+inline void add(int pos){ &#43;&#43;cnt[a[pos]]; // cnt 表示这个数字出现的次数，a 是原数组 } inline void del(int pos){ --cnt[a[pos]]; } inline int mex(){ // O(n) 跑一遍暴力求mex 	for(register int i=0;i&lt;=max_n;&#43;&#43;i) if(cnt[i]&lt;=0) return i; return max_n&#43;1; // 不会超过值域，所以可以这么写 } inline void moque(){ sort(q&#43;1,q&#43;1&#43;m,cmp1); // cmp1：按照莫队的排序方法排序  int l=1,r=0; for(register int i=1;i&lt;=m;&#43;&#43;i){ // 莫队板子 	int ql=q[i]."><meta itemprop="datePublished" content="2021-08-02T21:46:14+08:00" />
+<meta itemprop="dateModified" content="2021-08-02T21:46:14+08:00" />
+<meta itemprop="wordCount" content="491">
+<meta itemprop="keywords" content="莫队,k进制," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="RmqProblem 题解"/>
+<meta name="twitter:description" content="题目大意 题目传送门
+给定一个静态区间，有多次询问，每次询问查询一段区间 $[l,r]$ 的 $\operatorname{mex}$。（一个区间的 $\operatorname{mex}$ 为最小的没有出现在这个区间的数字中的自然数）
+题目大意一句话可还行
+$1\leqslant n,m\leqslant 2\times 10^5$，值域与 $n,m$ 相同。
+题目分析 暴力求解 考虑到本题的数据范围整体较小，可以使用莫队进行。不带修的莫队的复杂度约为 $\operatorname{O}(n\sqrt{n})$ 的，但是还要乘上一个求 $\operatorname{mex}$ 的复杂度。
+如果我们打出这样的代码：
+inline void add(int pos){ &#43;&#43;cnt[a[pos]]; // cnt 表示这个数字出现的次数，a 是原数组 } inline void del(int pos){ --cnt[a[pos]]; } inline int mex(){ // O(n) 跑一遍暴力求mex 	for(register int i=0;i&lt;=max_n;&#43;&#43;i) if(cnt[i]&lt;=0) return i; return max_n&#43;1; // 不会超过值域，所以可以这么写 } inline void moque(){ sort(q&#43;1,q&#43;1&#43;m,cmp1); // cmp1：按照莫队的排序方法排序  int l=1,r=0; for(register int i=1;i&lt;=m;&#43;&#43;i){ // 莫队板子 	int ql=q[i]."/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/Walker_68145" target="_blank">
+            <img class="img-circle img-rotate" src="https://walker68145/Arahc.github.io/avatar.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Arahc</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Arahc&#39;s home</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Changsha, China</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/Arahc.github.io/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/Arahc.github.io/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/Arahc.github.io/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/Arahc.github.io/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/Arahc.github.io/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content"><p>博客已经由 Walker_68145.github.io 转移到此处，原页面保留，为此带来的不便请大家谅解。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link" rel="1">k进制<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link" rel="1">stl<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link" rel="2">二分三分<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link" rel="3">分治<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link" rel="8">动态规划<span
+               class="tag-list-count">8</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link" rel="7">图论<span
+               class="tag-list-count">7</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link" rel="1">字符串<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link" rel="10">数学<span
+               class="tag-list-count">10</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link" rel="9">数据结构<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link" rel="4">暴力<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link" rel="1">莫队<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link" rel="3">贪心<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link" rel="2">随机化<span
+               class="tag-list-count">2</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E6%9D%82%E9%A1%B9/" class="category-list-link">杂项</a><span class="category-list-count">3</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/" class="category-list-link">笔记</a><span class="category-list-count">11</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E9%A2%98%E8%A7%A3/" class="category-list-link">题解</a><span class="category-list-count">20</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link">k进制</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link">stl</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link">二分三分</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link">分治</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link">动态规划</a><span
+                    class="tag-list-count">8</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link">图论</a><span
+                    class="tag-list-count">7</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link">字符串</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link">数学</a><span
+                    class="tag-list-count">10</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link">数据结构</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link">暴力</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link">莫队</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link">贪心</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link">随机化</a><span
+                    class="tag-list-count">2</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/" class="title">P5633最小度限制生成树 题解</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-28 21:43:22 &#43;0800 CST" itemprop="datePublished">2021-12-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/" class="title">线性基入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-22 21:47:24 &#43;0800 CST" itemprop="datePublished">2021-12-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/" class="title">Markdown 入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-30 18:41:00 &#43;0800 CST" itemprop="datePublished">2021-11-30</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/" class="title">OI 相关的非切题内容</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-28 21:42:04 &#43;0800 CST" itemprop="datePublished">2021-11-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E4%B8%8Ekdtree/" class="title">替罪羊与KDTree</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-25 21:48:19 &#43;0800 CST" itemprop="datePublished">2021-11-25</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/Arahc.github.io/posts/rmqproblem-%E9%A2%98%E8%A7%A3/"
+    >RmqProblem 题解</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://walker68145/Arahc.github.io/posts/rmqproblem-%E9%A2%98%E8%A7%A3/" class="article-date">
+  <time datetime="2021-08-02 21:46:14 &#43;0800 CST" itemprop="datePublished">2021-08-02</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/Arahc.github.io/categories/%E9%A2%98%E8%A7%A3/"> 题解 </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/"> 莫队 </a>
+    <a class="article-tag-link" href="/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/"> k进制 </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 491 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 3 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <h2 id="题目大意">题目大意</h2>
+<p><a href="https://www.luogu.com.cn/problem/P4137">题目传送门</a></p>
+<p>给定一个静态区间，有多次询问，每次询问查询一段区间 $[l,r]$ 的 $\operatorname{mex}$。（一个区间的 $\operatorname{mex}$ 为最小的没有出现在这个区间的数字中的自然数）</p>
+<p><del>题目大意一句话可还行</del></p>
+<p>$1\leqslant n,m\leqslant 2\times 10^5$，值域与 $n,m$ 相同。</p>
+<h2 id="题目分析">题目分析</h2>
+<h3 id="暴力求解">暴力求解</h3>
+<p>考虑到本题的数据范围整体较小，可以使用<strong>莫队</strong>进行。不带修的莫队的复杂度约为 $\operatorname{O}(n\sqrt{n})$ 的，但是还要乘上一个求 $\operatorname{mex}$ 的复杂度。</p>
+<p>如果我们打出这样的代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">int</span> pos){
+	<span style="color:#f92672">++</span>cnt[a[pos]]; <span style="color:#75715e">// cnt 表示这个数字出现的次数，a 是原数组
+</span><span style="color:#75715e"></span>}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">del</span>(<span style="color:#66d9ef">int</span> pos){
+	<span style="color:#f92672">--</span>cnt[a[pos]];
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">mex</span>(){ <span style="color:#75715e">// O(n) 跑一遍暴力求mex
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;=</span>max_n;<span style="color:#f92672">++</span>i)
+		<span style="color:#66d9ef">if</span>(cnt[i]<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">0</span>)
+			<span style="color:#66d9ef">return</span> i;
+	<span style="color:#66d9ef">return</span> max_n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>; <span style="color:#75715e">// 不会超过值域，所以可以这么写
+</span><span style="color:#75715e"></span>}
+
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">moque</span>(){
+	sort(q<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,q<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">+</span>m,cmp1); <span style="color:#75715e">// cmp1：按照莫队的排序方法排序
+</span><span style="color:#75715e"></span>
+	<span style="color:#66d9ef">int</span> l<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>,r<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>m;<span style="color:#f92672">++</span>i){ <span style="color:#75715e">// 莫队板子
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">int</span> ql<span style="color:#f92672">=</span>q[i].l,qr<span style="color:#f92672">=</span>q[i].r;
+		<span style="color:#66d9ef">while</span>(r<span style="color:#f92672">&lt;</span>qr) add(<span style="color:#f92672">++</span>r);
+		<span style="color:#66d9ef">while</span>(l<span style="color:#f92672">&gt;</span>ql) add(<span style="color:#f92672">--</span>l);
+		<span style="color:#66d9ef">while</span>(l<span style="color:#f92672">&lt;</span>ql) del(l<span style="color:#f92672">++</span>);
+		<span style="color:#66d9ef">while</span>(r<span style="color:#f92672">&gt;</span>qr) del(r<span style="color:#f92672">--</span>); <span style="color:#75715e">// 莫队基操之：四个 while 整整齐齐
+</span><span style="color:#75715e"></span>		q[i].ans<span style="color:#f92672">=</span>mex(); <span style="color:#75715e">// 更新答案
+</span><span style="color:#75715e"></span>	}
+	sort(q<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,q<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">+</span>m,cmp2); <span style="color:#75715e">// cmp2：按照输入顺序排序
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>交到洛谷上，即使你打开了 O2，也只能得到 $81$ 分的不好的成绩。最坏是 $\operatorname{O}(n^2\sqrt{n})$ 的。</p>
+<p>因为只 T 了两个点，让我不得不想到可不可以各种优化常数。</p>
+<h3 id="优化即正解">优化即正解</h3>
+<p>先摆上莫队的基操优化，奇偶性排序：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">// 分块时为根号分块，莫队基操
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">cmp1</span>(que a,que b){ <span style="color:#75715e">// idx 表示这个点所在块
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span>(idx[a.l]<span style="color:#f92672">!=</span>idx[b.l]) <span style="color:#66d9ef">return</span> idx[a.l]<span style="color:#f92672">&lt;</span>idx[b.l];
+	<span style="color:#66d9ef">if</span>(idx[a.l]<span style="color:#f92672">&amp;</span><span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">return</span> a.r<span style="color:#f92672">&lt;</span>b.r;
+	<span style="color:#66d9ef">return</span> a.r<span style="color:#f92672">&gt;</span>b.r;
+}
+</code></pre></div><p>把这个东西和上面放在一起，开 O2 才是 $81$ 分……</p>
+<p>莫队是不好再进行什么阴间优化了，而且也不难发现本题的瓶颈在于如何求 $\operatorname{mex}$。考虑怎么优化求 $\operatorname{mex}$ 的过程。</p>
+<p>因为求 $\operatorname{mex}$ 只需要知道一个数是否在这个区间里面就可以了，不关心它具体出现的次数。因此，假设用 $0$ 表示这个数没出现，$1$ 表示这个数出现了，显然开一个 bool 数组不是个很聪明的选择，因此我们考虑状态压缩。我们先不管值域，假设它们都能压到一个变量上。</p>
+<p>显然原来的 $cnt$ 还是要保留的，因为我只有知道这个数出现多少次，才可以在这个数被删一次的时候判断它有没有出现。假设我们状态压缩的变量名字叫 $seg$。</p>
+<ul>
+<li>显然 $seg$ 初始值为 $0$。</li>
+<li>如果一个数本来没有，现在新出现了，我们需要把 $seg$ 的第这个数那么多位（为了方便一个二进制数的最低位我们当做第 $0$ 位）赋为 $1$。</li>
+<li>如果一个数本来有，现在没了，则把第这个数那么多为赋为 $0$。</li>
+<li>这段区间的 $\operatorname{mex}$，就是第一个 $0$ 的位置是第几个。求第一个 $0$ 的位置我们都不熟悉，但是如果给 $seg$ 取个反，那不就变成求第一个 $1$ 的位置了吗？梦回树状数组，取反后直接 <code>seg&amp;-seg</code> ，但是注意这里我们得到的是一个状压后的二进制数（一个一后面一堆零的形式，显然它是 $2$ 的自然数次幂），我们还要求出它的 $1$ 是第几个。因为最好别搞太复杂了，所以直接 $\log_2$。</li>
+</ul>
+<p>（当然 C++ 自带的 $\log$ 函数常数还是有一点的，但是因为我过了所以假装很小，实际上使用时一定要注意）</p>
+<p>到这里思路就很清晰了，把一个位变成 $0$，可以考虑 <code>&amp;(~(1&lt;&lt;k))</code>，变成 $1$ 则是 <code>|(1&lt;&lt;k)</code>。</p>
+<p>但是现实很骨感，并不存在一个值域范围为 $2^{2\times 10^5}$ 的变量让你肆意挥霍。所以我们只能老老实实把它拆成若干可以用位运算方便解决的变量。C++ 里面也只有 <code>unsigned long long</code> 比较给力了，一个变量有 $64$ 位。总的复杂度期望缩减为原来的 $\dfrac{1}{64}$。</p>
+<p>因此可以改造出如下代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">int</span> cnt[max_n];
+<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> seg[max_n]; <span style="color:#75715e">// 前文提到的状压变量，现在变成数组了
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">int</span> pos){
+	<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>cnt[a[pos]]){ <span style="color:#75715e">// 本来没有，现在加进去
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span>a[pos]; <span style="color:#75715e">// x/64 为下标，x%64 为这个下标的 seg 的第几位
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> y<span style="color:#f92672">=</span>x<span style="color:#f92672">%</span><span style="color:#ae81ff">64</span>;
+		seg[x<span style="color:#f92672">/</span><span style="color:#ae81ff">64</span>]<span style="color:#f92672">|=</span>(<span style="color:#ae81ff">1ULL</span><span style="color:#f92672">&lt;&lt;</span>y);
+	}
+	<span style="color:#f92672">++</span>cnt[a[pos]];
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">del</span>(<span style="color:#66d9ef">int</span> pos){ <span style="color:#75715e">// 和 add 基本一致
+</span><span style="color:#75715e"></span>	<span style="color:#f92672">--</span>cnt[a[pos]];
+	<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>cnt[a[pos]]){
+		<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span>a[pos];
+		<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> y<span style="color:#f92672">=</span>x<span style="color:#f92672">%</span><span style="color:#ae81ff">64</span>;
+		seg[x<span style="color:#f92672">/</span><span style="color:#ae81ff">64</span>]<span style="color:#f92672">&amp;=</span>(<span style="color:#f92672">~</span>(<span style="color:#ae81ff">1ULL</span><span style="color:#f92672">&lt;&lt;</span>y));
+	}
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">mex</span>(){
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;=</span>max_n;<span style="color:#f92672">++</span>i){ <span style="color:#75715e">// 先顺序查找哪个 seg
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> tmp<span style="color:#f92672">=</span>(<span style="color:#f92672">~</span>seg[i]); <span style="color:#75715e">// 不要忘记先取反再 lowbit
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 如果取反后是 0,说明这个 seg 全是 1，mex 不在这个 seg 里，直接过掉
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span>(tmp){
+			<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> k<span style="color:#f92672">=</span>(tmp<span style="color:#f92672">&amp;-</span>tmp);
+            <span style="color:#75715e">// 取 lowbit，这是得到的二进制数，需要还原
+</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">return</span> i<span style="color:#f92672">*</span><span style="color:#ae81ff">64</span><span style="color:#f92672">+</span>(<span style="color:#66d9ef">int</span>)log2(k); <span style="color:#75715e">// 还原，这个式子一拍脑袋就知道
+</span><span style="color:#75715e"></span>		}
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+}
+</code></pre></div><h2 id="代码与效率">代码与效率</h2>
+<h3 id="代码">代码</h3>
+<p>总的代码如下，因为主体部分已经在前面写到并且加注释了，因此放的是清爽无注释版本：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> max_n<span style="color:#f92672">=</span><span style="color:#ae81ff">200005</span>;
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">read</span>(){
+	<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">bool</span> w<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">char</span> c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&lt;</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">||</span> c<span style="color:#f92672">&gt;</span><span style="color:#e6db74">&#39;9&#39;</span>) w<span style="color:#f92672">|=</span>c<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;-&#39;</span>,c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&gt;=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> c<span style="color:#f92672">&lt;=</span><span style="color:#e6db74">&#39;9&#39;</span>) x<span style="color:#f92672">=</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">+</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">3</span>)<span style="color:#f92672">+</span>(c<span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>),c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">return</span> w<span style="color:#f92672">?-</span>x:x;
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">write</span>(<span style="color:#66d9ef">int</span> x){
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>) x<span style="color:#f92672">=-</span>x,putchar(<span style="color:#e6db74">&#39;-&#39;</span>);
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">9</span>) write(x<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>);
+	putchar(x<span style="color:#f92672">%</span><span style="color:#ae81ff">10</span><span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>);
+}
+
+<span style="color:#66d9ef">int</span> n,m,a[max_n];
+
+<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">que</span>{
+	<span style="color:#66d9ef">int</span> l,r,id,ans;
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">init</span>(<span style="color:#66d9ef">int</span> _l,<span style="color:#66d9ef">int</span> _r,<span style="color:#66d9ef">int</span> _id){
+		l<span style="color:#f92672">=</span>_l,
+		r<span style="color:#f92672">=</span>_r,
+		id<span style="color:#f92672">=</span>_id;
+		ans<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+	}
+}q[max_n];
+
+<span style="color:#66d9ef">int</span> idx[max_n];
+
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">cmp1</span>(que a,que b){
+	<span style="color:#66d9ef">if</span>(idx[a.l]<span style="color:#f92672">!=</span>idx[b.l]) <span style="color:#66d9ef">return</span> idx[a.l]<span style="color:#f92672">&lt;</span>idx[b.l];
+	<span style="color:#66d9ef">if</span>(idx[a.l]<span style="color:#f92672">&amp;</span><span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">return</span> a.r<span style="color:#f92672">&lt;</span>b.r;
+	<span style="color:#66d9ef">return</span> a.r<span style="color:#f92672">&gt;</span>b.r;
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">cmp2</span>(que a,que b){
+	<span style="color:#66d9ef">return</span> a.id<span style="color:#f92672">&lt;</span>b.id;
+}
+
+<span style="color:#66d9ef">int</span> cnt[max_n];
+<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> seg[max_n];
+
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">int</span> pos){
+	<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>cnt[a[pos]]){
+		<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span>a[pos];
+		<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> y<span style="color:#f92672">=</span>x<span style="color:#f92672">%</span><span style="color:#ae81ff">64</span>;
+		seg[x<span style="color:#f92672">/</span><span style="color:#ae81ff">64</span>]<span style="color:#f92672">|=</span>(<span style="color:#ae81ff">1ULL</span><span style="color:#f92672">&lt;&lt;</span>y);
+	}
+	<span style="color:#f92672">++</span>cnt[a[pos]];
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">del</span>(<span style="color:#66d9ef">int</span> pos){
+	<span style="color:#f92672">--</span>cnt[a[pos]];
+	<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>cnt[a[pos]]){
+		<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span>a[pos];
+		<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> y<span style="color:#f92672">=</span>x<span style="color:#f92672">%</span><span style="color:#ae81ff">64</span>;
+		seg[x<span style="color:#f92672">/</span><span style="color:#ae81ff">64</span>]<span style="color:#f92672">&amp;=</span>(<span style="color:#f92672">~</span>(<span style="color:#ae81ff">1ULL</span><span style="color:#f92672">&lt;&lt;</span>y));
+	}
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">mex</span>(){
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;=</span>max_n;<span style="color:#f92672">++</span>i){
+		<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> tmp<span style="color:#f92672">=</span>(<span style="color:#f92672">~</span>seg[i]);
+		<span style="color:#66d9ef">if</span>(tmp){
+			<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">long</span> <span style="color:#66d9ef">long</span> k<span style="color:#f92672">=</span>(tmp<span style="color:#f92672">&amp;-</span>tmp);
+			<span style="color:#66d9ef">return</span> i<span style="color:#f92672">*</span><span style="color:#ae81ff">64</span><span style="color:#f92672">+</span>(<span style="color:#66d9ef">int</span>)log2(k);
+		}
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+}
+
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">moque</span>(){
+	sort(q<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,q<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">+</span>m,cmp1);
+
+	<span style="color:#66d9ef">int</span> l<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>,r<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>m;<span style="color:#f92672">++</span>i){
+		<span style="color:#66d9ef">int</span> ql<span style="color:#f92672">=</span>q[i].l,qr<span style="color:#f92672">=</span>q[i].r;
+		<span style="color:#66d9ef">while</span>(r<span style="color:#f92672">&lt;</span>qr) add(<span style="color:#f92672">++</span>r);
+		<span style="color:#66d9ef">while</span>(l<span style="color:#f92672">&gt;</span>ql) add(<span style="color:#f92672">--</span>l);
+		<span style="color:#66d9ef">while</span>(l<span style="color:#f92672">&lt;</span>ql) del(l<span style="color:#f92672">++</span>);
+		<span style="color:#66d9ef">while</span>(r<span style="color:#f92672">&gt;</span>qr) del(r<span style="color:#f92672">--</span>);
+		q[i].ans<span style="color:#f92672">=</span>mex();
+	}
+	sort(q<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,q<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">+</span>m,cmp2);
+}
+
+<span style="color:#66d9ef">signed</span> <span style="color:#a6e22e">main</span>(){
+	n<span style="color:#f92672">=</span>read(),m<span style="color:#f92672">=</span>read();
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i)
+		a[i]<span style="color:#f92672">=</span>read();
+
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>m;<span style="color:#f92672">++</span>i){
+		<span style="color:#66d9ef">int</span> l<span style="color:#f92672">=</span>read(),r<span style="color:#f92672">=</span>read();
+		q[i].init(l,r,i);
+	}
+
+	<span style="color:#66d9ef">int</span> sq<span style="color:#f92672">=</span>sqrt(n);
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i) idx[i]<span style="color:#f92672">=</span>i<span style="color:#f92672">/</span>sq<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;
+
+	moque();
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>m;<span style="color:#f92672">++</span>i)
+		write(q[i].ans),putchar(<span style="color:#e6db74">&#39;\n&#39;</span>);
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><h3 id="实际效率">实际效率</h3>
+<p>时间复杂度是 $\operatorname{O}(\dfrac{n^2\sqrt{n}}{64})$（最坏还是 T，本来想写 <code>bitset</code>，后来觉得算了别搞那么麻烦，最后居然过了，不知是我常数小还是这题数据弱），空间复杂度是 $\operatorname{O}(n)$。</p>
+<p>实际在洛谷评测机上跑的时候感觉还挺快（两份的代码完全一致，都是莫队+状压）：</p>
+<ul>
+<li><a href="https://www.luogu.com.cn/record/54716885">无 O2 记录</a>：$2.34\operatorname{s}$，$6.60\operatorname{MB}$</li>
+<li><a href="https://www.luogu.com.cn/record/54739149">开 O2 记录</a>：$928\operatorname{ms}$，$7.05\operatorname{MB}$</li>
+</ul>
+<p>可以发现本来只是一个图运气的常数优化，效果居然如此显著。开 O2 版本在写博客的时候在最优解的第五页（接近末尾了，因此各位看到时估计掉到后面去很多了，毕竟大部分写的都是莫队+值域分块，甚至效率更高的权值线段树），虽然算不上很快但是已经不慢了，比我的期望高多了。</p>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://walker68145/Arahc.github.io/posts/rmqproblem-%E9%A2%98%E8%A7%A3/" title="RmqProblem 题解" target="_blank" rel="external">https://walker68145/Arahc.github.io/posts/rmqproblem-%E9%A2%98%E8%A7%A3/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/Walker_68145" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://walker68145/Arahc.github.io/avatar.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/Walker_68145" target="_blank"><span class="text-dark">Arahc</span><small class="ml-1x">Arahc&#39;s home</small></a></h3>
+        <div>咕↘咕↗咕——→</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://walker68145/Arahc.github.io/posts/%E6%A6%82%E7%8E%87%E4%B8%8E%E6%9C%9F%E6%9C%9B/" title="概率与期望"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://walker68145/Arahc.github.io/posts/cf1557%E5%92%8Ccf1530%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/"
+                    title="CF1557和CF1530部分题解"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/Walker_68145" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://walker68145/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/C&#43;&#43;.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://walker68145/Arahc.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://walker68145/Arahc.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/walker68145\/Arahc.github.io',
+            CONTENT_URL: 'https:\/\/walker68145\/Arahc.github.io\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://walker68145/Arahc.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>

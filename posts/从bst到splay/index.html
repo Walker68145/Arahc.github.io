@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        从BST到Splay - Arahc&#39;s blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="从堆到二叉搜索树 引言 考虑你需要维护一个数据结构，需要进行以下若干操作：
+ 添加一个值 value 删除一个值 value 查询值 value 的排名 查询排名为 rank 的值 求值 value 的前驱和后继  显然，如果只需要进行添加操作、查询最大值（最小值），只需要用一个二查堆，就可以解决。如果外加删除操作，则可以开启懒惰标记进行删除。整体复杂度是 $\operatorname{O}{(\log n)}$ 的。
+堆的特性是根的节点的值比左右子树的都要大，于是我们扩展了一下，就可以变成二叉搜索树：对于某个节点 $i$ ，他的值 $data_i$ 大于左儿子节点的值，小于右儿子节点的值。
+二叉搜索树 维护这样一个二叉搜索树，如下图：
+$\color{red}\text{添加：}$
+考虑我们需要添加一个数，比如 $25$。
+首先我们应该找到 $25$ 应该放在哪里，所以从根节点出发，遵循二叉搜索树左儿子小于根节点（右儿子大于根节点）的原则，因为要添加的数字 $&amp;lt;41$ 所以来到左边，同理因为 $25&amp;gt;20$ 所以跳到 $20$ 右儿子，又因为 $25&amp;lt;29$，我们得出 $25$ 在 $29$ 左子树上。
+因为 $29$ 没有左儿子，所以可以在这里新建一个节点。也就是添加完变成了这样（用颜色高亮标记了走过的点）：
+当然如果我插入一个已经存在的树，可以记录每个数出现的次数，更为方便。
+可以得出添加操作的伪代码如下：
+void add(int x){ int u = root ; while true : if 找到要填的地方 : 添加节点（新建节点，更新 u 和新节点关系等）; return ; if x&amp;lt; 当前这个点的值 u = u 的左儿子 else : u = u 的右儿子 } $\color{Goldenrod}\text{删除：}$" />
+    <meta name="generator" content="Hugo 0.91.2 with theme pure" />
+    <title>从BST到Splay - Arahc&#39;s blog</title>
+    
+    
+    <link rel="stylesheet" href="https://walker68145/Arahc.github.io/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="从BST到Splay" />
+<meta property="og:description" content="从堆到二叉搜索树 引言 考虑你需要维护一个数据结构，需要进行以下若干操作：
+ 添加一个值 value 删除一个值 value 查询值 value 的排名 查询排名为 rank 的值 求值 value 的前驱和后继  显然，如果只需要进行添加操作、查询最大值（最小值），只需要用一个二查堆，就可以解决。如果外加删除操作，则可以开启懒惰标记进行删除。整体复杂度是 $\operatorname{O}{(\log n)}$ 的。
+堆的特性是根的节点的值比左右子树的都要大，于是我们扩展了一下，就可以变成二叉搜索树：对于某个节点 $i$ ，他的值 $data_i$ 大于左儿子节点的值，小于右儿子节点的值。
+二叉搜索树 维护这样一个二叉搜索树，如下图：
+$\color{red}\text{添加：}$
+考虑我们需要添加一个数，比如 $25$。
+首先我们应该找到 $25$ 应该放在哪里，所以从根节点出发，遵循二叉搜索树左儿子小于根节点（右儿子大于根节点）的原则，因为要添加的数字 $&lt;41$ 所以来到左边，同理因为 $25&gt;20$ 所以跳到 $20$ 右儿子，又因为 $25&lt;29$，我们得出 $25$ 在 $29$ 左子树上。
+因为 $29$ 没有左儿子，所以可以在这里新建一个节点。也就是添加完变成了这样（用颜色高亮标记了走过的点）：
+当然如果我插入一个已经存在的树，可以记录每个数出现的次数，更为方便。
+可以得出添加操作的伪代码如下：
+void add(int x){ int u = root ; while true : if 找到要填的地方 : 添加节点（新建节点，更新 u 和新节点关系等）; return ; if x&lt; 当前这个点的值 u = u 的左儿子 else : u = u 的右儿子 } $\color{Goldenrod}\text{删除：}$" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://walker68145/Arahc.github.io/posts/%E4%BB%8Ebst%E5%88%B0splay/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-11T21:36:09+08:00" />
+<meta property="article:modified_time" content="2021-07-11T21:36:09+08:00" />
+
+<meta itemprop="name" content="从BST到Splay">
+<meta itemprop="description" content="从堆到二叉搜索树 引言 考虑你需要维护一个数据结构，需要进行以下若干操作：
+ 添加一个值 value 删除一个值 value 查询值 value 的排名 查询排名为 rank 的值 求值 value 的前驱和后继  显然，如果只需要进行添加操作、查询最大值（最小值），只需要用一个二查堆，就可以解决。如果外加删除操作，则可以开启懒惰标记进行删除。整体复杂度是 $\operatorname{O}{(\log n)}$ 的。
+堆的特性是根的节点的值比左右子树的都要大，于是我们扩展了一下，就可以变成二叉搜索树：对于某个节点 $i$ ，他的值 $data_i$ 大于左儿子节点的值，小于右儿子节点的值。
+二叉搜索树 维护这样一个二叉搜索树，如下图：
+$\color{red}\text{添加：}$
+考虑我们需要添加一个数，比如 $25$。
+首先我们应该找到 $25$ 应该放在哪里，所以从根节点出发，遵循二叉搜索树左儿子小于根节点（右儿子大于根节点）的原则，因为要添加的数字 $&lt;41$ 所以来到左边，同理因为 $25&gt;20$ 所以跳到 $20$ 右儿子，又因为 $25&lt;29$，我们得出 $25$ 在 $29$ 左子树上。
+因为 $29$ 没有左儿子，所以可以在这里新建一个节点。也就是添加完变成了这样（用颜色高亮标记了走过的点）：
+当然如果我插入一个已经存在的树，可以记录每个数出现的次数，更为方便。
+可以得出添加操作的伪代码如下：
+void add(int x){ int u = root ; while true : if 找到要填的地方 : 添加节点（新建节点，更新 u 和新节点关系等）; return ; if x&lt; 当前这个点的值 u = u 的左儿子 else : u = u 的右儿子 } $\color{Goldenrod}\text{删除：}$"><meta itemprop="datePublished" content="2021-07-11T21:36:09+08:00" />
+<meta itemprop="dateModified" content="2021-07-11T21:36:09+08:00" />
+<meta itemprop="wordCount" content="952">
+<meta itemprop="keywords" content="数据结构," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="从BST到Splay"/>
+<meta name="twitter:description" content="从堆到二叉搜索树 引言 考虑你需要维护一个数据结构，需要进行以下若干操作：
+ 添加一个值 value 删除一个值 value 查询值 value 的排名 查询排名为 rank 的值 求值 value 的前驱和后继  显然，如果只需要进行添加操作、查询最大值（最小值），只需要用一个二查堆，就可以解决。如果外加删除操作，则可以开启懒惰标记进行删除。整体复杂度是 $\operatorname{O}{(\log n)}$ 的。
+堆的特性是根的节点的值比左右子树的都要大，于是我们扩展了一下，就可以变成二叉搜索树：对于某个节点 $i$ ，他的值 $data_i$ 大于左儿子节点的值，小于右儿子节点的值。
+二叉搜索树 维护这样一个二叉搜索树，如下图：
+$\color{red}\text{添加：}$
+考虑我们需要添加一个数，比如 $25$。
+首先我们应该找到 $25$ 应该放在哪里，所以从根节点出发，遵循二叉搜索树左儿子小于根节点（右儿子大于根节点）的原则，因为要添加的数字 $&lt;41$ 所以来到左边，同理因为 $25&gt;20$ 所以跳到 $20$ 右儿子，又因为 $25&lt;29$，我们得出 $25$ 在 $29$ 左子树上。
+因为 $29$ 没有左儿子，所以可以在这里新建一个节点。也就是添加完变成了这样（用颜色高亮标记了走过的点）：
+当然如果我插入一个已经存在的树，可以记录每个数出现的次数，更为方便。
+可以得出添加操作的伪代码如下：
+void add(int x){ int u = root ; while true : if 找到要填的地方 : 添加节点（新建节点，更新 u 和新节点关系等）; return ; if x&lt; 当前这个点的值 u = u 的左儿子 else : u = u 的右儿子 } $\color{Goldenrod}\text{删除：}$"/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/Walker_68145" target="_blank">
+            <img class="img-circle img-rotate" src="https://walker68145/Arahc.github.io/avatar.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Arahc</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Arahc&#39;s home</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Changsha, China</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/Arahc.github.io/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/Arahc.github.io/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/Arahc.github.io/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/Arahc.github.io/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/Arahc.github.io/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content"><p>博客已经由 Walker_68145.github.io 转移到此处，原页面保留，为此带来的不便请大家谅解。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link" rel="1">k进制<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link" rel="1">stl<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link" rel="2">二分三分<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link" rel="3">分治<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link" rel="8">动态规划<span
+               class="tag-list-count">8</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link" rel="7">图论<span
+               class="tag-list-count">7</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link" rel="1">字符串<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link" rel="10">数学<span
+               class="tag-list-count">10</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link" rel="9">数据结构<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link" rel="4">暴力<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link" rel="1">莫队<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link" rel="3">贪心<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link" rel="2">随机化<span
+               class="tag-list-count">2</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E6%9D%82%E9%A1%B9/" class="category-list-link">杂项</a><span class="category-list-count">3</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/" class="category-list-link">笔记</a><span class="category-list-count">11</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E9%A2%98%E8%A7%A3/" class="category-list-link">题解</a><span class="category-list-count">20</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link">k进制</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link">stl</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link">二分三分</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link">分治</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link">动态规划</a><span
+                    class="tag-list-count">8</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link">图论</a><span
+                    class="tag-list-count">7</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link">字符串</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link">数学</a><span
+                    class="tag-list-count">10</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link">数据结构</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link">暴力</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link">莫队</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link">贪心</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link">随机化</a><span
+                    class="tag-list-count">2</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/" class="title">P5633最小度限制生成树 题解</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-28 21:43:22 &#43;0800 CST" itemprop="datePublished">2021-12-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/" class="title">线性基入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-22 21:47:24 &#43;0800 CST" itemprop="datePublished">2021-12-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/" class="title">Markdown 入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-30 18:41:00 &#43;0800 CST" itemprop="datePublished">2021-11-30</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/" class="title">OI 相关的非切题内容</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-28 21:42:04 &#43;0800 CST" itemprop="datePublished">2021-11-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E4%B8%8Ekdtree/" class="title">替罪羊与KDTree</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-25 21:48:19 &#43;0800 CST" itemprop="datePublished">2021-11-25</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/Arahc.github.io/posts/%E4%BB%8Ebst%E5%88%B0splay/"
+    >从BST到Splay</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://walker68145/Arahc.github.io/posts/%E4%BB%8Ebst%E5%88%B0splay/" class="article-date">
+  <time datetime="2021-07-11 21:36:09 &#43;0800 CST" itemprop="datePublished">2021-07-11</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/"> 笔记 </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"> 数据结构 </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 952 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 5 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <h2 id="从堆到二叉搜索树">从堆到二叉搜索树</h2>
+<h3 id="引言">引言</h3>
+<p>考虑你需要维护一个数据结构，需要进行以下若干操作：</p>
+<ul>
+<li>添加一个值 value</li>
+<li>删除一个值 value</li>
+<li>查询值 value 的排名</li>
+<li>查询排名为 rank 的值</li>
+<li>求值 value 的前驱和后继</li>
+</ul>
+<p>显然，如果只需要进行添加操作、查询最大值（最小值），只需要用一个二查堆，就可以解决。如果外加删除操作，则可以开启懒惰标记进行删除。整体复杂度是 $\operatorname{O}{(\log n)}$ 的。</p>
+<p>堆的特性是根的节点的值比左右子树的都要大，于是我们扩展了一下，就可以变成二叉搜索树：对于某个节点 $i$ ，他的值 $data_i$ 大于左儿子节点的值，小于右儿子节点的值。</p>
+<h3 id="二叉搜索树">二叉搜索树</h3>
+<p>维护这样一个二叉搜索树，如下图：</p>
+<p><img src="https://pic.imgdb.cn/item/60f559d35132923bf859fdbf.png" alt="二叉搜索树"></p>
+<p>$\color{red}\text{添加：}$</p>
+<p>考虑我们需要添加一个数，比如 $25$。</p>
+<p>首先我们应该找到 $25$ 应该放在哪里，所以从根节点出发，遵循二叉搜索树左儿子小于根节点（右儿子大于根节点）的原则，因为要添加的数字 $&lt;41$ 所以来到左边，同理因为 $25&gt;20$ 所以跳到 $20$ 右儿子，又因为 $25&lt;29$，我们得出 $25$ 在 $29$ 左子树上。</p>
+<p>因为 $29$ 没有左儿子，所以可以在这里新建一个节点。也就是添加完变成了这样（用颜色高亮标记了走过的点）：</p>
+<p><img src="https://pic.imgdb.cn/item/60f55a0e5132923bf85af8e5.png" alt="tree+25"></p>
+<p>当然如果我插入一个已经存在的树，可以记录每个数出现的次数，更为方便。</p>
+<p>可以得出添加操作的伪代码如下：</p>
+<pre tabindex="0"><code>void add(int x){
+    int u = root ;
+    while true :
+        if 找到要填的地方 :
+            添加节点（新建节点，更新 u 和新节点关系等）;
+            return ;
+        if x&lt; 当前这个点的值
+            u = u 的左儿子
+        else :
+            u = u 的右儿子
+}
+</code></pre><p>$\color{Goldenrod}\text{删除：}$</p>
+<p>显然如果我要删除一个已经存在多个的数字，可以将这个数字出现的次数减去一。因此我们重点看要删的数字只出现一次的情况。</p>
+<p>还是最开始给出的二叉搜索树的例子，假设我们要删除一个点，比如 $91$。</p>
+<p>既然我要删除一个点，实际上就是找到这个点的位置，将其删除之后，更新它父亲和它的儿子的关系即可。所以我们应该重点考虑找到一个点。</p>
+<p>对于 $91$ 而言，还是从根开始搜索，发现 $91&gt;41$ ，所以往右子树走，进一步发现 $91&gt;65$ ，还是往右子树走，此时我们发现找到 $91$ 了。</p>
+<p>问题在于我们如果直接删掉它，$91$ 的两个儿子 $72$ 和 $99$ 就也跟着没有了。如果简单地将这两个节点直接连向 $65$，那么 $65$ 就有三个儿子，不符合二叉搜索树的定义了。<del>真令人头秃</del></p>
+<p>我们先假设如果 $91$ 只有一个儿子，那么是不是可以直接把这个儿子提到 $91$ 的位置呢？</p>
+<p>当然可以，因为既然这个儿子在 $65$ 右子树内，则它一定大于 $65$，将其提到 $91$ 出无妨。</p>
+<p>现在回头考虑多余的儿子，因为对于每个点 $i$，记它的左右儿子为 $left, right$，则一定有 $left&lt;i&lt;right$，也就是一定有 $left&lt;right$ 了，那么可以将右儿子提到原来的位置，左儿子放到右儿子子树里就可以啦。</p>
+<p>但如果右儿子下还有两个儿子，左儿子插不进去怎么办？这时候可以从右儿子往下找，向前面添加一个数一样找到一个合适的位置，把左儿子放进去即可。</p>
+<p>因此删除 $91$ 的操作完成后，整个树会变成（注意加了一条 $99$ 和 $72$ 的连边）：</p>
+<p><img src="https://pic.imgdb.cn/item/60f55a2c5132923bf85b7c69.png" alt="tree-91"></p>
+<p>伪代码如下：</p>
+<pre tabindex="0"><code>查找要删除的节点 v
+if  v 是叶子节点 :
+    直接删除
+else if  v 有一个儿子 :
+    删除 v ;
+    将 v 的父亲连向 v 的儿子
+else : 
+   删除 v ;
+   将 v 的父亲连向其右儿子
+   在右子树内找到一个合适的位置添加左子树
+</code></pre><p>$\color{Green}\text{查找一个数的排名（查询一个排名是什么数）：}$</p>
+<p>还是最初的树，我们把他写成序列的形式（随机顺序）：</p>
+<p>$[11,29,41,72,32,20,50,99,91,65]$</p>
+<p>如果在这样的序列里来查找 $50$ 的排名，想必各位都会想到先排序，再数 $50$ 之前有几个数。但是考虑到这是一个二叉搜索树，大家有没有发现，比 $50$ 小的数不正好是 $41$ 的左子树（包括 $41$ ）吗？</p>
+<p>为什么会出现这种情况呢？显然，因为二叉搜索树那最重要的定义：左儿子 $&lt;$ 根 $&lt;$ 右儿子，那么 $50$ 很显然小于 $65$，但大于 $41$。而 $41$ 左子树所有点均小于 $41$，那么 $50$ 很显然就比那些数大了。</p>
+<p>因此得出一个结论：</p>
+<ul>
+<li>如果我要查找的数字是某个右儿子，则它的父亲、左子树、以及其他这以左的所有点都比查找的数小，其右边所有的数都比其大。</li>
+<li>如果我要查找的数字是某个左儿子，则它的父亲比他大，但其左儿子以及这以左的所有点比查找的树小，且这个点往上查找到的所有是右儿子的祖先（且不是父亲），它们的左子树比要查的点小，除此之外所有数都比其大。</li>
+</ul>
+<p>根据这样的结论，我们可以得出什么呢？不难发现，我如果要查询某个数值的排名，可以通过查询比他小的数有几个得到，而查询比他小的数有几个，可以通过查询子树大小得到。</p>
+<p>因此如果我们进一步维护各个点的子树，就可以简单解决这类问题。确切地说：从根节点跳到这个点，过程中累加到达的点的左子树大小，最后再加上到达的点的个数，答案就是这个数的排名（这段话应该可以代替伪代码了吧……）。</p>
+<p>现在考虑已经知道了一个数的排名 $rank$，需要查找排名为 $rank$ 的数字是多少。举个例子（和前面一样的例子）：</p>
+<p>$[11,29,41,72,32,20,50,99,91,65]$</p>
+<p>现在我们来查找排名为 $7$ 的数字是哪个。你的第一反应是不是还是从小到大排序地找，直到找出了第七个？</p>
+<p>正如前文所述，找出一个点前面有几个点比他小，完全可以通过查找子树大小，然后通过一顿操作解决这类问题。结合上文的结论可以发现这样一个算法：</p>
+<p>我们要查找排名为 $k$ 的数，其实可以转换为查找按照前文两个结论得出的数字个数恰好为 $k-1$ 的数是哪个。因此从根节点出发，读取这个点左子树的节点个数。如果大于（或等于）$k$，那么我们需要往左子树走，反之，需要往右子树走，并实时记得更新（ $k$ 需要减去左子树大小与 $1$ 的和，这个 $1$ 表示我要找的这个点不是现在到达的这个点）。</p>
+<p>$\color{CornflowerBlue}\text{查找一个数的前驱（或后继）：}$</p>
+<blockquote>
+<p>前驱定义：$x$ 的前驱为比 $x$ 小的数中，最大的那个
+后继定义：$x$ 的后继为比 $x$ 大的数中，最小的那个</p>
+</blockquote>
+<p>我们进一步探究整个二叉搜索树。</p>
+<p>首先来看前驱。根据二叉搜索树的性质，首先我要找的前驱比这个数字要小，首先所有点的左儿子一定比他小，其次，如果这个数在右儿子，那它的父亲比它小；如果是一个左儿子，那么他左边（感性理解）的点的值也比他小。</p>
+<p>进一步地发现，如果这个存在左儿子（左子树），那么先往左子树走一步，随后只走右边走到底（注意如果只有左边可以走了那也不要走了直接停），此时它的前驱就找到了。否则如果这个点是一个右儿子，其父亲就是它的前驱；如果是个左儿子，就一直往祖先跳，直到跳到一个是右儿子的祖先，这个祖先的父亲就是前驱（或者跳到根）。</p>
+<p>反过来，我们来看看后继。和前驱几乎一样的道理，只是反过来了而已。那么同理就有如下做法：</p>
+<p>从要查找的点出发，如果可以往右走，那么先往右儿子走一步，随后只走左边走到底（注意如果只有右边可以走了那也不要走了直接停），此时它的后继就找到了。否则如果这一个点是一个左儿子，其父亲就是它的后继；如果是个右儿子，就一直往祖先跳，直到跳到一个是左儿子的祖先，这个祖先的父亲就是后继（或者跳到根）。</p>
+<p><del>（想必各位发现这就是复制粘贴然后把方向反了，不过本来就是这样）</del></p>
+<p>至此就是二叉搜索树的六大操作哩~</p>
+<h2 id="从二叉搜索树到平衡树">从二叉搜索树到平衡树</h2>
+<p>如果你在阅读完上述部分之后认为自己完全理解了，那么恭喜你！但是我还是要泼一盆冷水：这样的二叉搜索树是非常低效的。下面将简单分析按照上述方法维护的二叉搜索树的复杂度。</p>
+<h3 id="普通二叉搜索树的复杂度分析">普通二叉搜索树的复杂度分析</h3>
+<p><strong>空间方面</strong>：显然二叉搜索树对于每一次加点，都会新创建一个节点。因此空间复杂度和新建节点的个数是同级的，换句话说假设操作数是 $m$（如果题目明确提及了加节点的次数，那么也可以认为 $m$ 代表加点的次数），最坏情况下每一次操作都加一个节点。空间复杂度是 $\operatorname{O}{(m)}$ 的。</p>
+<p>更确切地说，我们对于一个节点，维护了它的父亲、左儿子、右儿子、代表的数字、这个数字出现的次数、子树大小。一共 $6$ 个元素。因此它的空间复杂度是 $\operatorname{O}{(6m)}$ 的。（当然一般还要开变量记录节点个数，甚至特殊题目也还要更多东西，不过这里均未考虑）</p>
+<p>重点来看 <strong>时间方面</strong> ：</p>
+<p>对于前面的任何一个操作，最坏情况下我需要从根跑到叶子（或叶子跑到根），我们记树的节点个数是 $n$，树高是 $h$，一共有 $m$ 次操作，一次操作的复杂度是 $\operatorname{O}{(h)}$ 的。</p>
+<p>在最优情况下，二叉搜索树会形成一颗完全二叉树（甚至满二叉树），如下图</p>
+<p><img src="https://pic.imgdb.cn/item/60f55a415132923bf85bdd78.png" alt="full"></p>
+<p>我们发现在满二叉树的情况下，树高 $h$ 是 $\log n$ 级别的。每一次操作只需要 $\log n$ 的时间复杂度就可以完成。整体复杂度是 $\operatorname{O}{(m\log n)}$，听起来是个很完美的数字了，即使 $n=m=10^5$，它也可以轻松跑过。</p>
+<p>但是最坏情况下，假设我的树最开始是空的，然后依次加入 $10,9,8,&hellip;,3,2,1$ ，整个树就会长成这个样子：</p>
+<p><img src="https://pic.imgdb.cn/item/60f55a565132923bf85c35b3.png" alt="chain"></p>
+<p>每一次操作最坏都要从 $10$ 跑到 $1$ （或从 $1$ 跑到 $10$），换句话说树退化成了链，树的高度退化成了 $n$，整体复杂度退化为了 $\operatorname{O}{(nm)}$，放在 $n=m=10^5$ 的数据下，直接 TLE ，而且被卡得死死的。</p>
+<h3 id="splay-引入">Splay 引入</h3>
+<p>为了解决这样一个问题，避免这种传统的二叉搜索树被极端数据卡飞，换句话说，我们要构造一颗始终“平衡”的树，使得树高总是等于或一直趋近与 $\log n$ 级别。为此珂学家们进行了无数研究探讨。其中 Tarjan 提出了一个不错的想法：构造一个<strong>伸展树</strong>。</p>
+<p>所谓 <strong>伸展树</strong>，就是接下来要讲解的 <strong>Splay</strong>。当然平衡树的实现不仅仅有 Splay，但是因为 Spaly 是本文的压轴主题，带有神圣的主角光环，所以我们只将 Spaly 而暂时舍弃别的平衡树。</p>
+<p>首先把话放在前头，因为平衡树也是二叉搜索树的一种，所以平衡树的六大操作基本和朴素的二叉搜索树一致。而 Tarjan 提出了将一组节点“旋转”的方法，控制了树的平衡。我们要保证查询的点尽可能离根更近，因此，我们可以简单地假设：现在查到的这个点就是经常容易被查到的点，不管后面查没查过提到根就对了。</p>
+<p>这句话听起来十分玄乎，因此还是具体地分析一下“旋转”到底如何进行。</p>
+<h3 id="splay-基本操作旋转">Splay 基本操作：旋转</h3>
+<h4 id="单旋">单旋</h4>
+<p>既然要把一个节点提到根，我们首先考虑怎么把这个节点移到它父亲的位置上，假设某一个平衡树构造是这样的，其中 $x,y,z$ 是三个节点，$A,B,C,D$ 代表着四个子树的根，也就是 $x$ 的两个儿子、$y,z$ 的左儿子。</p>
+<p><img src="https://pic.imgdb.cn/item/60f55a715132923bf85cab33.png" alt="readyforsplay"></p>
+<p>归纳一下这七个点之间的数量关系，得到 $D&lt;z&lt;C&lt;y&lt;B&lt;x&lt;A$。</p>
+<p>现在我们进行了一次单旋操作，将 $x$ 的位置变到了 $y$ 这里，但是我们还是要满足上述的大小关系。</p>
+<ul>
+<li>首先 $x,y$ 的关系颠倒了，又因为 $x&gt;y&gt;z$，因此 $x$ 连在 $z$ 的右儿子上，$y$ 在 $x$ 的左儿子上。</li>
+<li>那么原本应该在 $x$ 左儿子上的 $B$ 应该去哪里呢？我们发现 $B&gt;y$ 因此我们可以再将 $B$ 挂到 $y$ 的右儿子上。</li>
+<li>此时 $x$ 的右儿子 $A$没变，$y$ 的左儿子 $C$ 没变，$z$ 的左儿子 $D$ 没变。整个树旋转一次后变成了这样：</li>
+</ul>
+<p><img src="https://pic.imgdb.cn/item/60f55a955132923bf85d4dd1.png" alt="splayed"></p>
+<p>检查一遍这棵树上七个点的数量关系，得到 $D&lt;z&lt;C&lt;y&lt;B&lt;x&lt;A$，与上文所述完全一致！说明我们现在已经成功地将 $x$ 往上移动到了它的父亲。</p>
+<p>当然这只是其中的一种情况，如果我们根据左右儿子关系不同，可以分类讨论出非常多种可能，这些可能都有一些普遍的特点：</p>
+<ul>
+<li>如果 $x$ 是 $y$ 的左儿子，则 $x$ 的左右儿子中要更新的点是右儿子；反之则为左儿子。（即二者相反）</li>
+<li>如果 $x$ 是 $y$ 的左儿子，则 $y$ 应该更新为 $x$ 的右儿子；反之则为左儿子。（即二者相反）</li>
+<li>如果 $y$ 是 $z$ 的左儿子，则 $x$ 应该更新为 $z$ 的左儿子；反之则为右儿子。（即二者相同）</li>
+</ul>
+<p>整理一下思路，我们更新了三对关系：$x-y$ 的关系、$z-x$ 的关系、$y-B$ 的关系。注意因为二叉搜索树我们还记录了每个点的子树大小，所以还要实时更新子树大小！</p>
+<p><strong>数据存储：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">dot</span>{
+	<span style="color:#66d9ef">int</span> size,cnt,data,son[<span style="color:#ae81ff">2</span>],fa;
+    <span style="color:#75715e">/* cnt 表示出现次数，size 表示以这个点为根的子树大小，data 表示节点存储的数值
+</span><span style="color:#75715e">    * son[0] 表示左儿子编号，son[1] 表示右儿子编号，fa 表示父亲节点编号
+</span><span style="color:#75715e">    */</span>
+	dot(){fa<span style="color:#f92672">=</span>size<span style="color:#f92672">=</span>cnt<span style="color:#f92672">=</span>data<span style="color:#f92672">=</span>son[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">=</span>son[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;} <span style="color:#75715e">// 初始化，全部赋为 0
+</span><span style="color:#75715e"></span>}a[max_n];
+<span style="color:#75715e">#define root a[0].son[1]
+</span><span style="color:#75715e"></span> <span style="color:#75715e">// 为了方便把根节点设为 0 号点的右儿子，当然也可以设别的
+</span></code></pre></div><p><strong>前置函数：</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getson</span>(<span style="color:#66d9ef">int</span> x){ <span style="color:#75715e">// 确认 x 是左儿子还是右儿子
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> (a[a[x].fa].son[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">==</span>x<span style="color:#f92672">?</span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">0</span>);
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">connect</span>(<span style="color:#66d9ef">int</span> u,<span style="color:#66d9ef">int</span> fa,<span style="color:#66d9ef">int</span> k){ 
+<span style="color:#75715e">// 建立一条边， u 的父亲是 fa，u 是 fa 的 k 儿子
+</span><span style="color:#75715e">// 后文将 k 儿子视为左/右儿子，其中 k=0 是左儿子，k=1 是右儿子
+</span><span style="color:#75715e"></span>	a[u].fa<span style="color:#f92672">=</span>fa,
+	a[fa].son[k]<span style="color:#f92672">=</span>u;
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">resize</span>(<span style="color:#66d9ef">int</span> u){ <span style="color:#75715e">// 更新 u 节点的子树大小
+</span><span style="color:#75715e">// 显然，子树大小=左子树大小+右子树大小+自己这个数出现的次数
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">int</span> lsize<span style="color:#f92672">=</span>a[a[u].son[<span style="color:#ae81ff">0</span>]].size,rsize<span style="color:#f92672">=</span>a[a[u].son[<span style="color:#ae81ff">1</span>]].size;
+	a[u].size<span style="color:#f92672">=</span>lsize<span style="color:#f92672">+</span>rsize<span style="color:#f92672">+</span>a[u].cnt;
+}
+</code></pre></div><p><strong>单旋函数实现</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">rotate</span>(<span style="color:#66d9ef">int</span> x){<span style="color:#75715e">// 将 x 旋转
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">int</span> y<span style="color:#f92672">=</span>a[x].fa,z<span style="color:#f92672">=</span>a[y].fa;
+	<span style="color:#66d9ef">int</span> k<span style="color:#f92672">=</span>getson(x),p<span style="color:#f92672">=</span>getson(y);<span style="color:#75715e">// 标记一下 x,y 分别是什么儿子
+</span><span style="color:#75715e"></span>
+	connect(a[x].son[k<span style="color:#f92672">^</span><span style="color:#ae81ff">1</span>],y,k), <span style="color:#75715e">// k^1 刚好就是左变右，右变左inline void splay(int x,int to){
+</span><span style="color:#75715e"></span>	to<span style="color:#f92672">=</span>a[to].fa;
+	<span style="color:#66d9ef">while</span>(a[x].fa<span style="color:#f92672">!=</span>to){
+
+		<span style="color:#66d9ef">int</span> y<span style="color:#f92672">=</span>a[x].fa,z<span style="color:#f92672">=</span>a[y].fa;
+		<span style="color:#66d9ef">int</span> k<span style="color:#f92672">=</span>getson(x),p<span style="color:#f92672">=</span>getson(y);
+
+		<span style="color:#66d9ef">if</span>(z<span style="color:#f92672">==</span>to) rotate(x);
+		<span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span>(k<span style="color:#f92672">==</span>p) rotate(y),rotate(x);
+		<span style="color:#66d9ef">else</span> rotate(x),rotate(x);
+	}
+}
+	connect(y,x,k<span style="color:#f92672">^</span><span style="color:#ae81ff">1</span>),
+	connect(x,z,p);
+
+	resize(y),resize(x); <span style="color:#75715e">// 注意要先更新 y 的子树大小
+</span><span style="color:#75715e"></span>}
+</code></pre></div><h4 id="双旋">双旋</h4>
+<p>如果我们真的遇到一个退化成链的平衡树，现在我想把叶子节点提到根上来，可不可以不停地单旋完成呢？</p>
+<p>如果你手推一下，就会发现，只进行单选操作并不能把链的数据“平衡”下来。因此我们需要一个双旋函数：一次旋转两次。</p>
+<p>为此我们设计一个函数 $\operatorname{Splay}{(x,to)}$，表示将节点 $x$ 通过若干次单旋提到原本是节点 $to$ 的位置。注意不能一步一步单旋上去，不然树高没有减小，该退化的复杂度还是退化了。</p>
+<p>如果我们先旋转一个点的父亲，然后再旋转这个点本身，不难得出在有些情况下是可以非常好的达到这个效果。根据手推，分类讨论只有三种情况：</p>
+<ol>
+<li>$to$ 是 $x$ 的父亲，此时直接将 $x$ 转上去。</li>
+<li>$x$ 和它父亲，以及它爷爷共线（举例： $x$ 是左儿子，$fa_x$ 也是左儿子），此时先旋转 $fa_x$，再旋转 $x$ 更优。</li>
+<li>$x$ 和它父亲，以及它爷爷不共线（举例：$x$ 是右儿子，但 $fa_x$ 是左儿子），此时旋转两次 $x$ 更优。</li>
+</ol>
+<p>当然为了方便判断，我们事先执行 $to_{fa} \rightarrow to$ ，以便在我记录 $x$ 的父亲 $y$ 和爷爷 $z$ 时，可以直接通过 $z=to$ 判断第一种情况，并方便地一次旋转两个点。</p>
+<p>总的代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">splay</span>(<span style="color:#66d9ef">int</span> x,<span style="color:#66d9ef">int</span> to){
+	to<span style="color:#f92672">=</span>a[to].fa;
+	<span style="color:#66d9ef">while</span>(a[x].fa<span style="color:#f92672">!=</span>to){
+
+		<span style="color:#66d9ef">int</span> y<span style="color:#f92672">=</span>a[x].fa,z<span style="color:#f92672">=</span>a[y].fa;
+		<span style="color:#66d9ef">int</span> k<span style="color:#f92672">=</span>getson(x),p<span style="color:#f92672">=</span>getson(y);
+
+		<span style="color:#66d9ef">if</span>(z<span style="color:#f92672">==</span>to) rotate(x); <span style="color:#75715e">// 第一种情况
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span>(k<span style="color:#f92672">==</span>p) rotate(y),rotate(x); <span style="color:#75715e">// 第二种情况
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">else</span> rotate(x),rotate(x); <span style="color:#75715e">// 第三种情况
+</span><span style="color:#75715e"></span>	}
+}
+</code></pre></div><h3 id="用-splay-实现普通二叉搜索树的功能">用 splay 实现普通二叉搜索树的功能</h3>
+<p>在执行添加删除等一堆函数前，我们可以先提前写好一些函数，如：查找数值为 $x$ 的点的编号、新建一个节点等。显然这些函数都比较有用，为了简化后续的复杂函数内容我们可以先码上。</p>
+<h4 id="前置函数">前置函数</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">int</span> tot<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>; <span style="color:#75715e">// 用 tot 记录有几个节点
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">find</span>(<span style="color:#66d9ef">int</span> x){ <span style="color:#75715e">// 查找数值为 x 的点
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">int</span> u<span style="color:#f92672">=</span>root;
+	<span style="color:#66d9ef">while</span>(<span style="color:#ae81ff">1</span>){
+		<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>u) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>; <span style="color:#75715e">// 没有找到，返回 0
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span>(a[u].data<span style="color:#f92672">==</span>x){ <span style="color:#75715e">// 找到了这个点
+</span><span style="color:#75715e"></span>			splay(u,root); <span style="color:#75715e">// 把这个点提到根节点上，维持树平衡
+</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">return</span> u;
+		}
+		<span style="color:#66d9ef">int</span> k<span style="color:#f92672">=</span>(x<span style="color:#f92672">&gt;</span>a[u].data<span style="color:#f92672">?</span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">0</span>),v<span style="color:#f92672">=</span>a[u].son[k]; <span style="color:#75715e">// u 跳到左/右儿子
+</span><span style="color:#75715e"></span>		u<span style="color:#f92672">=</span>v;
+	}
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">adnew</span>(<span style="color:#66d9ef">int</span> data,<span style="color:#66d9ef">int</span> fa){
+<span style="color:#75715e">// 新建一个节点，数值为 data，父亲为 fa
+</span><span style="color:#75715e"></span>	a[<span style="color:#f92672">++</span>tot].fa<span style="color:#f92672">=</span>fa; <span style="color:#75715e">// 设置父亲节点
+</span><span style="color:#75715e"></span>	a[tot].data<span style="color:#f92672">=</span>data; <span style="color:#75715e">// 设置数值
+</span><span style="color:#75715e"></span>	a[tot].cnt<span style="color:#f92672">=</span>a[tot].size<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>; <span style="color:#75715e">// 设置子树大小和出现次数
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> tot; <span style="color:#75715e">// 为了方便，返回现在有几个点
+</span><span style="color:#75715e"></span>}
+</code></pre></div><h4 id="主要函数">主要函数</h4>
+<p>发现 Splay 的本质还是一个二叉搜索树，按照上文（很上面）所述的方法进行操作即可。但是值得注意的是，要在操作后将操作的这个点旋转到根的位置（后面代码中的 splay 函数都是这个道理），以此避免复杂度的退化。</p>
+<p>最后上 Splay 的加注释版代码（含主要函数，其他函数也在上文均有出现）：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">int</span> inf<span style="color:#f92672">=</span><span style="color:#ae81ff">1000000005</span>; <span style="color:#75715e">// 赋无穷大的初值
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">int</span> x){ <span style="color:#75715e">// 添加一个值为 x 的节点
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">int</span> u<span style="color:#f92672">=</span>root;
+	<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>root){ <span style="color:#75715e">// 如果树是空的
+</span><span style="color:#75715e"></span>		root<span style="color:#f92672">=</span>adnew(x,<span style="color:#ae81ff">0</span>); <span style="color:#75715e">// 新建一个根节点
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">return</span>;
+	}
+	<span style="color:#66d9ef">while</span>(<span style="color:#ae81ff">1</span>){
+		<span style="color:#f92672">++</span>a[u].size; 
+        <span style="color:#75715e">// 添加一个点的一路上更新其他点子树大小
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span>(a[u].data<span style="color:#f92672">==</span>x){ <span style="color:#75715e">// 这个点已经出现过了
+</span><span style="color:#75715e"></span>			<span style="color:#f92672">++</span>a[u].cnt; <span style="color:#75715e">// 直接在次数上累加
+</span><span style="color:#75715e"></span>			splay(u,root);
+			<span style="color:#66d9ef">return</span>;
+		}
+		<span style="color:#66d9ef">int</span> k<span style="color:#f92672">=</span>(x<span style="color:#f92672">&gt;</span>a[u].data<span style="color:#f92672">?</span><span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">0</span>),v<span style="color:#f92672">=</span>a[u].son[k]; 
+        <span style="color:#75715e">// 找到我要去哪个儿子
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>v){ 
+        <span style="color:#75715e">// 那个儿子还不存在，说明那里就是新节点应该在的位置
+</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">int</span> p<span style="color:#f92672">=</span>adnew(x,u);
+			a[u].son[k]<span style="color:#f92672">=</span>v<span style="color:#f92672">=</span>p; <span style="color:#75715e">// 更新父节点的儿子
+</span><span style="color:#75715e"></span>			splay(p,root);
+			<span style="color:#66d9ef">return</span>;
+		}
+		u<span style="color:#f92672">=</span>v; <span style="color:#75715e">// 还没有找到，继续跳儿子
+</span><span style="color:#75715e"></span>	}
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">delet</span>(<span style="color:#66d9ef">int</span> x){ <span style="color:#75715e">// 删除（一个）数值为 x 的数字
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">int</span> u<span style="color:#f92672">=</span>find(x); <span style="color:#75715e">// 找到这个数的编号
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 注意 find 时已经将找到的点 splay 到根了
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>u) <span style="color:#66d9ef">return</span>; <span style="color:#75715e">// 没找到，说明操作不合法
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span>(a[u].cnt<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">2</span>){ <span style="color:#75715e">// 这个点出现次数多于 1 次
+</span><span style="color:#75715e"></span>		<span style="color:#f92672">--</span>a[u].cnt, <span style="color:#75715e">// 直接减少出现次数即可
+</span><span style="color:#75715e"></span>		<span style="color:#f92672">--</span>a[u].size; <span style="color:#75715e">// 不要忘记更新子树大小
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">/* 这里不更新其他点子树大小是因为
+</span><span style="color:#75715e">         * 要么这些点的子树大小没用过
+</span><span style="color:#75715e">         * 要么就会在别的地方 resize
+</span><span style="color:#75715e">         */</span>
+		<span style="color:#66d9ef">return</span>;
+	}
+	<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>a[u].son[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>a[u].son[<span style="color:#ae81ff">0</span>]){ <span style="color:#75715e">// 没有儿子
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 注意到 u 已经 splay 到根了，
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 还没有儿子说明这是整个树中唯一的点
+</span><span style="color:#75715e"></span>		root<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>; <span style="color:#75715e">// 清空整个树
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">return</span>;
+	}
+	<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>a[u].son[<span style="color:#ae81ff">0</span>]){ <span style="color:#75715e">// 没有有左儿子
+</span><span style="color:#75715e"></span>		root<span style="color:#f92672">=</span>a[u].son[<span style="color:#ae81ff">1</span>], <span style="color:#75715e">// 将右儿子提到根
+</span><span style="color:#75715e"></span>		a[root].fa<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+		<span style="color:#66d9ef">return</span>;
+	}
+	<span style="color:#66d9ef">int</span> v<span style="color:#f92672">=</span>a[u].son[<span style="color:#ae81ff">0</span>];
+	<span style="color:#66d9ef">while</span>(a[v].son[<span style="color:#ae81ff">1</span>]) v<span style="color:#f92672">=</span>a[v].son[<span style="color:#ae81ff">1</span>]; <span style="color:#75715e">// 找到 u 的前驱
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 将前驱变为新根可以更好地维护树平衡
+</span><span style="color:#75715e"></span>	splay(v,a[u].son[<span style="color:#ae81ff">0</span>]);
+	connect(a[u].son[<span style="color:#ae81ff">1</span>],v,<span style="color:#ae81ff">1</span>),
+	connect(v,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>);
+	resize(v);
+    <span style="color:#75715e">// 维护新根和别的节点关系、子树大小
+</span><span style="color:#75715e"></span>}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getrank</span>(<span style="color:#66d9ef">int</span> x){ <span style="color:#75715e">// 查询 x 的排名
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">int</span> u<span style="color:#f92672">=</span>root,res<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>; <span style="color:#75715e">// 从根开始跳
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// res 记录比 x 小的数有几个，排名=res+1
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">while</span>(u){
+		<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&lt;</span>a[u].data){ <span style="color:#75715e">// 往左儿子跳
+</span><span style="color:#75715e"></span>			u<span style="color:#f92672">=</span>a[u].son[<span style="color:#ae81ff">0</span>];
+			<span style="color:#66d9ef">continue</span>;
+		}
+		res<span style="color:#f92672">+=</span>a[a[u].son[<span style="color:#ae81ff">0</span>]].size;
+		<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">==</span>a[u].data){ <span style="color:#75715e">// 找到了这个点
+</span><span style="color:#75715e"></span>			splay(u,root);
+			<span style="color:#66d9ef">return</span> res<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;  <span style="color:#75715e">// 注意排名=res+1
+</span><span style="color:#75715e"></span>		}
+		res<span style="color:#f92672">+=</span>a[u].cnt, <span style="color:#75715e">// 别忘了加上这个点的出现次数
+</span><span style="color:#75715e"></span>		u<span style="color:#f92672">=</span>a[u].son[<span style="color:#ae81ff">1</span>]; <span style="color:#75715e">// 往右儿子跳
+</span><span style="color:#75715e"></span>	}
+	<span style="color:#66d9ef">return</span> res<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>; <span style="color:#75715e">// 别忘了排名=res+1
+</span><span style="color:#75715e"></span>}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">getnum</span>(<span style="color:#66d9ef">int</span> x){ <span style="color:#75715e">// 查找排名为 x 的数
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">int</span> u<span style="color:#f92672">=</span>root;
+	<span style="color:#66d9ef">while</span>(<span style="color:#ae81ff">1</span>){
+		<span style="color:#66d9ef">int</span> rank<span style="color:#f92672">=</span>a[u].size<span style="color:#f92672">-</span>a[a[u].son[<span style="color:#ae81ff">1</span>]].size;
+        <span style="color:#75715e">// rank 表示已经有那么多个数比现在的点小了
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&gt;</span>a[a[u].son[<span style="color:#ae81ff">0</span>]].size <span style="color:#f92672">&amp;&amp;</span> x<span style="color:#f92672">&lt;=</span>rank){
+            <span style="color:#75715e">// 符合条件
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 因为还要考虑 x 的出现次数所以不能直接判==rank
+</span><span style="color:#75715e"></span>			splay(u,root);
+			<span style="color:#66d9ef">return</span> a[u].data;
+		}
+		<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&lt;</span>rank) u<span style="color:#f92672">=</span>a[u].son[<span style="color:#ae81ff">0</span>];
+		<span style="color:#66d9ef">else</span> x<span style="color:#f92672">-=</span>rank,u<span style="color:#f92672">=</span>a[u].son[<span style="color:#ae81ff">1</span>];
+        <span style="color:#75715e">// 跳右儿子时，因为 rank 不是累加左子树得到，要更新 x
+</span><span style="color:#75715e"></span>	}
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">smaller</span>(<span style="color:#66d9ef">int</span> x){ <span style="color:#75715e">// 查找 x 的前驱
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">int</span> u<span style="color:#f92672">=</span>root,res<span style="color:#f92672">=-</span>inf; <span style="color:#75715e">// 先给 res 赋无穷小
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">while</span>(u){
+		<span style="color:#66d9ef">if</span>(a[u].data<span style="color:#f92672">&lt;</span>x <span style="color:#f92672">&amp;&amp;</span> a[u].data<span style="color:#f92672">&gt;</span>res){
+            <span style="color:#75715e">// 找到一个点比 x 小，尝试更新答案
+</span><span style="color:#75715e"></span>			splay(u,root);
+			res<span style="color:#f92672">=</span>a[u].data;
+		}
+		<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&gt;</span>a[u].data) u<span style="color:#f92672">=</span>a[u].son[<span style="color:#ae81ff">1</span>];
+		<span style="color:#66d9ef">else</span> u<span style="color:#f92672">=</span>a[u].son[<span style="color:#ae81ff">0</span>];
+        <span style="color:#75715e">// 跳左/右儿子
+</span><span style="color:#75715e"></span>	}
+	<span style="color:#66d9ef">return</span> res;
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">bigger</span>(<span style="color:#66d9ef">int</span> x){ <span style="color:#75715e">// 查找 x 的后继
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">int</span> u<span style="color:#f92672">=</span>root,res<span style="color:#f92672">=</span>inf;
+	<span style="color:#66d9ef">while</span>(u){
+		<span style="color:#66d9ef">if</span>(a[u].data<span style="color:#f92672">&gt;</span>x <span style="color:#f92672">&amp;&amp;</span> a[u].data<span style="color:#f92672">&lt;</span>res){
+			splay(u,root);
+			res<span style="color:#f92672">=</span>a[u].data;
+		}
+		<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&lt;</span>a[u].data) u<span style="color:#f92672">=</span>a[u].son[<span style="color:#ae81ff">0</span>];
+		<span style="color:#66d9ef">else</span> u<span style="color:#f92672">=</span>a[u].son[<span style="color:#ae81ff">1</span>];
+	}
+	<span style="color:#66d9ef">return</span> res;
+}<span style="color:#75715e">// 基本与前驱同理
+</span></code></pre></div>
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://walker68145/Arahc.github.io/posts/%E4%BB%8Ebst%E5%88%B0splay/" title="从BST到Splay" target="_blank" rel="external">https://walker68145/Arahc.github.io/posts/%E4%BB%8Ebst%E5%88%B0splay/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/Walker_68145" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://walker68145/Arahc.github.io/avatar.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/Walker_68145" target="_blank"><span class="text-dark">Arahc</span><small class="ml-1x">Arahc&#39;s home</small></a></h3>
+        <div>咕↘咕↗咕——→</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://walker68145/Arahc.github.io/posts/%E7%AE%A1%E9%81%93%E8%BF%B7%E5%AE%AB-%E9%A2%98%E8%A7%A3/" title="管道迷宫 题解"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://walker68145/Arahc.github.io/posts/shape-%E9%A2%98%E8%A7%A3/"
+                    title="Shape 题解"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/Walker_68145" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://walker68145/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/C&#43;&#43;.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://walker68145/Arahc.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://walker68145/Arahc.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/walker68145\/Arahc.github.io',
+            CONTENT_URL: 'https:\/\/walker68145\/Arahc.github.io\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://walker68145/Arahc.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>

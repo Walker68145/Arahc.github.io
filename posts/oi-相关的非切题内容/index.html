@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        OI 相关的非切题内容 - Arahc&#39;s blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="LaTeX 比较基础的 $\LaTeX$ 语法我已经在这篇博客里面写出了。对于写题解、出题面之类已经足够，对于出一套题面并整合成 pdf 文件这类需求，需要额外在网上查阅相关辅助资料。或者向他人寻求题目模板。
+题面和题解通常都需要用规范美观的 $\LaTeX$ 和 markdown 排版。
+markdown 比较基础的 markdown 已经在我的博客写出了。写题解、出题之类日用完全足够。当然改颜色之类没有什么必要提及，至于内嵌 HTML，首先你得会……
+NOILINUX2.0 新版 NOILINUX 非常高级，它基于 Ubuntu20.04。最主要的变化就是 IDE 变多了。对于不喜欢不习惯用 Emacs 的人来说，除了 gedit 有了更多选择。主要（最吸引人的）多了 sublime，vscode。另外的新增，比如 codeblock 之类，一般不会用到。
+其中 sublime 是没付钱的英文版本。vscode 是除编译插件（C&#43;&#43;，C，Pas，Python）外没有任何其他插件（包括 code runner）的英文版本。这两个编辑器貌似都是自带括号自动补全的，如有不适自行调整。
+支持了 Python3，对拍方面会更加方便。前提是会这个语言
+其次就是 C&#43;&#43; 的兹瓷版本成功进化到了 C&#43;&#43;14，值得注意的是 C&#43;&#43;14 算是一个跑得比较快的版本，再加上最近这些比赛评测的时候编译选项都有 -O2，说明 CCF 正尽量不让常数问题成为一个很大的阻碍。编译的时候在编译选项里添加 -std=c&#43;&#43;14 就可以用 C&#43;&#43;14 的标准编译。auto,__int128,__gcd 等等功能现在都不会 CE 了！（主要是 int128，不过估计 CCF 后续也不会出什么高精度题了）。
+当然也有一些东西在 C&#43;&#43;14 里用就很危险了，比如 C&#43;&#43;14 弃掉的 gets，还有 C&#43;&#43;14 停用 C&#43;&#43;17 废除的 random_shuffle。
+平时练习可以参考的编译选项：
+g&#43;&#43; -o code code." />
+    <meta name="generator" content="Hugo 0.91.2 with theme pure" />
+    <title>OI 相关的非切题内容 - Arahc&#39;s blog</title>
+    
+    
+    <link rel="stylesheet" href="https://walker68145/Arahc.github.io/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="OI 相关的非切题内容" />
+<meta property="og:description" content="LaTeX 比较基础的 $\LaTeX$ 语法我已经在这篇博客里面写出了。对于写题解、出题面之类已经足够，对于出一套题面并整合成 pdf 文件这类需求，需要额外在网上查阅相关辅助资料。或者向他人寻求题目模板。
+题面和题解通常都需要用规范美观的 $\LaTeX$ 和 markdown 排版。
+markdown 比较基础的 markdown 已经在我的博客写出了。写题解、出题之类日用完全足够。当然改颜色之类没有什么必要提及，至于内嵌 HTML，首先你得会……
+NOILINUX2.0 新版 NOILINUX 非常高级，它基于 Ubuntu20.04。最主要的变化就是 IDE 变多了。对于不喜欢不习惯用 Emacs 的人来说，除了 gedit 有了更多选择。主要（最吸引人的）多了 sublime，vscode。另外的新增，比如 codeblock 之类，一般不会用到。
+其中 sublime 是没付钱的英文版本。vscode 是除编译插件（C&#43;&#43;，C，Pas，Python）外没有任何其他插件（包括 code runner）的英文版本。这两个编辑器貌似都是自带括号自动补全的，如有不适自行调整。
+支持了 Python3，对拍方面会更加方便。前提是会这个语言
+其次就是 C&#43;&#43; 的兹瓷版本成功进化到了 C&#43;&#43;14，值得注意的是 C&#43;&#43;14 算是一个跑得比较快的版本，再加上最近这些比赛评测的时候编译选项都有 -O2，说明 CCF 正尽量不让常数问题成为一个很大的阻碍。编译的时候在编译选项里添加 -std=c&#43;&#43;14 就可以用 C&#43;&#43;14 的标准编译。auto,__int128,__gcd 等等功能现在都不会 CE 了！（主要是 int128，不过估计 CCF 后续也不会出什么高精度题了）。
+当然也有一些东西在 C&#43;&#43;14 里用就很危险了，比如 C&#43;&#43;14 弃掉的 gets，还有 C&#43;&#43;14 停用 C&#43;&#43;17 废除的 random_shuffle。
+平时练习可以参考的编译选项：
+g&#43;&#43; -o code code." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-28T21:42:04+08:00" />
+<meta property="article:modified_time" content="2021-11-28T21:42:04+08:00" />
+
+<meta itemprop="name" content="OI 相关的非切题内容">
+<meta itemprop="description" content="LaTeX 比较基础的 $\LaTeX$ 语法我已经在这篇博客里面写出了。对于写题解、出题面之类已经足够，对于出一套题面并整合成 pdf 文件这类需求，需要额外在网上查阅相关辅助资料。或者向他人寻求题目模板。
+题面和题解通常都需要用规范美观的 $\LaTeX$ 和 markdown 排版。
+markdown 比较基础的 markdown 已经在我的博客写出了。写题解、出题之类日用完全足够。当然改颜色之类没有什么必要提及，至于内嵌 HTML，首先你得会……
+NOILINUX2.0 新版 NOILINUX 非常高级，它基于 Ubuntu20.04。最主要的变化就是 IDE 变多了。对于不喜欢不习惯用 Emacs 的人来说，除了 gedit 有了更多选择。主要（最吸引人的）多了 sublime，vscode。另外的新增，比如 codeblock 之类，一般不会用到。
+其中 sublime 是没付钱的英文版本。vscode 是除编译插件（C&#43;&#43;，C，Pas，Python）外没有任何其他插件（包括 code runner）的英文版本。这两个编辑器貌似都是自带括号自动补全的，如有不适自行调整。
+支持了 Python3，对拍方面会更加方便。前提是会这个语言
+其次就是 C&#43;&#43; 的兹瓷版本成功进化到了 C&#43;&#43;14，值得注意的是 C&#43;&#43;14 算是一个跑得比较快的版本，再加上最近这些比赛评测的时候编译选项都有 -O2，说明 CCF 正尽量不让常数问题成为一个很大的阻碍。编译的时候在编译选项里添加 -std=c&#43;&#43;14 就可以用 C&#43;&#43;14 的标准编译。auto,__int128,__gcd 等等功能现在都不会 CE 了！（主要是 int128，不过估计 CCF 后续也不会出什么高精度题了）。
+当然也有一些东西在 C&#43;&#43;14 里用就很危险了，比如 C&#43;&#43;14 弃掉的 gets，还有 C&#43;&#43;14 停用 C&#43;&#43;17 废除的 random_shuffle。
+平时练习可以参考的编译选项：
+g&#43;&#43; -o code code."><meta itemprop="datePublished" content="2021-11-28T21:42:04+08:00" />
+<meta itemprop="dateModified" content="2021-11-28T21:42:04+08:00" />
+<meta itemprop="wordCount" content="1272">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="OI 相关的非切题内容"/>
+<meta name="twitter:description" content="LaTeX 比较基础的 $\LaTeX$ 语法我已经在这篇博客里面写出了。对于写题解、出题面之类已经足够，对于出一套题面并整合成 pdf 文件这类需求，需要额外在网上查阅相关辅助资料。或者向他人寻求题目模板。
+题面和题解通常都需要用规范美观的 $\LaTeX$ 和 markdown 排版。
+markdown 比较基础的 markdown 已经在我的博客写出了。写题解、出题之类日用完全足够。当然改颜色之类没有什么必要提及，至于内嵌 HTML，首先你得会……
+NOILINUX2.0 新版 NOILINUX 非常高级，它基于 Ubuntu20.04。最主要的变化就是 IDE 变多了。对于不喜欢不习惯用 Emacs 的人来说，除了 gedit 有了更多选择。主要（最吸引人的）多了 sublime，vscode。另外的新增，比如 codeblock 之类，一般不会用到。
+其中 sublime 是没付钱的英文版本。vscode 是除编译插件（C&#43;&#43;，C，Pas，Python）外没有任何其他插件（包括 code runner）的英文版本。这两个编辑器貌似都是自带括号自动补全的，如有不适自行调整。
+支持了 Python3，对拍方面会更加方便。前提是会这个语言
+其次就是 C&#43;&#43; 的兹瓷版本成功进化到了 C&#43;&#43;14，值得注意的是 C&#43;&#43;14 算是一个跑得比较快的版本，再加上最近这些比赛评测的时候编译选项都有 -O2，说明 CCF 正尽量不让常数问题成为一个很大的阻碍。编译的时候在编译选项里添加 -std=c&#43;&#43;14 就可以用 C&#43;&#43;14 的标准编译。auto,__int128,__gcd 等等功能现在都不会 CE 了！（主要是 int128，不过估计 CCF 后续也不会出什么高精度题了）。
+当然也有一些东西在 C&#43;&#43;14 里用就很危险了，比如 C&#43;&#43;14 弃掉的 gets，还有 C&#43;&#43;14 停用 C&#43;&#43;17 废除的 random_shuffle。
+平时练习可以参考的编译选项：
+g&#43;&#43; -o code code."/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/Walker_68145" target="_blank">
+            <img class="img-circle img-rotate" src="https://walker68145/Arahc.github.io/avatar.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Arahc</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Arahc&#39;s home</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Changsha, China</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/Arahc.github.io/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/Arahc.github.io/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/Arahc.github.io/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/Arahc.github.io/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/Arahc.github.io/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content"><p>博客已经由 Walker_68145.github.io 转移到此处，原页面保留，为此带来的不便请大家谅解。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link" rel="1">k进制<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link" rel="1">stl<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link" rel="2">二分三分<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link" rel="3">分治<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link" rel="8">动态规划<span
+               class="tag-list-count">8</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link" rel="7">图论<span
+               class="tag-list-count">7</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link" rel="1">字符串<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link" rel="10">数学<span
+               class="tag-list-count">10</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link" rel="9">数据结构<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link" rel="4">暴力<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link" rel="1">莫队<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link" rel="3">贪心<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link" rel="2">随机化<span
+               class="tag-list-count">2</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E6%9D%82%E9%A1%B9/" class="category-list-link">杂项</a><span class="category-list-count">3</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/" class="category-list-link">笔记</a><span class="category-list-count">11</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E9%A2%98%E8%A7%A3/" class="category-list-link">题解</a><span class="category-list-count">20</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link">k进制</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link">stl</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link">二分三分</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link">分治</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link">动态规划</a><span
+                    class="tag-list-count">8</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link">图论</a><span
+                    class="tag-list-count">7</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link">字符串</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link">数学</a><span
+                    class="tag-list-count">10</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link">数据结构</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link">暴力</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link">莫队</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link">贪心</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link">随机化</a><span
+                    class="tag-list-count">2</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/" class="title">P5633最小度限制生成树 题解</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-28 21:43:22 &#43;0800 CST" itemprop="datePublished">2021-12-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/" class="title">线性基入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-22 21:47:24 &#43;0800 CST" itemprop="datePublished">2021-12-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/" class="title">Markdown 入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-30 18:41:00 &#43;0800 CST" itemprop="datePublished">2021-11-30</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/" class="title">OI 相关的非切题内容</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-28 21:42:04 &#43;0800 CST" itemprop="datePublished">2021-11-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E4%B8%8Ekdtree/" class="title">替罪羊与KDTree</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-25 21:48:19 &#43;0800 CST" itemprop="datePublished">2021-11-25</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/"
+    >OI 相关的非切题内容</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/" class="article-date">
+  <time datetime="2021-11-28 21:42:04 &#43;0800 CST" itemprop="datePublished">2021-11-28</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/Arahc.github.io/categories/%E6%9D%82%E9%A1%B9/"> 杂项 </a>
+</span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 1272 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 6 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <h2 id="latex">LaTeX</h2>
+<p>比较基础的 $\LaTeX$ 语法我已经在<a href="https://walker68145.github.io/post/latex-ru-men/">这篇博客</a>里面写出了。对于写题解、出题面之类已经足够，对于出一套题面并整合成 pdf 文件这类需求，需要额外在网上查阅相关辅助资料。<del>或者向他人寻求题目模板</del>。</p>
+<p>题面和题解通常都需要用规范美观的 $\LaTeX$ 和 markdown 排版。</p>
+<h2 id="markdown">markdown</h2>
+<p>比较基础的 markdown 已经在<a href="https://walker68145.github.io/post/markdown-ru-men/">我的博客</a>写出了。写题解、出题之类日用完全足够。当然改颜色之类没有什么必要提及，至于内嵌 HTML，首先你得会……</p>
+<h2 id="noilinux20">NOILINUX2.0</h2>
+<p>新版 NOILINUX 非常高级，它基于 Ubuntu20.04。最主要的变化就是 IDE 变多了。对于不喜欢不习惯用 Emacs 的人来说，除了 gedit 有了更多选择。主要（最吸引人的）多了 sublime，vscode。另外的新增，比如 codeblock 之类，一般不会用到。</p>
+<p>其中 sublime 是没付钱的英文版本。vscode 是除编译插件（C++，C，Pas，Python）外没有任何其他插件（包括 code runner）的英文版本。这两个编辑器貌似都是自带括号自动补全的，如有不适自行调整。</p>
+<p>支持了 Python3，对拍方面会更加方便。<del>前提是会这个语言</del></p>
+<p>其次就是 C++ 的兹瓷版本成功进化到了 C++14，值得注意的是 C++14 算是一个跑得比较快的版本，再加上最近这些比赛评测的时候编译选项都有 -O2，说明 CCF 正尽量不让常数问题成为一个很大的阻碍。编译的时候在编译选项里添加 <code>-std=c++14</code> 就可以用 C++14 的标准编译。<code>auto,__int128,__gcd</code> 等等功能现在都不会 CE 了！（主要是 int128，不过估计 CCF 后续也不会出什么高精度题了）。</p>
+<p>当然也有一些东西在 C++14 里用就很危险了，比如 C++14 弃掉的 <code>gets</code>，还有 C++14 停用 C++17 废除的 <code>random_shuffle</code>。</p>
+<p>平时练习可以参考的编译选项：</p>
+<pre tabindex="0"><code>g++ -o code code.cpp -lm -Wall -O2 -std=c++14
+</code></pre><p>这个编译选项下没有问题，就不会出事了。</p>
+<p>不建议自家电脑装机装 NOILINUX，下个 Ubuntu20.04TLS 就已经足够了。</p>
+<h2 id="出题">出题</h2>
+<p>部分内容参考了<a href="https://oi-wiki.org/contest/problemsetting/">OI-Wiki</a>，但没有照搬，均带有一点个人主见想法。</p>
+<h3 id="题目idea">题目idea</h3>
+<p>idea 这方面纯粹都是灵感，大部分的 idea 来源于灵感、游戏、其他题目。不一定什么时候你的 idea 都可以成型成一个题目，也不一定是一个好题。平时出的 idea 大概率具有过恶心/过水/想出了题目想不出怎么做三种情况。</p>
+<p>当然，如果先想好算法再出题面，就不会有第三种情况。</p>
+<p>你的题目不应该和较为知名的题目重题（即，算法和代码基本相同，如果代码基本一致，但是算法上有很多的推导才能推到这一步，那显然不算重题，但是切掉的人可以双倍经验）。</p>
+<p>出题的时候有很多废掉的题是很正常的，例如过水的题目和暂时只有暴力做法的题目。但是没必要直接丢到回收站清空，如果屯起来的话，说不定哪天发现这个题改一改哪个地方可以做。</p>
+<p>当然这也提示了大家，如果一个题目要求的内容和题目保证的某个性质完全无关，一般说明去掉这个性质题目的复杂度就会假掉或者不可做，例如<a href="https://www.luogu.com.cn/problem/P3209">HNOI2010平面图判定</a>，如果给定的就是一个一般图，平面图判定是 NP 的，只有其保证存在哈密顿回路，才可以用 2-SAT 做到 $\operatorname{O}(m)$ 解决。</p>
+<h3 id="题目定位">题目定位</h3>
+<p>这里以出一套 NOIP 模拟题组（四道题）为例说明一下我的个人看法。</p>
+<p>不推荐零零散散地出一些难度参差不齐的题目。如果事先有计划地认为我要出一套题目，这个是签到题，这个是杀 AKer 的题……出题会变得更有条理性。</p>
+<p>一场比赛，无论多少个题，总会有一个签到题。这里的签到题的难度，应该是适合参赛的人群都能以较快的时间解决的难度。当然可能会有个别考场降智切不出来的例外，但是如果有一定的人都做不出来，这个签到题就不是签到题了。</p>
+<p>对于互测赛之类，很多人都喜欢以恶心别人为目标，甚至有四个题三个 DS 一个 DP 的情况，这是绝对不可以的。当然如果你认为本次考试应该加大难度，或者抱着出一套 RP 赛为目的，对签到题的要求就没那么严格。</p>
+<p>简单的 DP、分治、模拟，显然的贪心，初中范围内的简单数学题，裸题稍微拐一点弯（而且算法简单）的题，都可以放成签到题，同时签到题码量不宜大，例如不能以没有思维难度为理由放一个<a href="https://www.luogu.com.cn/problem/P5380">鸭棋</a>（大模拟）为签到题。</p>
+<p>然后应该放上一至二个较难题。较难题通常具有较难的思维性，不宜码量过大（数据结构之类除外）。应该保证具有一定的梯度，即有些人可以做出来，有些人做不出来，绝对不能放对知识点掌握要求明显高于整套题定位的题，例如 CSP-S 模拟赛放一个<a href="https://www.luogu.com.cn/problem/P5388">最终幻想</a>。无论是数学难度还是实现难度（FFT）都高于比赛难度定位。</p>
+<p>具有较强的思维性的 DP、DS、数论图论等等，很多类型都可以作为较难题，码量不以太大，比如 300+ 行之类。</p>
+<p>最后应该垫上一个杀 AKer 的压轴题，只要不太变态（而且不是大模拟之类的纯恶心题），怎么恶心怎么来吧。这类题目通常不应该再注重考场上有多少切的人，而应该注重部分分给的是否合理。</p>
+<p>总的来说，一套题目的定位，应该是 “ABBC” 式，即 “签到题-较难题-难题-压轴题”。其中较难题和难题在难度上没有明显的界限，可以视为就是两个中难题。</p>
+<h3 id="毒瘤和偏题">毒瘤和偏题</h3>
+<blockquote>
+<p>一套比赛失去了毒瘤，就失去了灵魂。——CZA</p>
+<p>这互测赛太**毒瘤了，**出题人。——CZA</p>
+</blockquote>
+<p>我们可以看出：出毒瘤题和做毒瘤题完全是两个概念。</p>
+<p>关于一个题目的毒瘤程度，很多 OIER 各执己见。有人认为例如重量平衡树套线段树维护凸包就很毒瘤。我个人觉得这只能代表这个题目难，不是毒不毒瘤的问题。</p>
+<p>确切而言，衡量一个题是否毒瘤，应该要从错误做法的得分、题目的思维性和代码等角度综合来看。例如正解没开 longlong 得分 0、std 跑了 990ms 且题目时间限制开 1s，显然就是不合理的。</p>
+<p>一个题如果不毒瘤，应该要做到数据有多档部分分（水平不高的人可以拿到分，水平高的人可以拿到高分或者切掉）、部分分设置合理（正解分不能太少也不能太大，各个部分分根据思维和实现难度适当分配分数）、时间空间至少开到 std 的 1.5 倍（std 没有刻意卡常、错误的复杂度的做法应该能被假掉）。</p>
+<p>对于一些错误的做法和复杂度假掉的做法，做一批数据卡掉，我是非常支持的。这并不属于毒瘤的范围，而是能体现出题人很细心尽责。毕竟如果数据太水把别人暴力放跑成满分，你自己心里也不舒服。</p>
+<p>对于那些题目全是数学推导（且和 OI 无关）或物理推导的东西，或者强行叠加各种东西导致码量极大。这类题目一般不适合出现在 OI 题中，为偏题怪题。出题时因尽量避免。</p>
+<p>还例如，一个题目如果让一些本来无关紧要的东西成为了最大的阻碍，比如一个区间加区间求和的线段树裸题，强制在线的地方让你解一个多项式，显然就是本末倒置，这样的话还不如出一个多项式的题目，把区间加区间求和的线段树板子去掉。</p>
+<h3 id="造数据">造数据</h3>
+<p>除非题目保证了数据随机，造一套纯随机的数据是绝对不行的。原因大家心理都清楚，比如树高和树高有关的暴力在随机数据下变成了 $n\log n$，暴力字符串匹配跑地和 kmp 差不多快……</p>
+<p>对于和序列大小关系有关的题，常见的非随机数据做法就是递增递减 $k$ 峰 $k$ 谷。特别的，更多的峰或谷配合较大的数据范围可以有效地卡掉模拟退火等随机做法。</p>
+<p>你的数据应该保证可以假掉已知的错解或细节写挂的代码，可以选择构造这类数据，也可以选择对拍（找到能让这个做法 WA 的点为止）。</p>
+<p>最好可以手动加几个细节数据，包括但不限于擦边球、（可能存在的话）除以 $0$、无脑写过去没有考虑到的情况。比如计算 $a^b\bmod p$，不保证 $p$ 是质数的时候，不妨给一个 $a=1,b=0,p=1$ 的数据，想必很多人的快速幂都会被这样的细节卡假（答案是 $0$ 但是代码输出为 $1$）；再比如有根树上的问题，保证这个部分分每个点度不超过 $2$（也就是一条链），但是不保证根节点在链头。</p>
+<p>常见叉掉复杂度错误的解法的数据有：一个菊花挂诱导链（一个菊花，一个非正权链，链上每个节点都连一个非正权到菊花，使得 SPFA 做法每次在链上更新一个点都要回去跑一遍菊花）、网格图（也可以卡 SPFA）、蒲公英（一个链和一个菊花组成，根据链和菊花的比重不同，可以叉掉不同的复杂度解法）、根有两个儿子，其中一个儿子有三个儿子，其中一个儿子有四个儿子，以此类推的树（长链剖分变成根号级），二维平面一直往一个区域加点（卡重构写假的 KD-Tree）……等等。</p>
+<p>关于批量造一套 .in 文件。如果不会 bat 的话，可以充分利用 <code>freopen</code> 的特性。它传入的第一个参数是一个字符串，代表文件名，通过改变这个传入的字符串，就可以新开一个文件接着造数据：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">char</span> in[<span style="color:#ae81ff">100</span>]<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;data01.in&#34;</span>;
+<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> id<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;id<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">20</span>;<span style="color:#f92672">++</span>id){
+    freopen(in,<span style="color:#e6db74">&#34;w&#34;</span>,stdout);
+    <span style="color:#75715e">// 造数据……
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">++</span>in[<span style="color:#ae81ff">5</span>];
+    <span style="color:#66d9ef">if</span>(in[<span style="color:#ae81ff">5</span>]<span style="color:#f92672">&gt;</span><span style="color:#e6db74">&#39;9&#39;</span>){
+        in[<span style="color:#ae81ff">5</span>]<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;0&#39;</span>;
+        <span style="color:#f92672">++</span>in[<span style="color:#ae81ff">4</span>];
+    }
+}
+</code></pre></div><p>关于批量造一套 .out 文件，可以注意到 C++ 的 main 函数实际上可以传入两个参数，其中一个为 int 类型，一个为 *char[] 类型。当你编译完后进行运行的时候，在 <code>./code.run</code> 后面就可以输入一些东西表示传参，具体的话，第二个参数存入的是整个输入的字符，可以不管它；第一个参数就是传入的参的“数”（如果传若干整数，则“数”代表有多少个整数）加一。也就是说：</p>
+<pre tabindex="0"><code>./code.run 1 1 1 1 1 1
+</code></pre><p>此时 main 函数接到的传参的第一个参数，应该是 $6$，即参数数量（$1$ 的个数）$+1$。</p>
+<p>因此在你的 <code>std.cpp</code> 中做如下操作：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">// 省略 std 内容
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">char</span> in[<span style="color:#ae81ff">100</span>]<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;data00.in&#34;</span>;
+<span style="color:#66d9ef">char</span> ot[<span style="color:#ae81ff">100</span>]<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;data00.out&#34;</span>;
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc,<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>argv[]){
+    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>argc;<span style="color:#f92672">++</span>i){
+        <span style="color:#f92672">++</span>in[<span style="color:#ae81ff">5</span>];
+        <span style="color:#66d9ef">if</span>(in[<span style="color:#ae81ff">5</span>]<span style="color:#f92672">&gt;</span><span style="color:#e6db74">&#39;9&#39;</span>){
+            in[<span style="color:#ae81ff">5</span>]<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;0&#39;</span>;
+            <span style="color:#f92672">++</span>in[<span style="color:#ae81ff">4</span>];
+        }
+    }
+    ot[<span style="color:#ae81ff">5</span>]<span style="color:#f92672">=</span>in[<span style="color:#ae81ff">5</span>],ot[<span style="color:#ae81ff">4</span>]<span style="color:#f92672">=</span>in[<span style="color:#ae81ff">4</span>];
+    freopen(in,<span style="color:#e6db74">&#34;r&#34;</span>,stdin);
+    freopen(ot,<span style="color:#e6db74">&#34;w&#34;</span>,stdout);
+    <span style="color:#75715e">// 标算……
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>然后写一个造数据的代码，利用 <code>system</code> 函数，函数中传入一个字符串参数，相当于你在终端输入的指令。</p>
+<p>那么造一批（包括 in 和 out）数据的 cpp 代码可以这样写：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> N<span style="color:#f92672">=</span><span style="color:#ae81ff">20</span>;<span style="color:#75715e">// N 为数据组数
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">char</span> run[<span style="color:#ae81ff">10000000</span>]<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;./std.run                        &#34;</span>;
+<span style="color:#75715e">// 后面全是空格，空格数和你要造的数据组数直接相关，可多不可少。
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+    system(<span style="color:#e6db74">&#34;g++ -o makedata.run makedata.cpp -O2&#34;</span>);
+    system(<span style="color:#e6db74">&#34;./makedata.run&#34;</span>); <span style="color:#75715e">// 先造一批 .in
+</span><span style="color:#75715e"></span>    system(<span style="color:#e6db74">&#34;g++ -o std.run std.cpp -O2&#34;</span>);<span style="color:#75715e">// O2 加速造数据的速度，不管题目要不要开这里都可以开
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> pos<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>
+    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>N;<span style="color:#f92672">++</span>i){
+        system(run);
+        run[pos]<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;1&#39;</span>,run[pos<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">=</span><span style="color:#e6db74">&#39; &#39;</span>;
+        pos<span style="color:#f92672">+=</span><span style="color:#ae81ff">2</span>;
+    }
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>即使不知道 bat 或 python 等其他知识，也可以快乐批量造数据了。</p>
+<h3 id="其他细节">其他细节</h3>
+<p>题解，要保证适合做这一套题的正常人可以读懂，不宜凭空冒出来一些概念，比如不解释状态直接写转移，或者一个很复杂的转移方程不解释为什么。</p>
+<p>std，不宜邪恶码风（比如无缩进等等），不宜有过多冗余部分，调试信息全部注释掉，保证你给别人的 std 不加任何改动就可以直接 AC 你的题。如果自认为题解足够详细，std 可以不加注释解释，加的话不宜过多过杂。</p>
+<p>一套题涵盖的知识点，应该要涵盖广泛，除非是专题训练。（比如四个题目里面三个 DS 很明显不合理）</p>
+<p>如果有的话，SPJ 和交互库应该保证正确，且不合法的输入都应该能判断出来并且判 WA。</p>
+<p>如果不希望题目有任何公开风险，不要放在网上。可以自己出好然后用 lemon 在本地测试自己的题目。</p>
+<h2 id="暴力">暴力</h2>
+<p>暴力有两种分类：果断的暴力和优雅的暴力。当然那些过于优雅的暴力（柯朵莉树之类）以至于可以把这个题目切掉的，和本文标题冲突，这里不写。</p>
+<p>显然暴力一般是考场上才会写的，平时练习并不会特意地去写一个暴力出来，因此更多的还是要看考场心态等因素。</p>
+<p>这里以一个 CCF 的题目为例子简述我对暴力的看法：<a href="https://www.luogu.com.cn/problem/P7961">NOIP2021T2 数列</a>，正解是什么和这里讨论的主题无关，我们只考虑暴力。</p>
+<blockquote>
+<p>给定 $n,m,k$ 和一个长度为 $m+1$ 的正整数序列 $v_0,v_1,\cdots,v_m$。</p>
+<p>对于一个长度为 $n$，下标从 $1$ 开始，每个元素不超过 $m$ 的非负整数序列 ${a_i}$，其贡献为 $\prod_{i=1}^n v_{a_i}$，权值为 $\sum_{i=1}^n 2^{a_i}$。</p>
+<p>当一个序列的权值满足其二进制表示中 $1$ 的个数不超过 $k$ 时，就会产生贡献。求贡献和对 $998244353$ 取模的值。</p>
+<p>对于 $20%$ 的数据，$n=8,m=9,k\leqslant n$；</p>
+<p>对于 $50%$ 的数据，$n\leqslant 30,m\leqslant 12,k\leqslant n$。</p>
+</blockquote>
+<h3 id="果断的暴力">果断的暴力</h3>
+<p>虽然大家考场上的策略和做法不尽相同，这里我就直接按照我的考场经历简述一下，T1 开考十分种左右的时候切掉了，剩下的三个题目都已经看过了，剩余时间非常充足，属于考试刚开始没多久的时候。</p>
+<p>看到这个题的数据范围，马上对大暴力有了一个复杂度的概念，大体是枚举每一位填什么数，然后判断得到的数是否符合条件。</p>
+<p>一般在<strong>考试时间明显充足</strong>的时候，如果对于一个题一开始没有很好的进展，<strong>先写好一个暴力一定不会差的</strong>。</p>
+<p>因此我很快就干上了一个果断地暴力，先拿到 $20$ 分再说。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#define int long long
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> max_n<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span>,mod<span style="color:#f92672">=</span><span style="color:#ae81ff">998244353</span>;
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">read</span>(){
+	<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">bool</span> w<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">char</span> c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&lt;</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">||</span> c<span style="color:#f92672">&gt;</span><span style="color:#e6db74">&#39;9&#39;</span>) w<span style="color:#f92672">|=</span>c<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;-&#39;</span>,c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&gt;=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> c<span style="color:#f92672">&lt;=</span><span style="color:#e6db74">&#39;9&#39;</span>) x<span style="color:#f92672">=</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">+</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">3</span>)<span style="color:#f92672">+</span>(c<span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>),c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">return</span> w<span style="color:#f92672">?-</span>x:x;
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">write</span>(<span style="color:#66d9ef">int</span> x){
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>) x<span style="color:#f92672">=-</span>x,putchar(<span style="color:#e6db74">&#39;-&#39;</span>);
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">9</span>) write(x<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>);
+	putchar(x<span style="color:#f92672">%</span><span style="color:#ae81ff">10</span><span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>);
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">calc</span>(<span style="color:#66d9ef">int</span> x){
+	<span style="color:#66d9ef">int</span> res<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+	<span style="color:#66d9ef">while</span>(x){
+		<span style="color:#f92672">++</span>res;
+		x<span style="color:#f92672">-=</span>(x<span style="color:#f92672">&amp;-</span>x);
+	}
+	<span style="color:#66d9ef">return</span> res;
+}
+
+<span style="color:#66d9ef">int</span> n,m,k;
+<span style="color:#66d9ef">int</span> v[max_n];
+
+<span style="color:#66d9ef">namespace</span> BUF{
+	<span style="color:#66d9ef">int</span> ans<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+    <span style="color:#75715e">#define int long long
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">dfs</span>(<span style="color:#66d9ef">int</span> l,<span style="color:#66d9ef">int</span> S,<span style="color:#66d9ef">int</span> val){
+		<span style="color:#66d9ef">if</span>(l<span style="color:#f92672">&gt;</span>n){
+			<span style="color:#66d9ef">if</span>(calc(S)<span style="color:#f92672">&lt;=</span>k) ans<span style="color:#f92672">+=</span>val,ans<span style="color:#f92672">%=</span>mod;
+			<span style="color:#66d9ef">return</span>;
+		}
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;=</span>m;<span style="color:#f92672">++</span>i)
+            dfs(l<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,S<span style="color:#f92672">+</span>(<span style="color:#ae81ff">1</span><span style="color:#f92672">&lt;&lt;</span>i),val<span style="color:#f92672">*</span>v[i]<span style="color:#f92672">%</span>mod);
+	}
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">sol</span>(){
+        dfs(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">1</span>);
+		write(ans);
+	}
+}
+
+<span style="color:#66d9ef">signed</span> <span style="color:#a6e22e">main</span>(){
+    freopen(<span style="color:#e6db74">&#34;sequence.in&#34;</span>,<span style="color:#e6db74">&#34;r&#34;</span>,stdin);
+    freopen(<span style="color:#e6db74">&#34;sequence.out&#34;</span>,<span style="color:#e6db74">&#34;w&#34;</span>,stdout);
+	n<span style="color:#f92672">=</span>read(),m<span style="color:#f92672">=</span>read(),k<span style="color:#f92672">=</span>read();
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;=</span>m;<span style="color:#f92672">++</span>i)
+		v[i]<span style="color:#f92672">=</span>read();
+	BUF<span style="color:#f92672">::</span>sol();
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>注意到暴力的部分被写在一个 <code>namespace</code> 里面，这也是我的习惯，这样子更方便数据分治，对于那种保证某种特殊性质的部分分非常有用。</p>
+<p>注意 <code>namespace</code> 里面数组不能开太大，如果较大的话，把 <code>int</code> 改成 <code>static int</code>。</p>
+<p>后续就是把别的题目的暴力干出来了。这一份暴力是 $20$ 分。也就是大枚举分。一般而言这样的果断暴力为以下几种中的一个：</p>
+<ul>
+<li>阶乘或组合数级别地枚举某个顺序，然后跑一遍计算贡献之类。</li>
+<li>二进制或多进制（如本题，实际上是 $m$ 进制）枚举状态，然后跑一遍计算贡献之类。</li>
+<li>枚举一个点或位置，或对于每个操作，暴力跑一遍整个图或序列。在图论和数据结构里一般是这种。</li>
+</ul>
+<p>通常果断暴力具有好想好写的特点，当然也可能有例外，就是好像不好写的那种，不做举例。一般考场上，对于不会的题目至少都要搞到一个果断分。</p>
+<h3 id="优雅的暴力">优雅的暴力</h3>
+<blockquote>
+<p>优雅，永不过时。</p>
+</blockquote>
+<p>写完别的题目暴力我一回来，发现这一档分的 $m$ 明显小于后面的部分分（$m\geqslant 50$），而且 $12$ 这个数字就很适合三进制或者二进制的状压。</p>
+<p>然后你可以回去看你的暴力，因为<strong>很多时候一个题的高档分是低档分一步一步优化来的</strong>。考虑你的搜索能不能在哪个地方状压一下。</p>
+<p>然后你就发现把 $l,S$ 放在状态里刚好，数组大小是 $n2^m$。那就把原来的暴力备份一遍，就开写呗：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#define int long long
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> max_m<span style="color:#f92672">=</span><span style="color:#ae81ff">102</span>,max_n<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>,mod<span style="color:#f92672">=</span><span style="color:#ae81ff">998244353</span>;
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">read</span>(){
+	<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">bool</span> w<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">char</span> c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&lt;</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">||</span> c<span style="color:#f92672">&gt;</span><span style="color:#e6db74">&#39;9&#39;</span>) w<span style="color:#f92672">|=</span>c<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;-&#39;</span>,c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&gt;=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> c<span style="color:#f92672">&lt;=</span><span style="color:#e6db74">&#39;9&#39;</span>) x<span style="color:#f92672">=</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">+</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">3</span>)<span style="color:#f92672">+</span>(c<span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>),c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">return</span> w<span style="color:#f92672">?-</span>x:x;
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">write</span>(<span style="color:#66d9ef">int</span> x){
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>) x<span style="color:#f92672">=-</span>x,putchar(<span style="color:#e6db74">&#39;-&#39;</span>);
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">9</span>) write(x<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>);
+	putchar(x<span style="color:#f92672">%</span><span style="color:#ae81ff">10</span><span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>);
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">calc</span>(<span style="color:#66d9ef">int</span> x){
+	<span style="color:#66d9ef">int</span> res<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+	<span style="color:#66d9ef">while</span>(x){
+		<span style="color:#f92672">++</span>res;
+		x<span style="color:#f92672">-=</span>(x<span style="color:#f92672">&amp;-</span>x);
+	}
+	<span style="color:#66d9ef">return</span> res;
+}
+
+<span style="color:#66d9ef">int</span> n,m,k;
+<span style="color:#66d9ef">int</span> v[max_n];
+
+<span style="color:#66d9ef">namespace</span> BUF{
+	<span style="color:#66d9ef">int</span> ans<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+	<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> f[<span style="color:#ae81ff">32</span>][<span style="color:#ae81ff">32</span><span style="color:#f92672">*</span>(<span style="color:#ae81ff">1</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">13</span>)];
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">dfs</span>(<span style="color:#66d9ef">int</span> l,<span style="color:#66d9ef">int</span> S){
+		<span style="color:#66d9ef">if</span>(l<span style="color:#f92672">&gt;</span>n){
+			<span style="color:#66d9ef">if</span>(calc(S)<span style="color:#f92672">&lt;=</span>k) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+			<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+		}
+		<span style="color:#66d9ef">if</span>(f[l][S]<span style="color:#f92672">!=-</span><span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">return</span> f[l][S];
+		f[l][S]<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;=</span>m;<span style="color:#f92672">++</span>i){
+			f[l][S]<span style="color:#f92672">+=</span>dfs(l<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,S<span style="color:#f92672">+</span>(<span style="color:#ae81ff">1</span><span style="color:#f92672">&lt;&lt;</span>i))<span style="color:#f92672">*</span>v[i],
+			f[l][S]<span style="color:#f92672">%=</span>mod;
+		}
+		<span style="color:#66d9ef">return</span> f[l][S];
+	}
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">sol</span>(){
+		memset(f,<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,<span style="color:#66d9ef">sizeof</span>(f));
+		write(dfs(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>));
+	}
+}
+
+<span style="color:#66d9ef">signed</span> <span style="color:#a6e22e">main</span>(){
+    freopen(<span style="color:#e6db74">&#34;sequence.in&#34;</span>,<span style="color:#e6db74">&#34;r&#34;</span>,stdin);
+    freopen(<span style="color:#e6db74">&#34;sequence.out&#34;</span>,<span style="color:#e6db74">&#34;w&#34;</span>,stdout);
+	n<span style="color:#f92672">=</span>read(),m<span style="color:#f92672">=</span>read(),k<span style="color:#f92672">=</span>read();
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;=</span>m;<span style="color:#f92672">++</span>i)
+		v[i]<span style="color:#f92672">=</span>read();
+	BUF<span style="color:#f92672">::</span>sol();
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>这个东西，它现在是一个记忆搜，它的 DP 本质就是：记录状态 $f_{i,state}$ 表示考虑到第 $i$ 个位置，此时序列的权值是 $state$，可以造成的贡献是多少。转移时枚举这个位置填哪个数字：
+$$
+f_{i,state}\leftarrow\sum_{j=0}^m f_{i+1,state+2^j}
+$$
+这样子就写出了一个优雅的暴力，可以拿到 $50$ 分的好成绩。</p>
+<p>优雅的暴力通常带有如下几个性质中的至少一个：</p>
+<ul>
+<li>对这个题有一个初步的进展，但是这个进展不知道如何突破。</li>
+<li>常见算法有：$n^2$ DP，状压 DP，推出一个性质之后暴力维护。</li>
+<li>后续更优秀的算法大概率从这里开始一步一步突破得到。</li>
+</ul>
+<p>对于不会做的题目，应该要能打多少分打多少分。只要暴力足够优雅，不排除有靠暴力分过线的情况。</p>
+<p>平时研究优雅暴力的过程的含金量，应该是和研究正解相当的。</p>
+<h2 id="卡常">卡常</h2>
+<p>尤其是分块、KD-Tree 等东西，常数如果较大，就会原地爆炸。这是最根源的卡常的目的。</p>
+<p>其次就是让自己考场上的暴力能放跑多一点点哪怕是一个点的分。<del>再其次是卡最优解榜一</del></p>
+<p>卡常有正常的卡常和不正常的卡常。不正常的卡常比如循环展开等，过于离谱而且对代码阅读影响是很大的，这里我不想说。</p>
+<p>时刻注意，打代码的时候一定还是要<strong>按照自己的习惯码</strong>，切忌边写边搞卡常，不然你样例没过的时候 debug 的样子就会很狼狈。</p>
+<p>细节上的卡常有下面几种：</p>
+<ul>
+<li>循环变量用 <code>register</code>，可惜的是它从 C++14 起不起到优化作用了。</li>
+<li>快读快写，可以在我上面的代码里找到，速度比 <code>scanf,printf</code> 快一些，用于输入输出文件较大的时候。</li>
+<li><code>ios::sync_with_stdio(false);cin.tie(0),cout.tie(0);</code> 使 <code>cin,cout</code> 的用时和 <code>scanf,printf</code> 相当。如果字符串定义的 <code>string</code>，是只能用 <code>cin,cout</code> 的，一般这个时候会用到。</li>
+<li><code>switch</code> 的速度慢于 <code>if-else</code> 慢于三目运算符。</li>
+<li>通常数据结构上用 STL 比手写慢。非数据结构的函数有一部分比手写慢，但是例如 <code>sort</code> 等 STL 是快于手写的归并排序或快速排序的。</li>
+<li>位运算比四则运算快，但是如果你是把 <code>i+1</code> 写成 <code>i=-~i</code> 这种，搞不好会慢一点。</li>
+<li>同一条语句中如果有较多（但不能过多，要合理）的计算，会促进 CPU 并发，略微变快。但是定义中间变量如 <code>tmp</code> 等取代一些重复计算的时候，如果重复计算的次数不多就不需要，如果较多还是搞一个中间变量比较好。</li>
+<li>指针比写个存下标的数组快，但是不怎么会用指针的话还是算了吧。</li>
+<li><code>int</code> 是计算速度最快的常用变量类型，当然 <code>bool</code> 可能快一点但是没什么题目保证输入的数字都是 $0$ 或 $1$ 计算也都是 $0,1$ 的计算吧……</li>
+<li>短路运算符，让你觉得更不可能满足条件的判断放前面。比如 <code>a&gt;n || a==-inf</code>，如果你的初值全是 <code>-inf</code>，不合法情况是 <code>&gt;n</code>，那不妨改成 <code>a==-inf || a&gt;n</code>。不过卡常效果甚微。</li>
+<li><code>main</code> 函数类型改成 <code>signed</code>，不会 CE，但卡常效果甚微，不过这样改了也很方便你直接 <code>#define int long long</code>。</li>
+</ul>
+<p>其他方面的卡常就和写的东西不一样因人而异了：</p>
+<ul>
+<li>
+<p>替罪羊的 $\alpha$ 取 $0.62$ 或 $0.74$ 可能较快，当然根据写的人和方式不同会有较大的改变，个人推荐 $0.75$，不管怎么写速度都可观。</p>
+</li>
+<li>
+<p>来看下面一个代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">interv</span>(<span style="color:#66d9ef">int</span> mid,<span style="color:#66d9ef">int</span> l,<span style="color:#66d9ef">int</span> r){
+	<span style="color:#66d9ef">if</span>(l<span style="color:#f92672">&lt;=</span>mid <span style="color:#f92672">&amp;&amp;</span> mid<span style="color:#f92672">&lt;=</span>r) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">check</span>(<span style="color:#66d9ef">int</span> x,<span style="color:#66d9ef">int</span> i,<span style="color:#66d9ef">int</span> j){
+	<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>x) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+	<span style="color:#66d9ef">if</span>(a[x].l.x<span style="color:#f92672">&lt;=</span>p[j].x <span style="color:#f92672">&amp;&amp;</span> (interv(a[x].l.y,p[i].y,p[j].y) <span style="color:#f92672">||</span> interv(a[x].r.y,p[i].y,p[j].y))) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+	<span style="color:#66d9ef">if</span>(a[x].r.x<span style="color:#f92672">&gt;=</span>p[i].x <span style="color:#f92672">&amp;&amp;</span> (interv(a[x].l.y,p[i].y,p[j].y) <span style="color:#f92672">||</span> interv(a[x].r.y,p[i].y,p[j].y))) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+	<span style="color:#66d9ef">if</span>(a[x].l.y<span style="color:#f92672">&lt;=</span>p[j].y <span style="color:#f92672">&amp;&amp;</span> (interv(a[x].l.x,p[i].x,p[j].x) <span style="color:#f92672">||</span> interv(a[x].r.x,p[i].x,p[j].x))) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+	<span style="color:#66d9ef">if</span>(a[x].r.y<span style="color:#f92672">&gt;=</span>p[i].y <span style="color:#f92672">&amp;&amp;</span> (interv(a[x].l.x,p[i].x,p[j].x) <span style="color:#f92672">||</span> interv(a[x].r.x,p[i].x,p[j].x))) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+	<span style="color:#66d9ef">if</span>(interv(p[i].x,a[x].l.x,a[x].r.x) <span style="color:#f92672">&amp;&amp;</span> interv(p[i].y,a[x].l.y,a[x].r.y) <span style="color:#f92672">&amp;&amp;</span> interv(p[j].x,a[x].l.x,a[x].r.x) <span style="color:#f92672">&amp;&amp;</span> interv(p[j].y,a[x].l.y,a[x].r.y)) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">ask</span>(<span style="color:#66d9ef">int</span> x,<span style="color:#66d9ef">int</span> id1,<span style="color:#66d9ef">int</span> id2){
+	<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>x) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+	<span style="color:#66d9ef">if</span>(a[x].l.x<span style="color:#f92672">&gt;=</span>p[id1].x <span style="color:#f92672">&amp;&amp;</span> a[x].r.x<span style="color:#f92672">&lt;=</span>p[id2].x <span style="color:#f92672">&amp;&amp;</span> a[x].l.y<span style="color:#f92672">&gt;=</span>p[id1].y <span style="color:#f92672">&amp;&amp;</span> a[x].r.y<span style="color:#f92672">&lt;=</span>p[id2].y)
+		<span style="color:#66d9ef">return</span> a[x].sm;
+	<span style="color:#66d9ef">int</span> res<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+	<span style="color:#66d9ef">if</span>(interv(a[x].x.x,p[id1].x,p[id2].x) <span style="color:#f92672">&amp;&amp;</span> interv(a[x].x.y,p[id1].y,p[id2].y))
+        res<span style="color:#f92672">+=</span>a[x].x.val;
+	<span style="color:#66d9ef">if</span>(check(ls(x),id1,id2)) res<span style="color:#f92672">+=</span>ask(ls(x),id1,id2);
+	<span style="color:#66d9ef">if</span>(check(rs(x),id1,id2)) res<span style="color:#f92672">+=</span>ask(rs(x),id1,id2);
+	<span style="color:#66d9ef">return</span> res;
+}
+</code></pre></div><p>这玩意的常数绝对不是你能想象的，而它的本质，只不过是 KD-Tree 上求一个矩形内点的点权和。实测原题这个代码最大的数据点要跑 40s。</p>
+<p>如果巧妙地做一点变换，让它判断少一点：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">interv</span>(<span style="color:#66d9ef">int</span> mid,<span style="color:#66d9ef">int</span> l,<span style="color:#66d9ef">int</span> r){
+	<span style="color:#66d9ef">if</span>(l<span style="color:#f92672">&lt;=</span>mid <span style="color:#f92672">&amp;&amp;</span> mid<span style="color:#f92672">&lt;=</span>r) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">ask</span>(<span style="color:#66d9ef">int</span> x,point i,point j){
+	<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>x <span style="color:#f92672">||</span> a[x].l.x<span style="color:#f92672">&gt;</span>j.x <span style="color:#f92672">||</span> a[x].r.x<span style="color:#f92672">&lt;</span>i.x <span style="color:#f92672">||</span> a[x].l.y<span style="color:#f92672">&gt;</span>j.y <span style="color:#f92672">||</span> a[x].r.y<span style="color:#f92672">&lt;</span>i.y) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+	<span style="color:#66d9ef">if</span>(a[x].l.x<span style="color:#f92672">&gt;=</span>i.x <span style="color:#f92672">&amp;&amp;</span> a[x].r.x<span style="color:#f92672">&lt;=</span>j.x <span style="color:#f92672">&amp;&amp;</span> a[x].l.y<span style="color:#f92672">&gt;=</span>i.y <span style="color:#f92672">&amp;&amp;</span> a[x].r.y<span style="color:#f92672">&lt;=</span>j.y)
+		<span style="color:#66d9ef">return</span> a[x].sm;
+	<span style="color:#66d9ef">int</span> res<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+	<span style="color:#66d9ef">if</span>(interv(a[x].x.x,i.x,j.x) <span style="color:#f92672">&amp;&amp;</span> interv(a[x].x.y,i.y,j.y))
+        res<span style="color:#f92672">+=</span>a[x].x.val;
+	res<span style="color:#f92672">+=</span>ask(ls(x),i,j)<span style="color:#f92672">+</span>ask(rs(x),i,j);
+	<span style="color:#66d9ef">return</span> res;
+}
+</code></pre></div><p>显然少了很多 if，实际上这个代码在这个题上最慢的点就不到 2s 了。中间的 $20$ 倍的常数，就是反复调用 $\text{check,interv}$ 函数，且逻辑判断非常多造成的。</p>
+</li>
+<li>
+<p>通常情况，写成递推会比写成递归常数小。</p>
+</li>
+<li>
+<p>LCT 是 $\log$ 级数据结构中常数极大的一个，其次是常数大一些的平衡树，再其次为线段树合并，线段树常数也不小；树状数组是常数近乎最小的。</p>
+</li>
+</ul>
+<h2 id="对拍">对拍</h2>
+<p>你应该要准备好三份代码，不一定要按照这里的命名，但是这三个代码都要有：</p>
+<ul>
+<li>造数据的代码 <code>make.cpp</code>。</li>
+<li>保证正确的一份代码（例如题解或暴力）<code>std.cpp</code>。</li>
+<li>你自己想要对拍测试的代码 <code>code.cpp</code>。</li>
+</ul>
+<p>并保证这三个代码都开了文件输入输出。</p>
+<p>根据前文（出题部分里面写了）所述，<code>system</code> 函数相当于在终端执行了一个指令。众所周知，<code>diff A B -q -b</code> 可以忽略文末回车和空行，并在两个文件不同的时候产生一个返回值（如果两个文件相同，没有返回值，即返回值为 $0$）。</p>
+<p>因此不难干出这样一个对拍代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+    system(<span style="color:#e6db74">&#34;g++ -o mak make.cpp -O2&#34;</span>);
+    system(<span style="color:#e6db74">&#34;g++ -o cod code.cpp -O2&#34;</span>);
+    system(<span style="color:#e6db74">&#34;g++ -o std std.cpp -O2&#34;</span>);
+	<span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+	<span style="color:#66d9ef">while</span>(<span style="color:#ae81ff">1</span>){
+		printf(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+		<span style="color:#f92672">++</span>i;
+		printf(<span style="color:#e6db74">&#34;%d :</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,i);
+		system(<span style="color:#e6db74">&#34;./mak.r&#34;</span>);
+		system(<span style="color:#e6db74">&#34;./std.r&#34;</span>);
+		system(<span style="color:#e6db74">&#34;./cod.r&#34;</span>);
+		<span style="color:#66d9ef">if</span>(system(<span style="color:#e6db74">&#34;diff data.out data.ans -q -b&#34;</span>)){
+			puts(<span style="color:#e6db74">&#34;WA&#34;</span>);
+			<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+		}
+		puts(<span style="color:#e6db74">&#34;AC&#34;</span>);
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>如果想要加个计时，就搞个 <code>clock</code> 函数：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;time.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+    system(<span style="color:#e6db74">&#34;g++ -o mak make.cpp -O2&#34;</span>);
+    system(<span style="color:#e6db74">&#34;g++ -o cod code.cpp -O2&#34;</span>);
+    system(<span style="color:#e6db74">&#34;g++ -o std std.cpp -O2&#34;</span>);
+	<span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+	<span style="color:#66d9ef">while</span>(<span style="color:#ae81ff">1</span>){
+		printf(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+		<span style="color:#f92672">++</span>i;
+		printf(<span style="color:#e6db74">&#34;%d :</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,i);
+		system(<span style="color:#e6db74">&#34;./mak.r&#34;</span>);
+		system(<span style="color:#e6db74">&#34;./std.r&#34;</span>);
+        <span style="color:#66d9ef">double</span> a<span style="color:#f92672">=</span>clock();
+		system(<span style="color:#e6db74">&#34;./cod.r&#34;</span>);
+        <span style="color:#66d9ef">double</span> b<span style="color:#f92672">=</span>clock();
+		<span style="color:#66d9ef">if</span>(system(<span style="color:#e6db74">&#34;diff data.out data.ans -q -b&#34;</span>)){
+			puts(<span style="color:#e6db74">&#34;WA&#34;</span>);
+			<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+		}
+		printf(<span style="color:#e6db74">&#34;AC, %.2lf ms</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,(b<span style="color:#f92672">-</span>a)<span style="color:#f92672">/</span>CLOCK_PER_SEC<span style="color:#f92672">*</span><span style="color:#ae81ff">1000.0</span>);
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>编译运行，就可以快乐对拍了，直到有 WA 的数据的时候，就是 <code>data.in/ans</code> 这一组数据。造数据的时候数据不宜过大，好在抓到错之后可以手玩。但是大数据也需要拍一些的。</p>
+<h2 id="打表">打表</h2>
+<p>一般而言，适合打表的题目具有几个特征：</p>
+<ul>
+<li>题目给定的参数很少，且参数的范围适合打一个不 MLE 的表，比如 <a href="https://www.luogu.com.cn/problem/P7960">NOIP2021T1</a> 单次询问只会询问一个参数，且值域为 $10^7$。</li>
+<li>模数是固定的，或者模数是个摆设（即不取模也不会爆 <code>__int128</code>）。</li>
+<li>暴力很好写，或者推导到一定步骤之后很好办。</li>
+</ul>
+<p>打表分为两种：一种是你不知道这个题的做法，而且你的暴力在有限的时间内（一般为考试时间）无法把满分的数据的表做出来，因此只能暴力打表；第二种是你已经推导到一个高级地步了，只需要写一个复杂度可以的打表，就可以满分。</p>
+<p>前者就是暴力没啥好说的，重点看后者，特别是怎么把代码压在提交代码的长度限制内。</p>
+<p>先来看看这样一个题目：<a href="https://www.luogu.com.cn/problem/P7960">NOIP2021T1 报数</a>。</p>
+<blockquote>
+<p>多组询问，每次给定一个数字 $n$，求 $n$ 是否合法，若合法，求下一个合法的数。一个数合法定义为他不能被任何十进制数位带 $7$ 的数字整除。</p>
+<p>询问数不超过 $2\times 10^5$，$n\leqslant 10^7$。</p>
+</blockquote>
+<h3 id="直接打表">直接打表</h3>
+<p>考虑这样一个题目的暴力是什么：枚举每个数字，然后判断是否合法，判断方法是：找到所有比它小的带 $7$ 的数字，验证能否整除。</p>
+<p>打表的时候还可以用一下 <code>cerr</code>，用法和 <code>cout</code> 是一样的，例如<code>cerr&lt;&lt;cnt&lt;&lt;&quot;\n&quot;</code>，特别的是，即使你开了文件输入输出，<code>cerr</code> 仍然会把内容输出到终端，方便调试。</p>
+<p>根据这个思路我们打出一个打表代码，得到所有合法的数字：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">read</span>(){
+	<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">bool</span> w<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">char</span> c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&lt;</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">||</span> c<span style="color:#f92672">&gt;</span><span style="color:#e6db74">&#39;9&#39;</span>) w<span style="color:#f92672">|=</span>c<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;-&#39;</span>,c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&gt;=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> c<span style="color:#f92672">&lt;=</span><span style="color:#e6db74">&#39;9&#39;</span>) x<span style="color:#f92672">=</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">+</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">3</span>)<span style="color:#f92672">+</span>(c<span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>),c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">return</span> w<span style="color:#f92672">?-</span>x:x;
+}
+
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">calc</span>(<span style="color:#66d9ef">int</span> x){
+	<span style="color:#66d9ef">while</span>(x){
+		<span style="color:#66d9ef">int</span> tmp<span style="color:#f92672">=</span>x<span style="color:#f92672">%</span><span style="color:#ae81ff">10</span>;
+		x<span style="color:#f92672">/=</span><span style="color:#ae81ff">10</span>;
+		<span style="color:#66d9ef">if</span>(tmp<span style="color:#f92672">==</span><span style="color:#ae81ff">7</span>) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+
+<span style="color:#66d9ef">int</span> cnt;
+vector<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> a;
+
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">check</span>(<span style="color:#66d9ef">int</span> x){
+	<span style="color:#66d9ef">int</span> _n<span style="color:#f92672">=</span>a.size();
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;</span>_n;<span style="color:#f92672">++</span>i)
+		<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">%</span>a[i]<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>)
+			<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+}
+
+<span style="color:#66d9ef">signed</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#66d9ef">int</span> n<span style="color:#f92672">=</span>read();
+	freopen(<span style="color:#e6db74">&#34;biao.txt&#34;</span>,<span style="color:#e6db74">&#34;w&#34;</span>,stdout);
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i){
+		<span style="color:#66d9ef">if</span>(calc(i)){
+			a.push_back(i);
+			<span style="color:#66d9ef">continue</span>;
+		}
+		<span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span>(check(i)){
+			<span style="color:#f92672">++</span>cnt;
+			printf(<span style="color:#e6db74">&#34;%d,&#34;</span>,i);
+		}
+	}
+	cerr<span style="color:#f92672">&lt;&lt;</span><span style="color:#e6db74">&#34;cnt= &#34;</span><span style="color:#f92672">&lt;&lt;</span>cnt<span style="color:#f92672">&lt;&lt;</span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>;
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>随便算一下，枚举一个数之前的数字就假设是 $\operatorname{O}(n)$ 的，那么时间复杂度就是 $\Theta(n\times(n-1)\times\frac{1}{2})$，$n=10^7+10$（多打一点点避免问你 $10^7$ 的下一个合法的数字是多少你的表搞不定），代入，大约是 $5\times 10^{13}$，你需要 $34$ 小时来运行它。看起来考场上显然不可取。</p>
+<p>但是实际上呢？比一个数小的带 $7$ 的数字怎么可能约为 $n$，它显然是组合数级别的，而因为最多只有 $8$ 位数字，所以大不到哪里去。事实上，这个代码可以在 $1$ 小时内得到结果。</p>
+<p>于是就暴力打表了。</p>
+<h3 id="差分表">差分表</h3>
+<p>差分表就是对原来的表（即答案表，直接存答案的表）进行差分，得到一个新表，在答案表中相邻两个数之差不大时，差分表的大小明显小于答案表。将差分表放在提交代码里时，只需要做个前缀和处理就可以转化为原表。</p>
+<p>仍然以上面那个题为例子，那个题的答案表打出来一共 $6\text{MB}$，你先不说放在代码里能不能交得上去，这个源码大小交上去算不算卡了 CCF 评测都说不清。</p>
+<p>如何在已经得到了这个表的前提下，想办法缩小这个表的大小？显然，这个题是不适合分段打表的。</p>
+<p>我们随便取表里面的一段，发现：</p>
+<pre tabindex="0"><code>8042,8044,8045,8048,8049,8053,8059,8060,8065,8069,8080,8081
+</code></pre><p>虽然这里的数字已经达到了 $8000$（一个数字 $4$ 个字符），但是两个数字的差是很小的，而且都是个位数（一个数字 $1$ 个字符）。为了验证它可以把表大小变得很小，我们再看看后面一段：</p>
+<pre tabindex="0"><code>368843,368846,368848,368859,368863,368881,368882,368884,368889
+</code></pre><p>相邻的两个数的差仍然是个位数。事实上对于这样数字相对连续的表，它们的差分数字出现位数超过 $4$ 的都比较少了，所以表的大小明显缩短。因此不妨写个求差分的代码，把原来的答案表做成差分表：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+<span style="color:#66d9ef">signed</span> <span style="color:#a6e22e">main</span>(){
+	freopen(<span style="color:#e6db74">&#34;biao.txt&#34;</span>,<span style="color:#e6db74">&#34;r&#34;</span>,stdin),
+	freopen(<span style="color:#e6db74">&#34;biao2.txt&#34;</span>,<span style="color:#e6db74">&#34;w&#34;</span>,stdout);
+	ios<span style="color:#f92672">::</span>sync_with_stdio(false);
+	cin.tie(<span style="color:#ae81ff">0</span>);
+	<span style="color:#66d9ef">int</span> x,last<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+	<span style="color:#66d9ef">while</span>(cin<span style="color:#f92672">&gt;&gt;</span>x){
+		printf(<span style="color:#e6db74">&#34;%d,&#34;</span>,x<span style="color:#f92672">-</span>last);
+		x<span style="color:#f92672">=</span>last;
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>在你的提交代码里面里面，对你放进去的这个差分表做一个前缀和处理，就变成答案表了。</p>
+<h3 id="分段打表">分段打表</h3>
+<p>分段打表就是，我们发现一个表是非常大的，而且差分表无法把它压在一个合适的大小，不过我们可以通过表的一部分，通过复杂度能过的算法得到实际的答案，那么就可以只打出一部分情况下的表，一般表的数字个数打成根号级别，即分块表。</p>
+<p>相对于前面的打表，分段打表往往更有思维难度，特别是有的题目，对于怎么从一个分段表推出当前输入的数据的答案，需要用到的推导和推正解没什么区别了。</p>
+<p>以这个题为例子，我们考虑一下怎么打表：<a href="https://www.luogu.com.cn/problem/P5388">P5388 最终幻想</a>。</p>
+<blockquote>
+<p>求用 $k$ 个 $n-1$ 维超平面可以把一个 $n$ 维超球最多划分为多少块。答案对 $998244353$ 取模。</p>
+<p>$n,k\in[1,998244353)$</p>
+</blockquote>
+<p>抛开所有的数学推导（<del>我还是打表找规律找到结论然后敲诈勒索数学组骗到做法的</del>），我们可以得到一个结论：
+$$
+Ans=\begin{cases}
+2^k&amp;(k\leqslant n)\
+\sum_{i=0}^n\operatorname{C_k^n}&amp;(k&gt;n)
+\end{cases}
+$$
+对于 $k\leqslant n$ 的做法，显然快速幂。但是对于 $k&gt;n$ 的做法我们不好打表。最明显的原因不仅仅是它有 $n,k$ 两个元素，差分的方法不适合运用上来，还有它呈现一个组合数前缀和的模式，差分数值也会比较大。</p>
+<p>洛谷的代码提交上限是 $50\text{KB}$，我们尽量压一下。首先得到模数不超过是 $10^9$，即一个答案最多为 $9$ 位数，也就是说最多只能记录 $10^4$ 个数字。因此考虑 $n,k$ 都以 $10^7$ 为打表间隔，打一个二维数组的表，刚好 $(\frac{10^9}{10^7})^2=10^4$。</p>
+<p>现在问题转化为，给定 $\operatorname{C}<em>n^k$，求 $\operatorname{C}</em>{n+\Delta n}^{k+\Delta k}$。$0&lt;\Delta n,\Delta k\leqslant 10^7$。</p>
+<p>因为 $\Delta n,\Delta k$ 相对小一些，如果我每次可以根据 $\operatorname{C}<em>n^m$，$\operatorname{O}(1)$ 复杂度求出 $\operatorname{C}</em>{n+1}^m$ 和 $\operatorname{C}<em>n^{m+1}$，这题就做完了。
+$$
+\begin{aligned}
+\operatorname{C}<em>n^m
+&amp;=\frac{n!}{m!(n-m)!}\
+&amp;=\frac{\prod</em>{i=n-m+1}^n i}{\prod</em>{i=1}^m i}
+\end{aligned}
+$$
+分别另 $n\leftarrow n+1,m\leftarrow m+1$，分别可以得到：
+$$
+\operatorname{C}_{n+1}^m=\operatorname{C}_n^m\times \frac{n+1}{n-m+1}\
+\operatorname{C}_n^{m+1}=\operatorname{C}_n^m\times \frac{n-m}{m+1}
+$$
+因此直接递推就可以了，简单转化到带 sigma 的情况即可。</p>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/" title="OI 相关的非切题内容" target="_blank" rel="external">https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/Walker_68145" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://walker68145/Arahc.github.io/avatar.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/Walker_68145" target="_blank"><span class="text-dark">Arahc</span><small class="ml-1x">Arahc&#39;s home</small></a></h3>
+        <div>咕↘咕↗咕——→</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://walker68145/Arahc.github.io/posts/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E4%B8%8Ekdtree/" title="替罪羊与KDTree"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://walker68145/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/"
+                    title="Markdown 入门"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/Walker_68145" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://walker68145/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/C&#43;&#43;.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://walker68145/Arahc.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://walker68145/Arahc.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/walker68145\/Arahc.github.io',
+            CONTENT_URL: 'https:\/\/walker68145\/Arahc.github.io\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://walker68145/Arahc.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>

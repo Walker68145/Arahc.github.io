@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        概率与期望 - Arahc&#39;s blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="前言 从前有一个屑到要被淘汰的菜 Oier（其实就是我），他写了一个博客叫“浅谈数学期望”。然后好巧不巧在某一次更新博客的时候以前的文章全部被覆盖了，因为没有存笔记所以直接全部消失。这个人想着算了，覆盖掉就覆盖掉吧，鬼才会写概率和期望的博客。
+半年后的今天，这个死鬼居然补起了学习笔记，好巧不巧，正好就有概率和期望。（我：WDNMD）
+所以今天来写一波概率和期望的笔记。学长讲的时候都是以例题为主，顺带就把在洛谷上平均难度都是冷色系的概率 DP 一起水过去了，差点让我没跟上。所以这一次仔细写一写。
+概率 概率，都不陌生，凡是有初中数学基础（好像是小学？）的都不会不知道什么是概率。
+ 概率，亦称“或然率”，它是反映随机事件出现的可能性大小。随机事件是指在相同条件下，可能出现也可能不出现的事件。例如，从一批有正品和次品的商品中，随意抽取一件，“抽得的是正品”就是一个随机事件。设对某一随机现象进行了 $n$ 次试验与观察，其中 $A$ 事件出现了 $m$ 次，即其出现的频率为 $\frac{m}{n}$。经过大量反复试验，常有 $\frac{m}{n}$ 越来越接近于某个确定的常数（此论断证明详见伯努利大数定律）。该常数即为事件 $A$ 出现的概率，常用 $\operatorname{P}(A)$ 表示。（摘自百度）
+ 举几个简单的例子，投一个骰子，$6$ 朝上的概率是 $\frac{1}{6}$，朝上的数字是奇数的概率是 $\frac{1}{2}$，是自然数的概率是 $1$，是负数的概率是 $0$。
+至于穷举法树状图法表格法频率法计算法求概率，这篇文章不是数学课讲义，显然没必要赘述。
+期望 期望好像不是初中的东西，简单提一下（其实是重点啊喂）
+ 在概率论和统计学中，数学期望（mean）（或均值，亦简称期望）是试验中每次可能结果的概率乘以其结果的总和，是最基本的数学特征之一。它反映随机变量平均取值的大小。 需要注意的是，期望值并不一定等同于常识中的“期望”——“期望值”也许与每一个结果都不相等。期望值是该变量输出值的平均数。期望值并不一定包含于变量的输出值集合里。（摘自百度）
+ 期望就是这件事所有的结果（用一个数值表示）乘上它对应的概率，然后全部加起来。说的有点玄乎，举个例子看看：抛一个骰子，朝上的一面的数字期望是多少？
+显然数字可能是 $1,2,3,4,5,6$，对应的概率都是 $\frac{1}{6}$，因此朝上的一面期望值是：
+$$1\times\dfrac{1}{6}&#43;2\times\dfrac{1}{6}&#43;3\times\dfrac{1}{6}&#43;4\times\dfrac{1}{6}&#43;5\times\dfrac{1}{6}&#43;6\times\dfrac{1}{6}=3.5$$
+  引导例题：同时投两个骰子，朝上的一面数的和的期望。
+ 每个骰子的数字都是 $1,2,3,4,5,6$，所以总和是 $[2,12]$，但是这些和出现的概率是均等的吗？但凡做过小学题都知道不均等。最原始的方法还是莫过于初中数学的表格法暴力枚举： （为什么不用树状图法？只要你画得比这 $\LaTeX$ 做的表格还好看我就换）
+   \ 1 2 3 4 5 6     1 2 3 4 5 6 7   2 3 4 5 6 7 8   3 4 5 6 7 8 9   4 5 6 7 8 9 10   5 6 7 8 9 10 11   6 7 8 9 10 11 12    一共有 $36$ 种情况，其中出现 $7$ 的次数最多。这能否代表 $7$ 一定是期望值呢？显然不能，例如一个骰子的时候，作为期望值的 $3." />
+    <meta name="generator" content="Hugo 0.91.2 with theme pure" />
+    <title>概率与期望 - Arahc&#39;s blog</title>
+    
+    
+    <link rel="stylesheet" href="https://walker68145/Arahc.github.io/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="概率与期望" />
+<meta property="og:description" content="前言 从前有一个屑到要被淘汰的菜 Oier（其实就是我），他写了一个博客叫“浅谈数学期望”。然后好巧不巧在某一次更新博客的时候以前的文章全部被覆盖了，因为没有存笔记所以直接全部消失。这个人想着算了，覆盖掉就覆盖掉吧，鬼才会写概率和期望的博客。
+半年后的今天，这个死鬼居然补起了学习笔记，好巧不巧，正好就有概率和期望。（我：WDNMD）
+所以今天来写一波概率和期望的笔记。学长讲的时候都是以例题为主，顺带就把在洛谷上平均难度都是冷色系的概率 DP 一起水过去了，差点让我没跟上。所以这一次仔细写一写。
+概率 概率，都不陌生，凡是有初中数学基础（好像是小学？）的都不会不知道什么是概率。
+ 概率，亦称“或然率”，它是反映随机事件出现的可能性大小。随机事件是指在相同条件下，可能出现也可能不出现的事件。例如，从一批有正品和次品的商品中，随意抽取一件，“抽得的是正品”就是一个随机事件。设对某一随机现象进行了 $n$ 次试验与观察，其中 $A$ 事件出现了 $m$ 次，即其出现的频率为 $\frac{m}{n}$。经过大量反复试验，常有 $\frac{m}{n}$ 越来越接近于某个确定的常数（此论断证明详见伯努利大数定律）。该常数即为事件 $A$ 出现的概率，常用 $\operatorname{P}(A)$ 表示。（摘自百度）
+ 举几个简单的例子，投一个骰子，$6$ 朝上的概率是 $\frac{1}{6}$，朝上的数字是奇数的概率是 $\frac{1}{2}$，是自然数的概率是 $1$，是负数的概率是 $0$。
+至于穷举法树状图法表格法频率法计算法求概率，这篇文章不是数学课讲义，显然没必要赘述。
+期望 期望好像不是初中的东西，简单提一下（其实是重点啊喂）
+ 在概率论和统计学中，数学期望（mean）（或均值，亦简称期望）是试验中每次可能结果的概率乘以其结果的总和，是最基本的数学特征之一。它反映随机变量平均取值的大小。 需要注意的是，期望值并不一定等同于常识中的“期望”——“期望值”也许与每一个结果都不相等。期望值是该变量输出值的平均数。期望值并不一定包含于变量的输出值集合里。（摘自百度）
+ 期望就是这件事所有的结果（用一个数值表示）乘上它对应的概率，然后全部加起来。说的有点玄乎，举个例子看看：抛一个骰子，朝上的一面的数字期望是多少？
+显然数字可能是 $1,2,3,4,5,6$，对应的概率都是 $\frac{1}{6}$，因此朝上的一面期望值是：
+$$1\times\dfrac{1}{6}&#43;2\times\dfrac{1}{6}&#43;3\times\dfrac{1}{6}&#43;4\times\dfrac{1}{6}&#43;5\times\dfrac{1}{6}&#43;6\times\dfrac{1}{6}=3.5$$
+  引导例题：同时投两个骰子，朝上的一面数的和的期望。
+ 每个骰子的数字都是 $1,2,3,4,5,6$，所以总和是 $[2,12]$，但是这些和出现的概率是均等的吗？但凡做过小学题都知道不均等。最原始的方法还是莫过于初中数学的表格法暴力枚举： （为什么不用树状图法？只要你画得比这 $\LaTeX$ 做的表格还好看我就换）
+   \ 1 2 3 4 5 6     1 2 3 4 5 6 7   2 3 4 5 6 7 8   3 4 5 6 7 8 9   4 5 6 7 8 9 10   5 6 7 8 9 10 11   6 7 8 9 10 11 12    一共有 $36$ 种情况，其中出现 $7$ 的次数最多。这能否代表 $7$ 一定是期望值呢？显然不能，例如一个骰子的时候，作为期望值的 $3." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://walker68145/Arahc.github.io/posts/%E6%A6%82%E7%8E%87%E4%B8%8E%E6%9C%9F%E6%9C%9B/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-28T20:38:26+08:00" />
+<meta property="article:modified_time" content="2021-07-28T20:38:26+08:00" />
+
+<meta itemprop="name" content="概率与期望">
+<meta itemprop="description" content="前言 从前有一个屑到要被淘汰的菜 Oier（其实就是我），他写了一个博客叫“浅谈数学期望”。然后好巧不巧在某一次更新博客的时候以前的文章全部被覆盖了，因为没有存笔记所以直接全部消失。这个人想着算了，覆盖掉就覆盖掉吧，鬼才会写概率和期望的博客。
+半年后的今天，这个死鬼居然补起了学习笔记，好巧不巧，正好就有概率和期望。（我：WDNMD）
+所以今天来写一波概率和期望的笔记。学长讲的时候都是以例题为主，顺带就把在洛谷上平均难度都是冷色系的概率 DP 一起水过去了，差点让我没跟上。所以这一次仔细写一写。
+概率 概率，都不陌生，凡是有初中数学基础（好像是小学？）的都不会不知道什么是概率。
+ 概率，亦称“或然率”，它是反映随机事件出现的可能性大小。随机事件是指在相同条件下，可能出现也可能不出现的事件。例如，从一批有正品和次品的商品中，随意抽取一件，“抽得的是正品”就是一个随机事件。设对某一随机现象进行了 $n$ 次试验与观察，其中 $A$ 事件出现了 $m$ 次，即其出现的频率为 $\frac{m}{n}$。经过大量反复试验，常有 $\frac{m}{n}$ 越来越接近于某个确定的常数（此论断证明详见伯努利大数定律）。该常数即为事件 $A$ 出现的概率，常用 $\operatorname{P}(A)$ 表示。（摘自百度）
+ 举几个简单的例子，投一个骰子，$6$ 朝上的概率是 $\frac{1}{6}$，朝上的数字是奇数的概率是 $\frac{1}{2}$，是自然数的概率是 $1$，是负数的概率是 $0$。
+至于穷举法树状图法表格法频率法计算法求概率，这篇文章不是数学课讲义，显然没必要赘述。
+期望 期望好像不是初中的东西，简单提一下（其实是重点啊喂）
+ 在概率论和统计学中，数学期望（mean）（或均值，亦简称期望）是试验中每次可能结果的概率乘以其结果的总和，是最基本的数学特征之一。它反映随机变量平均取值的大小。 需要注意的是，期望值并不一定等同于常识中的“期望”——“期望值”也许与每一个结果都不相等。期望值是该变量输出值的平均数。期望值并不一定包含于变量的输出值集合里。（摘自百度）
+ 期望就是这件事所有的结果（用一个数值表示）乘上它对应的概率，然后全部加起来。说的有点玄乎，举个例子看看：抛一个骰子，朝上的一面的数字期望是多少？
+显然数字可能是 $1,2,3,4,5,6$，对应的概率都是 $\frac{1}{6}$，因此朝上的一面期望值是：
+$$1\times\dfrac{1}{6}&#43;2\times\dfrac{1}{6}&#43;3\times\dfrac{1}{6}&#43;4\times\dfrac{1}{6}&#43;5\times\dfrac{1}{6}&#43;6\times\dfrac{1}{6}=3.5$$
+  引导例题：同时投两个骰子，朝上的一面数的和的期望。
+ 每个骰子的数字都是 $1,2,3,4,5,6$，所以总和是 $[2,12]$，但是这些和出现的概率是均等的吗？但凡做过小学题都知道不均等。最原始的方法还是莫过于初中数学的表格法暴力枚举： （为什么不用树状图法？只要你画得比这 $\LaTeX$ 做的表格还好看我就换）
+   \ 1 2 3 4 5 6     1 2 3 4 5 6 7   2 3 4 5 6 7 8   3 4 5 6 7 8 9   4 5 6 7 8 9 10   5 6 7 8 9 10 11   6 7 8 9 10 11 12    一共有 $36$ 种情况，其中出现 $7$ 的次数最多。这能否代表 $7$ 一定是期望值呢？显然不能，例如一个骰子的时候，作为期望值的 $3."><meta itemprop="datePublished" content="2021-07-28T20:38:26+08:00" />
+<meta itemprop="dateModified" content="2021-07-28T20:38:26+08:00" />
+<meta itemprop="wordCount" content="438">
+<meta itemprop="keywords" content="数学,动态规划," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="概率与期望"/>
+<meta name="twitter:description" content="前言 从前有一个屑到要被淘汰的菜 Oier（其实就是我），他写了一个博客叫“浅谈数学期望”。然后好巧不巧在某一次更新博客的时候以前的文章全部被覆盖了，因为没有存笔记所以直接全部消失。这个人想着算了，覆盖掉就覆盖掉吧，鬼才会写概率和期望的博客。
+半年后的今天，这个死鬼居然补起了学习笔记，好巧不巧，正好就有概率和期望。（我：WDNMD）
+所以今天来写一波概率和期望的笔记。学长讲的时候都是以例题为主，顺带就把在洛谷上平均难度都是冷色系的概率 DP 一起水过去了，差点让我没跟上。所以这一次仔细写一写。
+概率 概率，都不陌生，凡是有初中数学基础（好像是小学？）的都不会不知道什么是概率。
+ 概率，亦称“或然率”，它是反映随机事件出现的可能性大小。随机事件是指在相同条件下，可能出现也可能不出现的事件。例如，从一批有正品和次品的商品中，随意抽取一件，“抽得的是正品”就是一个随机事件。设对某一随机现象进行了 $n$ 次试验与观察，其中 $A$ 事件出现了 $m$ 次，即其出现的频率为 $\frac{m}{n}$。经过大量反复试验，常有 $\frac{m}{n}$ 越来越接近于某个确定的常数（此论断证明详见伯努利大数定律）。该常数即为事件 $A$ 出现的概率，常用 $\operatorname{P}(A)$ 表示。（摘自百度）
+ 举几个简单的例子，投一个骰子，$6$ 朝上的概率是 $\frac{1}{6}$，朝上的数字是奇数的概率是 $\frac{1}{2}$，是自然数的概率是 $1$，是负数的概率是 $0$。
+至于穷举法树状图法表格法频率法计算法求概率，这篇文章不是数学课讲义，显然没必要赘述。
+期望 期望好像不是初中的东西，简单提一下（其实是重点啊喂）
+ 在概率论和统计学中，数学期望（mean）（或均值，亦简称期望）是试验中每次可能结果的概率乘以其结果的总和，是最基本的数学特征之一。它反映随机变量平均取值的大小。 需要注意的是，期望值并不一定等同于常识中的“期望”——“期望值”也许与每一个结果都不相等。期望值是该变量输出值的平均数。期望值并不一定包含于变量的输出值集合里。（摘自百度）
+ 期望就是这件事所有的结果（用一个数值表示）乘上它对应的概率，然后全部加起来。说的有点玄乎，举个例子看看：抛一个骰子，朝上的一面的数字期望是多少？
+显然数字可能是 $1,2,3,4,5,6$，对应的概率都是 $\frac{1}{6}$，因此朝上的一面期望值是：
+$$1\times\dfrac{1}{6}&#43;2\times\dfrac{1}{6}&#43;3\times\dfrac{1}{6}&#43;4\times\dfrac{1}{6}&#43;5\times\dfrac{1}{6}&#43;6\times\dfrac{1}{6}=3.5$$
+  引导例题：同时投两个骰子，朝上的一面数的和的期望。
+ 每个骰子的数字都是 $1,2,3,4,5,6$，所以总和是 $[2,12]$，但是这些和出现的概率是均等的吗？但凡做过小学题都知道不均等。最原始的方法还是莫过于初中数学的表格法暴力枚举： （为什么不用树状图法？只要你画得比这 $\LaTeX$ 做的表格还好看我就换）
+   \ 1 2 3 4 5 6     1 2 3 4 5 6 7   2 3 4 5 6 7 8   3 4 5 6 7 8 9   4 5 6 7 8 9 10   5 6 7 8 9 10 11   6 7 8 9 10 11 12    一共有 $36$ 种情况，其中出现 $7$ 的次数最多。这能否代表 $7$ 一定是期望值呢？显然不能，例如一个骰子的时候，作为期望值的 $3."/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/Walker_68145" target="_blank">
+            <img class="img-circle img-rotate" src="https://walker68145/Arahc.github.io/avatar.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Arahc</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Arahc&#39;s home</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Changsha, China</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/Arahc.github.io/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/Arahc.github.io/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/Arahc.github.io/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/Arahc.github.io/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/Arahc.github.io/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content"><p>博客已经由 Walker_68145.github.io 转移到此处，原页面保留，为此带来的不便请大家谅解。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link" rel="1">k进制<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link" rel="1">stl<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link" rel="2">二分三分<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link" rel="3">分治<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link" rel="8">动态规划<span
+               class="tag-list-count">8</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link" rel="7">图论<span
+               class="tag-list-count">7</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link" rel="1">字符串<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link" rel="10">数学<span
+               class="tag-list-count">10</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link" rel="9">数据结构<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link" rel="4">暴力<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link" rel="1">莫队<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link" rel="3">贪心<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link" rel="2">随机化<span
+               class="tag-list-count">2</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E6%9D%82%E9%A1%B9/" class="category-list-link">杂项</a><span class="category-list-count">3</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/" class="category-list-link">笔记</a><span class="category-list-count">11</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E9%A2%98%E8%A7%A3/" class="category-list-link">题解</a><span class="category-list-count">20</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link">k进制</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link">stl</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link">二分三分</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link">分治</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link">动态规划</a><span
+                    class="tag-list-count">8</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link">图论</a><span
+                    class="tag-list-count">7</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link">字符串</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link">数学</a><span
+                    class="tag-list-count">10</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link">数据结构</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link">暴力</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link">莫队</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link">贪心</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link">随机化</a><span
+                    class="tag-list-count">2</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/" class="title">P5633最小度限制生成树 题解</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-28 21:43:22 &#43;0800 CST" itemprop="datePublished">2021-12-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/" class="title">线性基入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-22 21:47:24 &#43;0800 CST" itemprop="datePublished">2021-12-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/" class="title">Markdown 入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-30 18:41:00 &#43;0800 CST" itemprop="datePublished">2021-11-30</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/" class="title">OI 相关的非切题内容</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-28 21:42:04 &#43;0800 CST" itemprop="datePublished">2021-11-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E4%B8%8Ekdtree/" class="title">替罪羊与KDTree</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-25 21:48:19 &#43;0800 CST" itemprop="datePublished">2021-11-25</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/Arahc.github.io/posts/%E6%A6%82%E7%8E%87%E4%B8%8E%E6%9C%9F%E6%9C%9B/"
+    >概率与期望</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://walker68145/Arahc.github.io/posts/%E6%A6%82%E7%8E%87%E4%B8%8E%E6%9C%9F%E6%9C%9B/" class="article-date">
+  <time datetime="2021-07-28 20:38:26 &#43;0800 CST" itemprop="datePublished">2021-07-28</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/"> 笔记 </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/"> 数学 </a>
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/"> 动态规划 </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 438 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 3 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <h2 id="前言">前言</h2>
+<p>从前有一个屑到要被淘汰的菜 Oier（其实就是我），他写了一个博客叫“浅谈数学期望”。然后好巧不巧在某一次更新博客的时候以前的文章全部被覆盖了，因为没有存笔记所以直接全部消失。这个人想着算了，覆盖掉就覆盖掉吧，鬼才会写概率和期望的博客。</p>
+<p>半年后的今天，这个死鬼居然补起了学习笔记，好巧不巧，正好就有概率和期望。<del>（我：WDNMD）</del></p>
+<p>所以今天来写一波概率和期望的笔记。学长讲的时候都是以例题为主，顺带就把在洛谷上平均难度都是冷色系的概率 DP 一起水过去了，差点让我没跟上。所以这一次仔细写一写。</p>
+<h2 id="概率">概率</h2>
+<p>概率，都不陌生，凡是有初中数学基础（好像是小学？）的都不会不知道什么是概率。</p>
+<blockquote>
+<p>概率，亦称“或然率”，它是反映随机事件出现的可能性大小。随机事件是指在相同条件下，可能出现也可能不出现的事件。例如，从一批有正品和次品的商品中，随意抽取一件，“抽得的是正品”就是一个随机事件。设对某一随机现象进行了 $n$ 次试验与观察，其中 $A$ 事件出现了 $m$ 次，即其出现的频率为 $\frac{m}{n}$。经过大量反复试验，常有 $\frac{m}{n}$ 越来越接近于某个确定的常数（此论断证明详见伯努利大数定律）。该常数即为事件 $A$ 出现的概率，常用 $\operatorname{P}(A)$ 表示。（摘自<a href="https://baike.baidu.com/item/%E6%A6%82%E7%8E%87/828845?fr=aladdin">百度</a>）</p>
+</blockquote>
+<p>举几个简单的例子，投一个骰子，$6$ 朝上的概率是 $\frac{1}{6}$，朝上的数字是奇数的概率是 $\frac{1}{2}$，是自然数的概率是 $1$，是负数的概率是 $0$。</p>
+<p>至于穷举法树状图法表格法频率法计算法求概率，这篇文章不是数学课讲义，显然没必要赘述。</p>
+<h2 id="期望">期望</h2>
+<p>期望好像不是初中的东西，简单提一下（其实是重点啊喂）</p>
+<blockquote>
+<p>在概率论和统计学中，数学期望（mean）（或均值，亦简称期望）是试验中每次可能结果的概率乘以其结果的总和，是最基本的数学特征之一。它反映随机变量平均取值的大小。
+需要注意的是，期望值并不一定等同于常识中的“期望”——“期望值”也许与每一个结果都不相等。期望值是该变量输出值的平均数。期望值并不一定包含于变量的输出值集合里。（摘自<a href="https://baike.baidu.com/item/%E6%95%B0%E5%AD%A6%E6%9C%9F%E6%9C%9B/5362790?fromtitle=%E6%9C%9F%E6%9C%9B&amp;fromid=10318906">百度</a>）</p>
+</blockquote>
+<p>期望就是这件事所有的结果（用一个数值表示）乘上它对应的概率，然后全部加起来。说的有点玄乎，举个例子看看：抛一个骰子，朝上的一面的数字期望是多少？</p>
+<p>显然数字可能是 $1,2,3,4,5,6$，对应的概率都是 $\frac{1}{6}$，因此朝上的一面期望值是：</p>
+<p>$$1\times\dfrac{1}{6}+2\times\dfrac{1}{6}+3\times\dfrac{1}{6}+4\times\dfrac{1}{6}+5\times\dfrac{1}{6}+6\times\dfrac{1}{6}=3.5$$</p>
+<hr>
+<blockquote>
+<p>引导例题：同时投两个骰子，朝上的一面数的和的期望。</p>
+</blockquote>
+<p>每个骰子的数字都是 $1,2,3,4,5,6$，所以总和是 $[2,12]$，但是这些和出现的概率是均等的吗？但凡做过小学题都知道不均等。最原始的方法还是莫过于初中数学的表格法暴力枚举：
+（为什么不用树状图法？只要你画得比这 $\LaTeX$ 做的表格还好看我就换）</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">\</th>
+<th style="text-align:center">1</th>
+<th style="text-align:center">2</th>
+<th style="text-align:center">3</th>
+<th style="text-align:center">4</th>
+<th style="text-align:center">5</th>
+<th style="text-align:center">6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">7</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">7</td>
+<td style="text-align:center">8</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">7</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">9</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">7</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">9</td>
+<td style="text-align:center">10</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">7</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">9</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">11</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">7</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">9</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">11</td>
+<td style="text-align:center">12</td>
+</tr>
+</tbody>
+</table>
+<p>一共有 $36$ 种情况，其中出现 $7$ 的次数最多。这能否代表 $7$ 一定是期望值呢？显然不能，例如一个骰子的时候，作为期望值的 $3.5$ 显然不可能出现。那这次的期望值是不是一定不在 $[2,12]$ 的整数范围内呢？还是计算一下比较好：</p>
+<p>$$2\times\dfrac{1}{36}+3\times\dfrac{2}{36}+4\times\dfrac{3}{36}+5\times\dfrac{4}{36}+6\times\dfrac{5}{36}+7\times\dfrac{6}{36}+8\times\dfrac{5}{36}+9\times\dfrac{4}{36}+10\times\dfrac{3}{36}+11\times\dfrac{2}{36}+12\times\dfrac{1}{36}=7$$</p>
+<p>（其实不约分不是因为容易理解而是因为这样方便复制粘贴 awa）</p>
+<p>因此期望是 $7$。</p>
+<hr>
+<p>从这里我们发现一个特点：一个骰子的时候期望是 $3.5$，骰子翻了一倍变成两个，期望值也翻了一倍。如果你是在没有什么事情去做，无聊到用枚举法算出三个骰子一起投的期望值，你会发现答案是 $10.5$，恰好是一个骰子的三倍，也恰好是投两个骰子和投一个骰子的期望总和。</p>
+<p>因此我们得出几个很重要的性质：假设 $X,Y$ 都是随机变量（将一个随机事件的结果转化成数字的东西，比如投骰子是个随机事件，我把他转化成正面朝上的数字来记录它的结果），$X$ 的期望记作 $\operatorname{E}(X)$（这是官方记法，后续也是这么表示的），$k$ 是常数，则有：</p>
+<ol>
+<li>$\operatorname{E}(kX)=k\cdot\operatorname{E}(X)$；</li>
+<li>$\operatorname{E}(X+Y)=\operatorname{E}(X)+\operatorname{E}(Y)$；</li>
+</ol>
+<p>除此之外，还有一个特别的性质：</p>
+<ol start="3">
+<li>当 $X$ 和 $Y$ 相互独立时，有 $\operatorname{E}(XY)=\operatorname{E}(X)\cdot\operatorname{E}(Y)$。</li>
+</ol>
+<p>特别的，对于常数 $k$，我们定义：$\operatorname{E}(k)=k$。</p>
+<h3 id="思考题">思考题</h3>
+<blockquote>
+<p>甲乙两人进行博弈游戏，每回合两个人都会选择 $1$ 或 $2$ 中的一个数。如果两人数字不一样，甲赢两元乙输两元；如果两人都选择 $2$，甲输三元乙赢三元；如果两人都选择 $1$，甲输一元乙赢一元。给甲确定一个选 $1$ 的概率，使得无论乙选数字用的什么概率，总的期望都是甲赢钱。</p>
+</blockquote>
+<p>设甲选择 $1$ 的概率（即答案）为 $p$，乙选择 $1$ 的概率为 $q$。则有甲选 $2$ 的概率为 $1-p$，乙选 $2$ 的概率为 $1-q$。</p>
+<p>同时选择 $1$ 的概率为 $pq$，对应甲的金钱变动是 $-1$。同时选择 $2$ 的概率是 $(1-p)(1-q)$，对应甲的金钱变动是 $-3$。如果甲出 $1$ 乙出 $2$，概率是 $p(1-q)$，金钱变动为 $2$。最后就是甲出 $2$ 乙出 $1$ 的情况，概率是 $q(1-p)$，变动为 $2$。总的期望就是：</p>
+<p>$$
+\begin{aligned}
+E
+&amp; = -pq-3(1-p)(1-q)+2p(1-q)+2q(1-p) \
+&amp; = -8pq+5p+5q-3 \
+&amp; = (-8p+5)q+5p-3
+\end{aligned}
+$$</p>
+<p>因为 $E$ 和 $q$ 无关，所以 $p=\dfrac{5}{8}$，带入原式得到 $E=\dfrac{1}{8}$。是正数，符合题意。</p>
+<h2 id="概率-dp">概率 DP</h2>
+<p>终于来到正题了，一般的概率 DP 不是让你求一个概率，而是求一个期望。而期望能进行 DP，就是因为期望满足上面几个性质，于是有可加性等性质。可以进行递推。</p>
+<p>概率 DP 难在自己设计的状态不好进行转移。如果可以一拍脑袋想明白自己设计的状态怎么转移，实现上不会有太多的问题，毕竟一个正常的概率 DP 不会吃代码实现难度的，不然绝对黑题往上了。</p>
+<p>DP 这种东西，没什么板子，都是灵活应变的。只好拿几个例题练手。考虑到代码实现都不难，而且本人比较懒，没有挂代码，但并不影响题解阅读。</p>
+<h3 id="例-1">例 1</h3>
+<blockquote>
+<p><a href="https://www.luogu.com.cn/problem/CF518D">链接</a>。$n$ 个人排成一列，每秒钟最前面的人有 $p$ 的概率离开，$1-p$ 的概率不动。求 $t$ 秒后离开的人数期望。$n,t\leqslant 2\times 10^3$。</p>
+</blockquote>
+<p>因为数据范围允许 $nt$ 乱搞，不妨就把题目的关键信息“人数”和“时间”当做状态。设 $f_{i,j}$ 表示考虑到了第 $i$ 个人，时间为第 $j$ 秒的期望人数。有两种情况：</p>
+<ol>
+<li>这个人在这一秒离开，由 $f_{i-1,j-1}$ 转移，概率为 $p$。</li>
+<li>这个人不离开，由 $f_{i,j-1}$ 转移，概率为 $(1-p)$。</li>
+</ol>
+<p>因此有转移方程：</p>
+<p>$$f_{i,j}=p\times(f_{i-1,j-1}+1)+(1-p)\times f_{i,j-1}$$</p>
+<p>时间复杂度 $\operatorname{O}(nt)$。</p>
+<h3 id="例-2">例 2</h3>
+<blockquote>
+<p><a href="https://www.luogu.com.cn/problem/CF280C">链接</a>。给定一颗有根树，每次操作等概率地选择一个未被删去的点并将以它为根的子树（包括节点本身）删除。求删除所有节点的期望次数。$n\leqslant 10^5$。</p>
+</blockquote>
+<p>考虑到形式是树的形式给出，不好按照编号逐点递推。因为期望具有可加性（$\operatorname{E}(X+Y)=\operatorname{E}(X)+\operatorname{E}(Y)$），不妨考虑每一个点对答案的贡献。</p>
+<p>对于一次操作如果 $i$ 号节点被删除，可能的情况是：</p>
+<ol>
+<li>$i$ 节点本身被删除。</li>
+<li>$i$ 节点的父亲被删除。</li>
+<li>$i$ 节点的爷爷被删除。</li>
+<li>$\cdots$</li>
+<li>根节点被删除。</li>
+</ol>
+<p>假设根节点的深度为 $1$，每个节点的深度为 $dep_i$。因为选点是等概率的，所以这个点没有被删除，当且仅当它的所有祖先（和它自己）没有被删除。如果某次操作这个点删掉了，那么这个点刚好被选中并删除的概率，就是所有可能导致这个点删掉的点的个数的倒数，不难发现是 $\dfrac{1}{dep_i}$。这就是这个点对答案的贡献。</p>
+<p>总的答案就是：</p>
+<p>$$ans=\sum_{i=1}^n\dfrac{1}{dep_i}$$</p>
+<p>时间复杂度显然 $\operatorname{O}(n)$。</p>
+<h3 id="例-3">例 3</h3>
+<blockquote>
+<p><a href="https://www.luogu.com.cn/problem/CF908D">链接</a>。有一个空字符串，每次有 $p$ 的概率在字符串末尾追加一个字符 <code>a</code>，有 $1-p$ 的概率在字符串末尾追加一个字符 <code>b</code>。当出现 $k$ 个形如 <code>ab</code> 的子序列时结束。求最后形如 <code>ab</code> 的子串数量的期望。$k\leqslant 10^3$。</p>
+</blockquote>
+<p>不难发现添加字符 <code>a</code> 对 <code>ab</code> 子序列的数量没有贡献。添加一个 <code>b</code> 会对其造成这个位置前面的 <code>a</code> 的数量那么多的贡献。不妨直接设 $f_{i,j}$ 表示有 $i$ 个 <code>a</code>，得到 <code>j</code> 个子序列的串数量期望。有两种转移：</p>
+<ol>
+<li>添加一个 <code>a</code>，子序列数不变，<code>a</code> 多了一个。可以转移到 $f_{i+1,j}$。</li>
+<li>添加一个 <code>b</code>，子序列数目多了 $i$ 个，可以转移到 $f_{i,i+j}$。</li>
+</ol>
+<p>也就是：</p>
+<p>$$f_{i+1,j}\leftarrow f_{i+1,j}+f_{i,j}\times p$$
+$$f_{i,i+j}\leftarrow f_{i,i+j}+f_{i,j}\times(1-p)$$</p>
+<p>边界条件显然是 $i+j\geqslant k$ 的时候。但是这个时候出现一个问题，有可能一直在往后面加 <code>a</code>。因此第一维的无穷大的。这就非常不好，不妨考虑当 $i=k$ 时，此时无论如何再加一个 <code>b</code> 都会直接结束。以此状态推边界条件：</p>
+<p>$$
+\begin{aligned}
+f_{k,j}
+&amp; = p\times f_{k+1,j}+(1-p)\times(j+k) \<br>
+&amp; = p^2\times f_{k+2,j}+p\times(1-p)\times(j+k+1)+(1-p)\times(j+k) \<br>
+&amp; = \cdots \
+&amp; = \sum_{i=0}^{\infty} p^i\times(1-p)\times(i+j+k) \
+&amp; = \sum_{i=0}^{\infty} p^i\times i\times(1-p)+\sum_{i=0}^{\infty} p^i\times(1-p)\times(j+k) \
+\end{aligned}
+$$</p>
+<p>这里需要引入两个很重要的公式，引理的证明会放在文章末尾：</p>
+<p>$$\sum_{i=0}^{\infty} p^i=\dfrac{1}{1-p}$$
+$$\sum_{i=0}^{\infty} p^i\times i=\dfrac{p}{(1-p)^2}$$</p>
+<p>因此有：</p>
+<p>$$
+\begin{aligned}
+f_{k,j}
+&amp; = \sum_{i=0}^{\infty} p^i\times i\times(1-p)+\sum_{i=0}^{\infty} p^i\times(1-p)\times(j+k) \<br>
+&amp; = \dfrac{p}{(1-p)^2}\times(1-p)+\dfrac{1}{1-p}\times(1-p)\times(j+k) \<br>
+&amp; = \dfrac{p}{1-p}+j+k \
+\end{aligned}
+$$</p>
+<p>因此对于每一种不同 $j$，都乘上其对应期望计算即可。边界问题就这样解决了，配合前面的转移方程，就可以 $\operatorname{O}(k^2)$ 解决。</p>
+<h3 id="引理证明">引理证明</h3>
+<hr>
+<p>$$\sum_{i=0}^{\infty} p^i=\dfrac{1}{1-p}$$</p>
+<p><strong>证明</strong>：</p>
+<p>不难发现这是一个等比数列求和，我们记 $S=\sum_{i=0}^{\infty} p^i$，则 $S\times p=\sum_{i=1}^{\infty} p^i$，此时有：</p>
+<p>$$S\times p-S=\sum_{i=1}^{\infty} p^i-\sum_{i=0}^{\infty} p^i=-1$$</p>
+<p>又因为 $S\times p-S=S\times(p-1)$，所以 $S\times(p-1)=-1$，得到 $S=\dfrac{1}{1-p}$。证毕。</p>
+<hr>
+<p>$$\sum_{i=0}^{\infty} p^i\times i=\dfrac{p}{(1-p)^2}$$</p>
+<p><strong>证明：</strong></p>
+<p>不难得到，原式可以转化为：$\sum_{i=1}^{\infty} p^i+\sum_{i=2}^{\infty} p^i+\sum_{i=3}^{\infty} p^i+\cdots+\sum_{i=\infty}^{\infty} p^i$</p>
+<p>其中每一个 sigma 都是一个等比数列求和。我们用通法。设 $S=\sum_{i=a}^{\infty} p^i$，则 $S\times p=\sum_{i=a+1}^{\infty} p^i$，有 $S\times p-S=\sum_{i=a+1}^{\infty} p^i-\sum_{i=a}^{\infty} p^i=-p^a$。所以 $S\times(p-1)=-p^a$。</p>
+<p>所以有 $S=\sum_{i=a}^{\infty} p^i=\dfrac{p^a}{1-p}$。到这里其实都是和前一个证明同样的方法。</p>
+<p>然后将 $a\in{1,2,3&hellip;,\infty}$ 带进去，原式转化为：</p>
+<p>$$\dfrac{p+p^2+p^3+\cdots+p^{\infty}}{1-p}$$</p>
+<p>上面又是一个等比数列求和的式子。也就是 $\sum_{i=1}^{\infty} p^i$，接着套公式得到：</p>
+<p>$$\dfrac{p}{(1-p)^2}$$</p>
+<p>证毕。</p>
+<hr>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://walker68145/Arahc.github.io/posts/%E6%A6%82%E7%8E%87%E4%B8%8E%E6%9C%9F%E6%9C%9B/" title="概率与期望" target="_blank" rel="external">https://walker68145/Arahc.github.io/posts/%E6%A6%82%E7%8E%87%E4%B8%8E%E6%9C%9F%E6%9C%9B/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/Walker_68145" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://walker68145/Arahc.github.io/avatar.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/Walker_68145" target="_blank"><span class="text-dark">Arahc</span><small class="ml-1x">Arahc&#39;s home</small></a></h3>
+        <div>咕↘咕↗咕——→</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://walker68145/Arahc.github.io/posts/%E6%A8%A1%E6%84%8F%E4%B9%89%E4%B8%8B%E7%9A%84%E6%95%B0%E5%AD%A6/" title="模意义下的数学"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://walker68145/Arahc.github.io/posts/rmqproblem-%E9%A2%98%E8%A7%A3/"
+                    title="RmqProblem 题解"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/Walker_68145" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://walker68145/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/C&#43;&#43;.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://walker68145/Arahc.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://walker68145/Arahc.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/walker68145\/Arahc.github.io',
+            CONTENT_URL: 'https:\/\/walker68145\/Arahc.github.io\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://walker68145/Arahc.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>

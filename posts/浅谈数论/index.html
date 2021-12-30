@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        浅谈数论 - Arahc&#39;s blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="今天学长给我们教了数论选讲，把里面的精髓提出来浅谈记录一下。顺便附上机房一位神仙对本文的注解
+什么是数论？ 摘自 百度：
+ 数论是纯粹数学的分支之一，主要研究整数的性质。整数可以是方程式的解。有些解析函数中包括了一些整数、质数的性质，透过这些函数也可以了解一些数论的问题。
+ 数论被高斯成为“数学皇后”，是一大必不可少的分支。
+前置导入 积性函数 积性函数代指一类函数。若函数 $\operatorname{f}$ 满足对于两个互质的数 $a,b$，$\operatorname{f}(a)\times \operatorname{f}(b)=\operatorname{f}(ab)$，则 $\operatorname{f}$ 为积性函数。
+简单而言，对于一个函数 $\operatorname{f}(n)$，若 $\forall a,b\in \natnums^{&#43;} \And \gcd(a,b)=1, \operatorname{f}(a)\times \operatorname{f}(b) = \operatorname{f}(ab)$，那么 $\operatorname{f}$ 是一个积性函数。
+常见的积性函数有 $\varphi, \mu,\operatorname{id}$ 等等，下面将会提到一部分。
+部分数学符号选讲 有高中数学基础的可以直接跳过。
+$\prod$ 表示连乘，举例为：$\prod_{i=1}^N x_i$ ，意思是 $x_1\times x_2\times x_3\times \cdots \times x_N$。
+$\sum$ 表示累加，举例为：$\sum_{i=1}^N x_i$ ，意思是 $x_1 &#43; x_2 &#43; x_3 &#43; \cdots x_N$。
+$\forall$ 表示“所有的”，$\exist$ 表示“存在”，$\And$ 表示“且”。
+$\in$ 表示属于，$a\in A$ 表示元素 $a$ 属于集合 $A$。$\natnums^{&#43;}$ 表示正整数集合，$\natnums$ 表示自然数集合（非负整数集合）。" />
+    <meta name="generator" content="Hugo 0.91.2 with theme pure" />
+    <title>浅谈数论 - Arahc&#39;s blog</title>
+    
+    
+    <link rel="stylesheet" href="https://walker68145/Arahc.github.io/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="浅谈数论" />
+<meta property="og:description" content="今天学长给我们教了数论选讲，把里面的精髓提出来浅谈记录一下。顺便附上机房一位神仙对本文的注解
+什么是数论？ 摘自 百度：
+ 数论是纯粹数学的分支之一，主要研究整数的性质。整数可以是方程式的解。有些解析函数中包括了一些整数、质数的性质，透过这些函数也可以了解一些数论的问题。
+ 数论被高斯成为“数学皇后”，是一大必不可少的分支。
+前置导入 积性函数 积性函数代指一类函数。若函数 $\operatorname{f}$ 满足对于两个互质的数 $a,b$，$\operatorname{f}(a)\times \operatorname{f}(b)=\operatorname{f}(ab)$，则 $\operatorname{f}$ 为积性函数。
+简单而言，对于一个函数 $\operatorname{f}(n)$，若 $\forall a,b\in \natnums^{&#43;} \And \gcd(a,b)=1, \operatorname{f}(a)\times \operatorname{f}(b) = \operatorname{f}(ab)$，那么 $\operatorname{f}$ 是一个积性函数。
+常见的积性函数有 $\varphi, \mu,\operatorname{id}$ 等等，下面将会提到一部分。
+部分数学符号选讲 有高中数学基础的可以直接跳过。
+$\prod$ 表示连乘，举例为：$\prod_{i=1}^N x_i$ ，意思是 $x_1\times x_2\times x_3\times \cdots \times x_N$。
+$\sum$ 表示累加，举例为：$\sum_{i=1}^N x_i$ ，意思是 $x_1 &#43; x_2 &#43; x_3 &#43; \cdots x_N$。
+$\forall$ 表示“所有的”，$\exist$ 表示“存在”，$\And$ 表示“且”。
+$\in$ 表示属于，$a\in A$ 表示元素 $a$ 属于集合 $A$。$\natnums^{&#43;}$ 表示正整数集合，$\natnums$ 表示自然数集合（非负整数集合）。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://walker68145/Arahc.github.io/posts/%E6%B5%85%E8%B0%88%E6%95%B0%E8%AE%BA/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-17T21:44:45+08:00" />
+<meta property="article:modified_time" content="2021-07-17T21:44:45+08:00" />
+
+<meta itemprop="name" content="浅谈数论">
+<meta itemprop="description" content="今天学长给我们教了数论选讲，把里面的精髓提出来浅谈记录一下。顺便附上机房一位神仙对本文的注解
+什么是数论？ 摘自 百度：
+ 数论是纯粹数学的分支之一，主要研究整数的性质。整数可以是方程式的解。有些解析函数中包括了一些整数、质数的性质，透过这些函数也可以了解一些数论的问题。
+ 数论被高斯成为“数学皇后”，是一大必不可少的分支。
+前置导入 积性函数 积性函数代指一类函数。若函数 $\operatorname{f}$ 满足对于两个互质的数 $a,b$，$\operatorname{f}(a)\times \operatorname{f}(b)=\operatorname{f}(ab)$，则 $\operatorname{f}$ 为积性函数。
+简单而言，对于一个函数 $\operatorname{f}(n)$，若 $\forall a,b\in \natnums^{&#43;} \And \gcd(a,b)=1, \operatorname{f}(a)\times \operatorname{f}(b) = \operatorname{f}(ab)$，那么 $\operatorname{f}$ 是一个积性函数。
+常见的积性函数有 $\varphi, \mu,\operatorname{id}$ 等等，下面将会提到一部分。
+部分数学符号选讲 有高中数学基础的可以直接跳过。
+$\prod$ 表示连乘，举例为：$\prod_{i=1}^N x_i$ ，意思是 $x_1\times x_2\times x_3\times \cdots \times x_N$。
+$\sum$ 表示累加，举例为：$\sum_{i=1}^N x_i$ ，意思是 $x_1 &#43; x_2 &#43; x_3 &#43; \cdots x_N$。
+$\forall$ 表示“所有的”，$\exist$ 表示“存在”，$\And$ 表示“且”。
+$\in$ 表示属于，$a\in A$ 表示元素 $a$ 属于集合 $A$。$\natnums^{&#43;}$ 表示正整数集合，$\natnums$ 表示自然数集合（非负整数集合）。"><meta itemprop="datePublished" content="2021-07-17T21:44:45+08:00" />
+<meta itemprop="dateModified" content="2021-07-17T21:44:45+08:00" />
+<meta itemprop="wordCount" content="777">
+<meta itemprop="keywords" content="数学," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="浅谈数论"/>
+<meta name="twitter:description" content="今天学长给我们教了数论选讲，把里面的精髓提出来浅谈记录一下。顺便附上机房一位神仙对本文的注解
+什么是数论？ 摘自 百度：
+ 数论是纯粹数学的分支之一，主要研究整数的性质。整数可以是方程式的解。有些解析函数中包括了一些整数、质数的性质，透过这些函数也可以了解一些数论的问题。
+ 数论被高斯成为“数学皇后”，是一大必不可少的分支。
+前置导入 积性函数 积性函数代指一类函数。若函数 $\operatorname{f}$ 满足对于两个互质的数 $a,b$，$\operatorname{f}(a)\times \operatorname{f}(b)=\operatorname{f}(ab)$，则 $\operatorname{f}$ 为积性函数。
+简单而言，对于一个函数 $\operatorname{f}(n)$，若 $\forall a,b\in \natnums^{&#43;} \And \gcd(a,b)=1, \operatorname{f}(a)\times \operatorname{f}(b) = \operatorname{f}(ab)$，那么 $\operatorname{f}$ 是一个积性函数。
+常见的积性函数有 $\varphi, \mu,\operatorname{id}$ 等等，下面将会提到一部分。
+部分数学符号选讲 有高中数学基础的可以直接跳过。
+$\prod$ 表示连乘，举例为：$\prod_{i=1}^N x_i$ ，意思是 $x_1\times x_2\times x_3\times \cdots \times x_N$。
+$\sum$ 表示累加，举例为：$\sum_{i=1}^N x_i$ ，意思是 $x_1 &#43; x_2 &#43; x_3 &#43; \cdots x_N$。
+$\forall$ 表示“所有的”，$\exist$ 表示“存在”，$\And$ 表示“且”。
+$\in$ 表示属于，$a\in A$ 表示元素 $a$ 属于集合 $A$。$\natnums^{&#43;}$ 表示正整数集合，$\natnums$ 表示自然数集合（非负整数集合）。"/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/Walker_68145" target="_blank">
+            <img class="img-circle img-rotate" src="https://walker68145/Arahc.github.io/avatar.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Arahc</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Arahc&#39;s home</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Changsha, China</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/Arahc.github.io/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/Arahc.github.io/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/Arahc.github.io/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/Arahc.github.io/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/Arahc.github.io/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content"><p>博客已经由 Walker_68145.github.io 转移到此处，原页面保留，为此带来的不便请大家谅解。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link" rel="1">k进制<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link" rel="1">stl<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link" rel="2">二分三分<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link" rel="3">分治<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link" rel="8">动态规划<span
+               class="tag-list-count">8</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link" rel="7">图论<span
+               class="tag-list-count">7</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link" rel="1">字符串<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link" rel="10">数学<span
+               class="tag-list-count">10</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link" rel="9">数据结构<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link" rel="4">暴力<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link" rel="1">莫队<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link" rel="3">贪心<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link" rel="2">随机化<span
+               class="tag-list-count">2</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E6%9D%82%E9%A1%B9/" class="category-list-link">杂项</a><span class="category-list-count">3</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/" class="category-list-link">笔记</a><span class="category-list-count">11</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E9%A2%98%E8%A7%A3/" class="category-list-link">题解</a><span class="category-list-count">20</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link">k进制</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link">stl</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link">二分三分</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link">分治</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link">动态规划</a><span
+                    class="tag-list-count">8</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link">图论</a><span
+                    class="tag-list-count">7</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link">字符串</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link">数学</a><span
+                    class="tag-list-count">10</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link">数据结构</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link">暴力</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link">莫队</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link">贪心</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link">随机化</a><span
+                    class="tag-list-count">2</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/" class="title">P5633最小度限制生成树 题解</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-28 21:43:22 &#43;0800 CST" itemprop="datePublished">2021-12-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/" class="title">线性基入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-22 21:47:24 &#43;0800 CST" itemprop="datePublished">2021-12-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/" class="title">Markdown 入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-30 18:41:00 &#43;0800 CST" itemprop="datePublished">2021-11-30</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/" class="title">OI 相关的非切题内容</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-28 21:42:04 &#43;0800 CST" itemprop="datePublished">2021-11-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E4%B8%8Ekdtree/" class="title">替罪羊与KDTree</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-25 21:48:19 &#43;0800 CST" itemprop="datePublished">2021-11-25</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/Arahc.github.io/posts/%E6%B5%85%E8%B0%88%E6%95%B0%E8%AE%BA/"
+    >浅谈数论</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://walker68145/Arahc.github.io/posts/%E6%B5%85%E8%B0%88%E6%95%B0%E8%AE%BA/" class="article-date">
+  <time datetime="2021-07-17 21:44:45 &#43;0800 CST" itemprop="datePublished">2021-07-17</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/"> 笔记 </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/"> 数学 </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 777 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 4 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>今天学长给我们教了数论选讲，把里面的精髓提出来浅谈记录一下。顺便附上机房一位神仙对本文的<a href="https://fainex.github.io/post/dui-a-bo-ke-de-ge-ren-jie-shi/">注解</a></p>
+<h2 id="什么是数论">什么是数论？</h2>
+<p>摘自 <a href="https://baike.baidu.com/item/%E6%95%B0%E8%AE%BA/3700?fr=aladdin">百度</a>：</p>
+<blockquote>
+<p>数论是纯粹数学的分支之一，主要研究整数的性质。整数可以是方程式的解。有些解析函数中包括了一些整数、质数的性质，透过这些函数也可以了解一些数论的问题。</p>
+</blockquote>
+<p>数论被高斯成为“数学皇后”，是一大必不可少的分支。</p>
+<h2 id="前置导入">前置导入</h2>
+<h3 id="积性函数">积性函数</h3>
+<p>积性函数代指一类函数。若函数 $\operatorname{f}$ 满足对于两个互质的数 $a,b$，$\operatorname{f}(a)\times \operatorname{f}(b)=\operatorname{f}(ab)$，则 $\operatorname{f}$ 为积性函数。</p>
+<p>简单而言，对于一个函数 $\operatorname{f}(n)$，若 $\forall a,b\in \natnums^{+} \And \gcd(a,b)=1, \operatorname{f}(a)\times \operatorname{f}(b) = \operatorname{f}(ab)$，那么 $\operatorname{f}$ 是一个积性函数。</p>
+<p>常见的积性函数有 $\varphi, \mu,\operatorname{id}$ 等等，下面将会提到一部分。</p>
+<h3 id="部分数学符号选讲">部分数学符号选讲</h3>
+<p><strong>有高中数学基础的可以直接跳过。</strong></p>
+<p>$\prod$ 表示连乘，举例为：$\prod_{i=1}^N x_i$ ，意思是 $x_1\times x_2\times x_3\times \cdots \times x_N$。</p>
+<p>$\sum$ 表示累加，举例为：$\sum_{i=1}^N x_i$ ，意思是 $x_1 + x_2 + x_3 + \cdots x_N$。</p>
+<p>$\forall$ 表示“所有的”，$\exist$ 表示“存在”，$\And$ 表示“且”。</p>
+<p>$\in$ 表示属于，$a\in A$ 表示元素 $a$ 属于集合 $A$。$\natnums^{+}$ 表示正整数集合，$\natnums$ 表示自然数集合（非负整数集合）。</p>
+<p>$\left \lfloor \dfrac{a}{b} \right \rfloor$ 表示对 $\dfrac{a}{b}$ 的值向下取整。</p>
+<p>$\gcd(a,b)$ 表示 $a$ 和 $b$ 的最大公约数，$\operatorname{lcm}(a,b)$ 为最小公倍数。</p>
+<p>$\mid$ 表示整除，$a\mid b$ 表示 $b$ 是 $a$ 的倍数，$\nmid$ 表示不整除，$a\nmid b$ 表示 $b$ 不是 $a$ 的倍数。</p>
+<p>诸如 $[a=b]$ （即方括号内放一个关系式）的形式的东西表示：若方括号内的式子为真，则该式子值为 $1$，反之则为 $0$。举个例子就可以简单地说明：
+$[a&lt;b]=\begin{cases} 1 (a&lt;b) \ 0 (a\geqslant b)\end{cases}$</p>
+<p>其他未在此处出现的符号后文均会有说明。</p>
+<h3 id="关于本文">关于本文</h3>
+<ul>
+<li>后文出现的 $p$ 均表示质数。</li>
+<li>互质的定义为两个数的最大公约数为 $1$，本文将 $0^0$ 视为 $1$，$1$ 不是质数，也不视为完全平方数（注：一般认为 $0^0$ 没有意义，$1$ 是完全平方数）。</li>
+<li>如果没有特殊说明，变量范围均为正整数范围内。</li>
+<li>文章没有网站上的例题（实际上文中例题只有一个且只能展现莫比乌斯反演知识），如有需要自找题目。</li>
+</ul>
+<h2 id="欧拉函数选讲">欧拉函数选讲</h2>
+<p>欧拉函数的符号是 $\varphi$，我们记 $\varphi (n)$ 表示在 $[1,n]$ 的正整数中，与 $n$ 互质的数的个数，特别地，$\varphi(1)=1$。</p>
+<h3 id="欧拉函数的性质">欧拉函数的性质</h3>
+<p><strong>欧拉函数是一个积性函数</strong>，具体地证明过程较为复杂，这里不多讨论。</p>
+<p>欧拉函数有一些很美妙的性质。首先，根据定义，结合常识，因为质数与小于它的任何正整数都互质，所以有 $\varphi(p)=p-1$。类似地，对于一个质数的幂 ${p_i}^{k_i}$，因为一共有 ${p_i}^{k_i}$ 个数，其中只有 ${p_i}^{k_{i-1}}$ 个数与其有不为 $1$ 的公因数（也就是 $p_i$ 的倍数个数为那么多），因此我们还可以得出：$\varphi(p^k)=p^k-p^{k-1}$。这个式子做一个简单的变形，就可以得到：$\varphi(p^k)=p^k\times(1-\dfrac{1}{p})$。</p>
+<p>下面我们来证明另一个性质：$\varphi(n)=n\times \prod(1-\dfrac{1}{p_i})$：显然对于任何一个 $n$，一定可以将其拆分为 $\prod{p_i}^{k_i}$ 的形式。考虑将这些东西全部乘起来，由于 ${p_1}^{k_1},{p_2}^{k^2},{p_3}^{k_3}\cdots$ 一定互质，又因为欧拉函数是积性函数，因此这些东西乘起来就是 $\varphi(n)$。因此有：</p>
+<p>$$\varphi(n)=\prod \varphi({p_i}^{k_i})$$
+$$\varphi(n)=\prod [{p_i}^{k_i}\times (1-\dfrac{1}{p_i})]$$</p>
+<p>因为 $\prod [{p_i}^{k_i}\times (1-\dfrac{1}{p_i})]=\prod {p_i}^{k_i} \times \prod(1-\dfrac{1}{p_i})$，而前文提到 $\prod {p_i}^{k_i}=n$，因此最终得到：</p>
+<p>$$\varphi(n)=n\times \prod(1-\dfrac{1}{p_i})$$</p>
+<p>当然除此之外还有许多有趣的性质。如果你尝试算一算一个数 $n$ 的所有因数的欧拉函数值，就会发现它们加起来恰好等于 $n$。翻译成数学语言如下：$\sum_{d\mid n} \varphi(d)=n$。</p>
+<p>一个简单的证明方法，就是你写下分母为 $n$ 的所有分数 $\dfrac{a}{n} (1\leqslant a\leqslant n)$：$\dfrac{1}{n},\dfrac{2}{n},\dfrac{3}{n},\cdots\dfrac{n}{n}$，然后给每个数约个分，约分后的分数中，分母就是所有 $n$ 的因数，分子就是所有与分母互质的数。它们一共有 $n$ 个，因此得证。</p>
+<p>如果无法理解的话，可以以 $n=6$ 举个例子：$\frac{1}{6},\frac{2}{6},\frac{3}{6},\frac{4}{6},\frac{5}{6},\frac{6}{6}$，约分之后变成 $\frac{1}{6},\frac{1}{3},\frac{1}{2},\frac{2}{3},\frac{5}{6},\frac{1}{1}$。分子就是所有与其分母互质的数，分母就是 $n$ 的所有约数。而显然这里一共有 $6$ 个数，因此 $\sum_{d\mid 6} \varphi(d)=6$。</p>
+<p>欧拉函数和一个数有几个和它互质的数有关，如果给定一个 $n$，并统计出了 $[1,n]$ 之间所有与 $n$ 互质的数有哪些，你就会发现这些数字的和恰好等于 $\dfrac{n\times\varphi(n)}{2}$。这里还需要引入一个定理：</p>
+<blockquote>
+<p>对于任意正整数 $i,n (i&lt;n)$，若 $\gcd(i,n)=1$，则有 $\gcd(n-i,n)=1$。</p>
+</blockquote>
+<p>因此我们列出 $n$ 的所有约数的时候，一定是最小的和最大的加起来为 $n$，第二小的和第二大的加起来为 $n$，第三小的和第三大的加起来为 $n$……一共有 $\dfrac{\varphi(n)}{2}$ 个这样的数对，每对的和为 $n$，因此总的和为 $\dfrac{n\times\varphi(n)}{2}$。</p>
+<p>因此欧拉函数的常用性质有：</p>
+<ul>
+<li>是积性函数。对于互质的两个数 $a,b$，有 $\varphi(a)\times\varphi(b)=\varphi(ab)$。</li>
+<li>对于质数 $p$，$\varphi(p)=p-1$。</li>
+<li>对于质数 $p$，$\varphi(p^k)=p^k-p^{k-1}=p^k\times(1-\dfrac{1}{p})$。</li>
+<li>记 $n=\prod{p_i}^{k_i}$，其中 $p_i$ 为质数，$k_i\in\natnums^{+}$，有 $\varphi(n)=n\times \prod(1-\dfrac{1}{p_i})$。</li>
+<li>$\sum_{d\mid n} \varphi(d)=n$。</li>
+<li>$[1,n]$ 中所有与 $n$ 互质的数之和为  $\dfrac{n\times\varphi(n)}{2}$。</li>
+</ul>
+<p>此外还有一些不常用的性质，例如：</p>
+<ul>
+<li>若 $2\nmid n$，$\varphi(2\times n)=\varphi(n)$。</li>
+<li>若质数 $p$ 满足 $p\mid n,p^2\mid n$，则 $\varphi(n)=\varphi(\frac{n}{p})\times p$。</li>
+<li>若质数 $p$ 满足 $p\mid n,p^2\nmid n$，则 $\varphi(n)=\varphi(\frac{n}{p})\times(p-1)$。</li>
+</ul>
+<p>不过第二个和第三个是线性筛求欧拉函数需要的式子，值得注意。</p>
+<h3 id="欧拉函数的运用延伸">欧拉函数的运用延伸</h3>
+<p>我们常常遇到对一个答案取模运算的问题。如果计算中又出现了除法，我们就不得不进行求逆元的操作。通常我们会使用费马小定理。而费马小定理，其实就是欧拉定理的一种特殊形式。</p>
+<p>对于互质的两个数 $a,m$，有 $a^{\varphi(m)}\equiv 1\pmod{m}$。（<strong>欧拉定理</strong>）</p>
+<p>特别地，若 $m$ 为质数（记为 $p$），有 $a^{p-1}\equiv 1\pmod{p}$。（<strong>费马小定理</strong>）</p>
+<p>对于求一个数的欧拉函数，显然只要分解其质因数，套用性质求解即可，当这个 $n$ 较大时显然瓶颈在分解质因数，因此认为其复杂度为 $\operatorname{O}(\sqrt{n})$ 的。但是如果我需要求 $[1,n]$ 的欧拉函数，显然 $\operatorname{O}(n\sqrt{n})$ 的做法过于暴力而不可取。</p>
+<p>类比线性筛素数的做法，运用性质，可以得出如下的代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">GetPhi</span>(<span style="color:#66d9ef">int</span> n){ <span style="color:#75715e">// 求 [1,n] 的欧拉函数，顺便筛素数
+</span><span style="color:#75715e"></span>    memset(isPrime, <span style="color:#ae81ff">1</span>, <span style="color:#66d9ef">sizeof</span>(isPrime));
+    <span style="color:#75715e">// isPrime 是 bool，所以可以直接用 1 memset
+</span><span style="color:#75715e"></span>    isPrime[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, phi[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;<span style="color:#75715e">//1不是素数，phi(1)=1
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>; i <span style="color:#f92672">&lt;=</span> n; <span style="color:#f92672">++</span>i){
+        <span style="color:#66d9ef">if</span>(isPrime[i]){<span style="color:#75715e">// 是质数
+</span><span style="color:#75715e"></span>            Prime[<span style="color:#f92672">++</span>cnt] <span style="color:#f92672">=</span> i, <span style="color:#75715e">// prime 统计质数，cnt 为质数个数
+</span><span style="color:#75715e"></span>            phi[i] <span style="color:#f92672">=</span> i <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
+        }
+        <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> j <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; j <span style="color:#f92672">&lt;=</span> cnt <span style="color:#f92672">&amp;&amp;</span> i <span style="color:#f92672">*</span> Prime[j] <span style="color:#f92672">&lt;=</span> n; <span style="color:#f92672">++</span>j){
+            <span style="color:#75715e">// i*Prime[j] 不必超上限 n
+</span><span style="color:#75715e"></span>            isPrime[ i <span style="color:#f92672">*</span> Prime[j] ] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+            <span style="color:#66d9ef">if</span>(i <span style="color:#f92672">%</span> Prime[j] <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>){ <span style="color:#75715e">// i中也含有Prime[j]这个因子
+</span><span style="color:#75715e"></span>                phi[ i <span style="color:#f92672">*</span> Prime[j] ] <span style="color:#f92672">=</span> phi[i] <span style="color:#f92672">*</span> Prime[j]; 
+                <span style="color:#66d9ef">break</span>; 
+            }
+            <span style="color:#66d9ef">else</span> phi[ i <span style="color:#f92672">*</span> Prime[j] ] <span style="color:#f92672">=</span> phi[i] <span style="color:#f92672">*</span> (Prime[j] <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>);
+        }
+    }
+}
+</code></pre></div><h2 id="莫比乌斯函数选讲">莫比乌斯函数选讲</h2>
+<p>莫比乌斯函数的符号是 $\mu$。$\mu(n)$ 的值计算方法如下：若 $\mu(n)$ 存在一个不为 $1$ 的完全平方数的因子，则 $\mu(n)=0$，否则，记 $\mu(n)$ 有 $m$ 个不同的质因子，则 $\mu(n)=(-1)^m$。</p>
+<h3 id="莫比乌斯函数的性质">莫比乌斯函数的性质</h3>
+<p><strong>莫比乌斯函数是积性函数</strong>，简单做一个其积性的证明：</p>
+<hr>
+<p>对于互质的两个数 $a,b$，若其任意一个有完全平方数的因子，则它们一定满足以下两个中至少一个： $\mu(a)=0$，$\mu(b)=0$ 。显然  $a\times b$ 一定也含有完全平方数因子，因此 $\mu(a\times b)=0=\mu(a)\times\mu(b)$。特别地，$\mu(1)=1$。</p>
+<p>若其有公共的质因子，则不满足 $a,b$ 互质的条件，情况不成立。则将 $a,b$ 含有的质因子个数表示为 $m_a,m_b$，则 $m_a+m_b$ 是 $a\times b$ 的因子个数。枚举 $m_a,m_b$ 的奇偶性验证即可。</p>
+<hr>
+<p>除此之外，如果你求出 $n$ 的所有因子的莫比乌斯函数值，你会发现当 $n=1$ 时，它们的和为 $1$，否则为 $0$。转化为数学语言可以大概写成如下式子：$\sum_{d\mid n} \mu(d)=[n=1]$。</p>
+<hr>
+<p>显然我们可以不用考虑那些 $\mu$ 值为 $0$ 的数。因此对于有 $k$ 个质因数的数字 $n$，由其中 $r$ 个质因数相乘可以得到的因数个数，就是 $\mu$ 值不为 $0$ 的因数个数。从 $k$ 个数选 $r$ 个，明显是组合数，一共有 $C_k^r$ 个。</p>
+<p>考虑到 $r$ 的奇偶性决定这些因子的 $\mu$ 值的正负。根据定义可以得出：</p>
+<p>$$\sum_{d\mid n} \mu(d)=\sum_{i=0}^{k} (-1)^i \times C_k^i$$</p>
+<p>根据二项式定理，有：$(x+y)^k=\sum_{i=0}^k C_k^i\times x^i\times y^{k-i}$。（注意这里的 $k$ 不是前面假设的 $k$ 个数）将 $x=-1,y=1$ 代入：</p>
+<p>$$0^k=\sum_{i=0}^k C_k^1\times (-1)^i\times 1^{k-i}=\sum_{i=0}^{k} (-1)^i \times C_k^i$$</p>
+<p>当 $n=1$ 时，$k=n-1=0$，有原式值为 $0^0=1$，否则原式值为 $0$。证毕。</p>
+<hr>
+<p>以上就是莫比乌斯函数常用的一些性质。实际上还有部分性质，但是涉及到了后文写的内容，所以在这里姑且放着不提。</p>
+<h3 id="莫比乌斯函数的运用延伸">莫比乌斯函数的运用延伸</h3>
+<p>因为莫比乌斯函数一般都会用于莫比乌斯反演，也是后面提到的内容。因此这里只能简单提一下莫比乌斯函数的计算。同于欧拉函数，对于一个数 $n$，计算 $\mu(n)$ 只需要将其分解质因数，然后根据定义简单判断即可，单个数的计算是 $\operatorname{O}(\sqrt{n})$ 的。重点来看多个数的情况。</p>
+<p>发现莫比乌斯函数的线性递推依然可以建设在线性筛的基础上。所以有如下代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">GetMu</span>(<span style="color:#66d9ef">int</span> n){ <span style="color:#75715e">// 求 [1,n] 的莫比乌斯函数，顺便筛素数
+</span><span style="color:#75715e"></span>    memset(isPrime, <span style="color:#ae81ff">1</span>, <span style="color:#66d9ef">sizeof</span>(isPrime));
+    <span style="color:#75715e">// isPrime 是 bool，所以可以直接用 1 memset
+</span><span style="color:#75715e"></span>    isPrime[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, mu[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;<span style="color:#75715e">//1不是素数，mu(1)=1
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>; i <span style="color:#f92672">&lt;=</span> n; <span style="color:#f92672">++</span>i){
+        <span style="color:#66d9ef">if</span>(isPrime[i]){<span style="color:#75715e">// 是质数
+</span><span style="color:#75715e"></span>            Prime[<span style="color:#f92672">++</span>cnt] <span style="color:#f92672">=</span> i, <span style="color:#75715e">// prime 统计质数，cnt 为质数个数
+</span><span style="color:#75715e"></span>            mu[i] <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+        }
+        <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> j <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; j <span style="color:#f92672">&lt;=</span> cnt <span style="color:#f92672">&amp;&amp;</span> i <span style="color:#f92672">*</span> Prime[j] <span style="color:#f92672">&lt;=</span> n; <span style="color:#f92672">++</span>j){
+            <span style="color:#75715e">// i*Prime[j] 不必超上限 n
+</span><span style="color:#75715e"></span>            isPrime[ i <span style="color:#f92672">*</span> Prime[j] ] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+            <span style="color:#66d9ef">if</span>(i <span style="color:#f92672">%</span> Prime[j] <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>){ <span style="color:#75715e">// i中也含有Prime[j]这个因子
+</span><span style="color:#75715e"></span>                mu[i<span style="color:#f92672">*</span>prime[j]]<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+                <span style="color:#66d9ef">break</span>;  <span style="color:#75715e">// 这里不要更新 mu 值！！
+</span><span style="color:#75715e"></span>            }
+            <span style="color:#66d9ef">else</span> mu[ i <span style="color:#f92672">*</span> Prime[j] ] <span style="color:#f92672">=</span> mu[i] <span style="color:#f92672">*</span> (<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
+        }
+    }
+}
+</code></pre></div><h2 id="狄利克雷卷积与莫比乌斯反演">狄利克雷卷积与莫比乌斯反演</h2>
+<p>对于两个函数 $\operatorname{f},\operatorname{g}$，以及某个函数 $\operatorname{h}$，若对于 $\forall n\in \natnums^{+}$，有 $\operatorname{h}(n)=\sum_{d\mid n} \operatorname{f}(d)\times \operatorname{g}(\dfrac{n}{d})$，则记作 $\operatorname{f}\ast\operatorname{g}=\operatorname{h}$。其中 $\operatorname{h}$ 是 $\operatorname{f}$ 和 $\operatorname{g}$ 的狄利克雷卷积。</p>
+<h3 id="狄利克雷卷积">狄利克雷卷积</h3>
+<p>狄利克雷卷积满足交换律、结合律、分配律。（分配律即 $(\operatorname{f}+\operatorname{g})\ast\operatorname{h}=\operatorname{f}\ast\operatorname{h}+\operatorname{g}\ast\operatorname{h}$）。</p>
+<p>此外还有一个重要的性质：<strong>两个积性函数的狄利克雷卷积也是积性函数</strong>。</p>
+<p>专门出现一种称为“单位元”的函数 $\varepsilon$。“单位元”函数为 $\varepsilon=[n=1]$。对于任意函数 $\operatorname{f}$，有 $\operatorname{f}\ast\varepsilon=\operatorname{f}$。</p>
+<p>除此之外，狄利克雷卷积和欧拉函数、莫比乌斯函数都有一些相关的性质。假设我们定义一个函数 $1$，对于任何一个数 $n$，有 $1(n)=1$。还有一种函数 $\operatorname{id}$，对于任何一个数 $n$，$\operatorname{id}(n)=n$。</p>
+<p>先来探究 $1$ 函数的性质，容易发现若卷积的一个函数是 $1$（不妨设为 $\operatorname{g}$ 的那个函数），意味着 $\operatorname{f}$ 乘上的数都是 $1$，也就是它本身，因此有：</p>
+<p>$$\operatorname{f}\ast 1=\sum_{d\mid n} \operatorname{f}(d)$$</p>
+<p>右边这一块已经见到过很多次了，结合欧拉函数和莫比乌斯函数的性质，可以得出：</p>
+<p>$$\mu\ast 1=\sum_{d\mid n} \mu(d)=\varepsilon=[n=1]$$
+$$\varphi\ast 1=\operatorname{id}$$</p>
+<p>将第二个等式左右两边同时乘上一个 $\mu$，有：$\varphi\ast 1\ast\mu=\operatorname{id}\ast\mu$，将第一个等式代入，得到 $\varphi\ast\varepsilon=\operatorname{id}\ast\mu$，又因为单位元矩阵乘任何函数，函数不变。因此得到一个重要的结论，印证着 $\varphi,\mu,\operatorname{id}$ 的关系：</p>
+<p>$$\mu\ast\operatorname{id}=\varphi$$</p>
+<p>同时简单变形还可以得到欧拉函数和莫比乌斯函数两者的关系：</p>
+<p>$$\varphi(n)=\sum_{d\mid n} \mu(d)\times\dfrac{n}{d}$$</p>
+<h3 id="莫比乌斯反演">莫比乌斯反演</h3>
+<p>在狄利克雷卷积的基础上，接着来探究这样一个性质：</p>
+<p>记函数 $\operatorname{F},\operatorname{f}$ 满足 $\operatorname{F}(n)=\sum_{d\mid n} \operatorname{f}(d)$，则有 $\operatorname{F}\ast\mu=\operatorname{f}$。</p>
+<p>推导过程也相对简单，因为 $\operatorname{F}(n)=\sum_{d\mid n}\operatorname{f}(d)$，得到 $\operatorname{F}=1\ast\operatorname{f}$。等式两边同时乘上一个 $\mu$，有 $\operatorname{F}\ast\mu=1\ast\mu\ast\operatorname{f}=\varepsilon\ast\operatorname{f}=\operatorname{f}$。</p>
+<p>因此可以得出<strong>莫比乌斯反演</strong>的式子：</p>
+<p>$$\operatorname{F}(n)=\sum_{d\mid n} \operatorname{f}(d)\Rightarrow\operatorname{f}(n)=\sum_{d\mid n}\operatorname{F}(d)\ast\mu(\dfrac{n}{d})$$
+$$\operatorname{F}(n)=\sum_{n\mid d} \operatorname{f}(d)\Rightarrow\operatorname{f}(n)=\sum_{n\mid d}\operatorname{F}(d)\ast\mu(\dfrac{d}{n})$$</p>
+<p>莫比乌斯反演有什么用呢？事实上它的作用就是化简我们的推导式子，可以让一个本来不是很容易求解的函数，转换到一个容易求解的函数上进行运算。最后放上一道用上了莫比乌斯反演性质优化算法的例题<del>作为烂尾</del>：</p>
+<hr>
+<p>例题：给定 $n,m,k$，求有多少个数对 $(x,y)$，满足 $1\leqslant x\leqslant n,1\leqslant y\leqslant m$，且 $\gcd(x,y)=k$。</p>
+<p>不难得出我们需要求的结果其实就是 $\sum_{i=1}^{n}\sum_{j=1}^{m} [\gcd(i,j)=k]$。</p>
+<p>求一对数的最大公约数为 $k$ 的相对难处理，我们可以将其转化为求最大公约数为 $1$的情况。如果一对数 $(i,j)$，其中 $i\leqslant\left \lfloor \dfrac{n}{k} \right \rfloor,j\leqslant\left \lfloor \dfrac{m}{k} \right \rfloor$，且 $\gcd(i,j)=1$，不难得出 $i\times k\leqslant n,j\times k\leqslant m$，且有 $\gcd(i,j)=k$。</p>
+<p>进一步利用莫比乌斯反演的性质：$\sum_{d\mid n} \mu(d)=[n=1]$，所以总的答案转化为：</p>
+<p>$$\begin{aligned} Ans &amp; =\sum_{i=1}^{\left \lfloor \frac{n}{k} \right \rfloor}\sum_{j=1}^{\left \lfloor \frac{m}{k} \right \rfloor} [\gcd(i,j)=1] \ &amp; =\sum_{i=1}^{\left \lfloor \frac{n}{k} \right \rfloor}\sum_{j=1}^{\left \lfloor \frac{m}{k} \right \rfloor}\sum_{d\mid\gcd(i,j)} \mu(d) \ &amp; =\sum_{d=1}^{\left \lfloor \frac{\min(n,m)}{k} \right \rfloor}\left \lfloor \frac{n}{kd} \right \rfloor\left \lfloor \frac{m}{kd} \right \rfloor \mu(d) \end{aligned}$$</p>
+<p>这样就可以 $\operatorname{O}(n)$ 地求解这个问题了，不难发现如果不用上莫比乌斯反演或其性质，即使 $\gcd$ 可以 $\operatorname{O}(1)$ 算出来，整体复杂度也是 $\operatorname{O}(n^3)$ 的，整体优化十分可观。</p>
+<hr>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://walker68145/Arahc.github.io/posts/%E6%B5%85%E8%B0%88%E6%95%B0%E8%AE%BA/" title="浅谈数论" target="_blank" rel="external">https://walker68145/Arahc.github.io/posts/%E6%B5%85%E8%B0%88%E6%95%B0%E8%AE%BA/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/Walker_68145" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://walker68145/Arahc.github.io/avatar.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/Walker_68145" target="_blank"><span class="text-dark">Arahc</span><small class="ml-1x">Arahc&#39;s home</small></a></h3>
+        <div>咕↘咕↗咕——→</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://walker68145/Arahc.github.io/posts/shape-%E9%A2%98%E8%A7%A3/" title="Shape 题解"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://walker68145/Arahc.github.io/posts/%E6%B5%85%E8%B0%88%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/"
+                    title="浅谈线性代数"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/Walker_68145" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://walker68145/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/C&#43;&#43;.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://walker68145/Arahc.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://walker68145/Arahc.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/walker68145\/Arahc.github.io',
+            CONTENT_URL: 'https:\/\/walker68145\/Arahc.github.io\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://walker68145/Arahc.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>

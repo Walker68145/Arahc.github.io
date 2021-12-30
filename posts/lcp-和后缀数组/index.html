@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        LCP 和后缀数组 - Arahc&#39;s blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="前言 后缀数组（SA）是一种可以用于处理字符串后缀有关性质，包括 LCP 等的思想。一般复杂度用 $\operatorname{O}(n\log n)$ 版本，有 $\operatorname{O}(n)$ 版本但相对复杂，码量大。本文讨论的是严格的 $\operatorname{O}(n\log n)$ 的。
+后缀自动机（SAM）则是一种强有力的数据结构，用于解决有关字符串的很多东西。一般复杂度是 $\operatorname{O}(n)$ 的。因为写博客的时间原因 SAM 暂时咕着。暂时只讨论 SA。
+本文可能出现的部分词语定义如下：
+ 后缀：字符串 $s$ 的后缀，定义为字符串的某个位置到字符串末尾的子串。特别的，称从第 $i$ 个字符为第一个元素的后缀为第 $i$ 个后缀。 前缀：基本同后缀，只是定义为从字符串第一个字符到某个位置的子串。 后缀的排名：定义第 $i$ 个后缀的排名，为字符串所有后缀按字典序排序后，第 $i$ 个后缀的排名。 LCP：定义 $\operatorname{LCP}(i,j)$ 为一个字符串排名为 $i$ 的后缀和排名为 $j$ 的后缀的最长公共前缀，有时只最长公共前缀长度，本文也是如此，有的地方指最长公共前缀，有的地方指最长公共前缀长度。 字符串的大小关系：两个字符串比较大小，默认是比较字典序谁先谁后。  此外，在后文中，如果没有特殊定义，则 $s$ 表示需要处理的字符串，$n=\left| s\right|$，即 $s$ 的串长，下标从 $1$ 开始编号。
+LCP 的性质与引理 根据 LCP 的定义，有这样两个显然的性质：
+ $\operatorname{LCP}(i,j)=\operatorname{LCP}(j,i)$ 记 $len_i$ 表示排名为 $i$ 的后缀的长度，有 $\operatorname{LCP}(i,i)=len_i$。  这样，计算 LCP 时，对于 $i&amp;gt;j$ 的情况，可以转化为 $i&amp;lt;j$ 的情况做。对于 $i=j$ 的情况，直接用 $sa_i$ 算就行。简化了代码实现的复杂程度。" />
+    <meta name="generator" content="Hugo 0.91.2 with theme pure" />
+    <title>LCP 和后缀数组 - Arahc&#39;s blog</title>
+    
+    
+    <link rel="stylesheet" href="https://walker68145/Arahc.github.io/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="LCP 和后缀数组" />
+<meta property="og:description" content="前言 后缀数组（SA）是一种可以用于处理字符串后缀有关性质，包括 LCP 等的思想。一般复杂度用 $\operatorname{O}(n\log n)$ 版本，有 $\operatorname{O}(n)$ 版本但相对复杂，码量大。本文讨论的是严格的 $\operatorname{O}(n\log n)$ 的。
+后缀自动机（SAM）则是一种强有力的数据结构，用于解决有关字符串的很多东西。一般复杂度是 $\operatorname{O}(n)$ 的。因为写博客的时间原因 SAM 暂时咕着。暂时只讨论 SA。
+本文可能出现的部分词语定义如下：
+ 后缀：字符串 $s$ 的后缀，定义为字符串的某个位置到字符串末尾的子串。特别的，称从第 $i$ 个字符为第一个元素的后缀为第 $i$ 个后缀。 前缀：基本同后缀，只是定义为从字符串第一个字符到某个位置的子串。 后缀的排名：定义第 $i$ 个后缀的排名，为字符串所有后缀按字典序排序后，第 $i$ 个后缀的排名。 LCP：定义 $\operatorname{LCP}(i,j)$ 为一个字符串排名为 $i$ 的后缀和排名为 $j$ 的后缀的最长公共前缀，有时只最长公共前缀长度，本文也是如此，有的地方指最长公共前缀，有的地方指最长公共前缀长度。 字符串的大小关系：两个字符串比较大小，默认是比较字典序谁先谁后。  此外，在后文中，如果没有特殊定义，则 $s$ 表示需要处理的字符串，$n=\left| s\right|$，即 $s$ 的串长，下标从 $1$ 开始编号。
+LCP 的性质与引理 根据 LCP 的定义，有这样两个显然的性质：
+ $\operatorname{LCP}(i,j)=\operatorname{LCP}(j,i)$ 记 $len_i$ 表示排名为 $i$ 的后缀的长度，有 $\operatorname{LCP}(i,i)=len_i$。  这样，计算 LCP 时，对于 $i&gt;j$ 的情况，可以转化为 $i&lt;j$ 的情况做。对于 $i=j$ 的情况，直接用 $sa_i$ 算就行。简化了代码实现的复杂程度。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://walker68145/Arahc.github.io/posts/lcp-%E5%92%8C%E5%90%8E%E7%BC%80%E6%95%B0%E7%BB%84/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-08-28T10:40:36+08:00" />
+<meta property="article:modified_time" content="2021-08-28T10:40:36+08:00" />
+
+<meta itemprop="name" content="LCP 和后缀数组">
+<meta itemprop="description" content="前言 后缀数组（SA）是一种可以用于处理字符串后缀有关性质，包括 LCP 等的思想。一般复杂度用 $\operatorname{O}(n\log n)$ 版本，有 $\operatorname{O}(n)$ 版本但相对复杂，码量大。本文讨论的是严格的 $\operatorname{O}(n\log n)$ 的。
+后缀自动机（SAM）则是一种强有力的数据结构，用于解决有关字符串的很多东西。一般复杂度是 $\operatorname{O}(n)$ 的。因为写博客的时间原因 SAM 暂时咕着。暂时只讨论 SA。
+本文可能出现的部分词语定义如下：
+ 后缀：字符串 $s$ 的后缀，定义为字符串的某个位置到字符串末尾的子串。特别的，称从第 $i$ 个字符为第一个元素的后缀为第 $i$ 个后缀。 前缀：基本同后缀，只是定义为从字符串第一个字符到某个位置的子串。 后缀的排名：定义第 $i$ 个后缀的排名，为字符串所有后缀按字典序排序后，第 $i$ 个后缀的排名。 LCP：定义 $\operatorname{LCP}(i,j)$ 为一个字符串排名为 $i$ 的后缀和排名为 $j$ 的后缀的最长公共前缀，有时只最长公共前缀长度，本文也是如此，有的地方指最长公共前缀，有的地方指最长公共前缀长度。 字符串的大小关系：两个字符串比较大小，默认是比较字典序谁先谁后。  此外，在后文中，如果没有特殊定义，则 $s$ 表示需要处理的字符串，$n=\left| s\right|$，即 $s$ 的串长，下标从 $1$ 开始编号。
+LCP 的性质与引理 根据 LCP 的定义，有这样两个显然的性质：
+ $\operatorname{LCP}(i,j)=\operatorname{LCP}(j,i)$ 记 $len_i$ 表示排名为 $i$ 的后缀的长度，有 $\operatorname{LCP}(i,i)=len_i$。  这样，计算 LCP 时，对于 $i&gt;j$ 的情况，可以转化为 $i&lt;j$ 的情况做。对于 $i=j$ 的情况，直接用 $sa_i$ 算就行。简化了代码实现的复杂程度。"><meta itemprop="datePublished" content="2021-08-28T10:40:36+08:00" />
+<meta itemprop="dateModified" content="2021-08-28T10:40:36+08:00" />
+<meta itemprop="wordCount" content="577">
+<meta itemprop="keywords" content="字符串," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="LCP 和后缀数组"/>
+<meta name="twitter:description" content="前言 后缀数组（SA）是一种可以用于处理字符串后缀有关性质，包括 LCP 等的思想。一般复杂度用 $\operatorname{O}(n\log n)$ 版本，有 $\operatorname{O}(n)$ 版本但相对复杂，码量大。本文讨论的是严格的 $\operatorname{O}(n\log n)$ 的。
+后缀自动机（SAM）则是一种强有力的数据结构，用于解决有关字符串的很多东西。一般复杂度是 $\operatorname{O}(n)$ 的。因为写博客的时间原因 SAM 暂时咕着。暂时只讨论 SA。
+本文可能出现的部分词语定义如下：
+ 后缀：字符串 $s$ 的后缀，定义为字符串的某个位置到字符串末尾的子串。特别的，称从第 $i$ 个字符为第一个元素的后缀为第 $i$ 个后缀。 前缀：基本同后缀，只是定义为从字符串第一个字符到某个位置的子串。 后缀的排名：定义第 $i$ 个后缀的排名，为字符串所有后缀按字典序排序后，第 $i$ 个后缀的排名。 LCP：定义 $\operatorname{LCP}(i,j)$ 为一个字符串排名为 $i$ 的后缀和排名为 $j$ 的后缀的最长公共前缀，有时只最长公共前缀长度，本文也是如此，有的地方指最长公共前缀，有的地方指最长公共前缀长度。 字符串的大小关系：两个字符串比较大小，默认是比较字典序谁先谁后。  此外，在后文中，如果没有特殊定义，则 $s$ 表示需要处理的字符串，$n=\left| s\right|$，即 $s$ 的串长，下标从 $1$ 开始编号。
+LCP 的性质与引理 根据 LCP 的定义，有这样两个显然的性质：
+ $\operatorname{LCP}(i,j)=\operatorname{LCP}(j,i)$ 记 $len_i$ 表示排名为 $i$ 的后缀的长度，有 $\operatorname{LCP}(i,i)=len_i$。  这样，计算 LCP 时，对于 $i&gt;j$ 的情况，可以转化为 $i&lt;j$ 的情况做。对于 $i=j$ 的情况，直接用 $sa_i$ 算就行。简化了代码实现的复杂程度。"/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/Walker_68145" target="_blank">
+            <img class="img-circle img-rotate" src="https://walker68145/Arahc.github.io/avatar.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Arahc</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Arahc&#39;s home</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Changsha, China</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/Arahc.github.io/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/Arahc.github.io/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/Arahc.github.io/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/Arahc.github.io/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/Arahc.github.io/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content"><p>博客已经由 Walker_68145.github.io 转移到此处，原页面保留，为此带来的不便请大家谅解。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link" rel="1">k进制<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link" rel="1">stl<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link" rel="2">二分三分<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link" rel="3">分治<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link" rel="8">动态规划<span
+               class="tag-list-count">8</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link" rel="7">图论<span
+               class="tag-list-count">7</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link" rel="1">字符串<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link" rel="10">数学<span
+               class="tag-list-count">10</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link" rel="9">数据结构<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link" rel="4">暴力<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link" rel="1">莫队<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link" rel="3">贪心<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link" rel="2">随机化<span
+               class="tag-list-count">2</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E6%9D%82%E9%A1%B9/" class="category-list-link">杂项</a><span class="category-list-count">3</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/" class="category-list-link">笔记</a><span class="category-list-count">11</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E9%A2%98%E8%A7%A3/" class="category-list-link">题解</a><span class="category-list-count">20</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link">k进制</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link">stl</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link">二分三分</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link">分治</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link">动态规划</a><span
+                    class="tag-list-count">8</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link">图论</a><span
+                    class="tag-list-count">7</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link">字符串</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link">数学</a><span
+                    class="tag-list-count">10</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link">数据结构</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link">暴力</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link">莫队</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link">贪心</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link">随机化</a><span
+                    class="tag-list-count">2</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/" class="title">P5633最小度限制生成树 题解</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-28 21:43:22 &#43;0800 CST" itemprop="datePublished">2021-12-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/" class="title">线性基入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-22 21:47:24 &#43;0800 CST" itemprop="datePublished">2021-12-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/" class="title">Markdown 入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-30 18:41:00 &#43;0800 CST" itemprop="datePublished">2021-11-30</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/" class="title">OI 相关的非切题内容</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-28 21:42:04 &#43;0800 CST" itemprop="datePublished">2021-11-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E4%B8%8Ekdtree/" class="title">替罪羊与KDTree</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-25 21:48:19 &#43;0800 CST" itemprop="datePublished">2021-11-25</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/Arahc.github.io/posts/lcp-%E5%92%8C%E5%90%8E%E7%BC%80%E6%95%B0%E7%BB%84/"
+    >LCP 和后缀数组</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://walker68145/Arahc.github.io/posts/lcp-%E5%92%8C%E5%90%8E%E7%BC%80%E6%95%B0%E7%BB%84/" class="article-date">
+  <time datetime="2021-08-28 10:40:36 &#43;0800 CST" itemprop="datePublished">2021-08-28</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/"> 笔记 </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/"> 字符串 </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 577 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 3 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <h2 id="前言">前言</h2>
+<p>后缀数组（SA）是一种可以用于处理字符串后缀有关性质，包括 LCP 等的思想。一般复杂度用 $\operatorname{O}(n\log n)$ 版本，有 $\operatorname{O}(n)$ 版本但相对复杂，码量大。本文讨论的是严格的 $\operatorname{O}(n\log n)$ 的。</p>
+<p>后缀自动机（SAM）则是一种强有力的数据结构，用于解决有关字符串的很多东西。一般复杂度是 $\operatorname{O}(n)$ 的。因为写博客的时间原因 SAM 暂时咕着。暂时只讨论 SA。</p>
+<p>本文可能出现的部分词语定义如下：</p>
+<ul>
+<li><strong>后缀</strong>：字符串 $s$ 的后缀，定义为字符串的某个位置到字符串末尾的子串。特别的，称从第 $i$ 个字符为第一个元素的后缀为第 $i$ 个后缀。</li>
+<li><strong>前缀</strong>：基本同后缀，只是定义为从字符串第一个字符到某个位置的子串。</li>
+<li><strong>后缀的排名</strong>：定义第 $i$ 个后缀的排名，为字符串所有后缀按字典序排序后，第 $i$ 个后缀的排名。</li>
+<li><strong>LCP</strong>：定义 $\operatorname{LCP}(i,j)$ 为一个字符串排名为 $i$ 的后缀和排名为 $j$ 的后缀的最长公共前缀，有时只最长公共前缀长度，本文也是如此，有的地方指最长公共前缀，有的地方指最长公共前缀长度。</li>
+<li><strong>字符串的大小关系</strong>：两个字符串比较大小，默认是比较字典序谁先谁后。</li>
+</ul>
+<p>此外，在后文中，如果没有特殊定义，则 $s$ 表示需要处理的字符串，$n=\left| s\right|$，即 $s$ 的串长，下标从 $1$ 开始编号。</p>
+<h2 id="lcp-的性质与引理">LCP 的性质与引理</h2>
+<p>根据 LCP 的定义，有这样两个显然的性质：</p>
+<ul>
+<li>$\operatorname{LCP}(i,j)=\operatorname{LCP}(j,i)$</li>
+<li>记 $len_i$ 表示排名为 $i$ 的后缀的长度，有 $\operatorname{LCP}(i,i)=len_i$。</li>
+</ul>
+<p>这样，计算 LCP 时，对于 $i&gt;j$ 的情况，可以转化为 $i&lt;j$ 的情况做。对于 $i=j$ 的情况，直接用 $sa_i$ 算就行。简化了代码实现的复杂程度。</p>
+<p>LCP 的一个重要引理如下：</p>
+<p>$$\forall 1\leqslant i\leqslant k\leqslant j\leqslant n,\operatorname{LCP}(i,j)=\min(\operatorname{LCP}(i,k),\operatorname{LCP}(k,j))$$</p>
+<hr>
+<p><strong>引理证明</strong></p>
+<p>设 $p=\min(\operatorname{LCP}(i,k),\operatorname{LCP}(k,j))$，显然 $p\leqslant\operatorname{LCP}(i,k),p\leqslant\operatorname{LCP}(k,j)$。</p>
+<p>假设 $a$ 为 $s$ 的第 $sa_i$ 个后缀，$b$ 为 $s$ 的第 $sa_j$ 个后缀，$c$ 为 $s$ 的第 $sa_k$ 个后缀。</p>
+<p>所以 $a,c$ 的前 $p$ 个字符相同，$b,c$ 的前 $p$ 个字符相同。所以 $a,b$ 的前 $p$ 个字符相同。所以有 $\operatorname{LCP}(i,j)\geqslant p$。</p>
+<p>不妨考虑反证法，假设存在一个数 $q$，满足 $\operatorname{LCP}(i,j)=q&gt;p$，也就是 $q\geqslant p+1$。此时一定会满足 $a_{[1,q]}=b_{[1,q]}$，也就有 $a_{p+1}=b_{p+1}$。</p>
+<p>因为 $p=\min(\operatorname{LCP}(i,k),\operatorname{LCP}(k,j))$，所以一定满足 $a_{p+1}\neq c_{p+1}\lor b_{p+1}\neq c_{p+1}$（$\lor$ 是或者的意思），而且两者一定有一者满足一者不满足。</p>
+<p>但是因为 $a_{p+1}=b_{p+1}$，与前文矛盾。因此不存在一个符合题设的 $q$，且一定有 $\operatorname{LCP}(i,j)\leqslant p$，又因为 $\operatorname{LCP}(i,j)\geqslant p$，所以 $\operatorname{LCP}(i,j)=p$。也就是 $\operatorname{LCP}(i,j)=\min(\operatorname{LCP}(i,k),\operatorname{LCP}(k,j))$。</p>
+<hr>
+<p>延伸地，还有一个以此为基础的定理：</p>
+<p>$$\forall 1\leqslant i&lt;j\leqslant n,\operatorname{LCP}(i,j)=\min_{i&lt;k\leqslant j}(\operatorname{LCP}(k,k-1))$$</p>
+<hr>
+<p><strong>定理证明</strong></p>
+<p>将 $[i,j]$ 拆为两个区间：$[i,i+1]$ 和 $[i+2,j]$。</p>
+<p>根据引理，有 $\operatorname{LCP}(i,j)=\min(\operatorname{LCP}(i,i+1),\operatorname{LCP}(i+2,j))$。</p>
+<p>而对于 $\operatorname{LCP}(i+2,j)$，我们可以递归地继续拆分下去，也就是变成 $[i+2,i+3]$ 和 $[i+4,j]$。以此类推地递归。最后得到：</p>
+<p>$$\operatorname{LCP}(i,j)=\min(\operatorname{LCP}(i,i+1),\operatorname{LCP}(i+2,i+3),\operatorname{LCP}(i+4,i+5),\cdots,\operatorname{LCP}(j-1,j))$$</p>
+<p>也就是 $\min_{i&lt;k\leqslant j}(\operatorname{LCP}(k,k-1))$。</p>
+<hr>
+<h2 id="后缀数组">后缀数组</h2>
+<h3 id="变量含义">变量含义</h3>
+<p>后缀数组的一些基本变量和数组如下：</p>
+<ul>
+<li>$sa_i$ 表示排名为 $i$ 的后缀是 $s$ 的第几个后缀。</li>
+<li>$rk_i$ 表示 $s$ 的第 $i$ 个后缀的排名。</li>
+</ul>
+<p>考虑到 $s$ 的第 $i$ 个后缀的长度为 $n-i+1$。所以我用 string 记录后缀的时候，可以直接通过获得 size 来判断这是第几个后缀，非常方便。</p>
+<p>显然有结论：$rk_{sa_i}=sa_{rk_i}=i$。</p>
+<hr>
+<p><strong>引理证明</strong>：</p>
+<p>对于排名为 $i$ 的后缀，它是 $s$ 的第 $sa_i$ 个后缀，第 $sa_i$ 个后缀的排名就是 $rk_{sa_i}$，所以有 $rk_{sa_i}=i$。</p>
+<p>同理有 $sa_{rk_i}=i$。</p>
+<hr>
+<p>后缀数组最核心的地方就是如何得到这两个数组。以及如何用这两个数组求出一些东西。</p>
+<h3 id="求得-sa-和-rk">求得 sa 和 rk</h3>
+<h4 id="暴力">暴力</h4>
+<p>最暴力的方法就是将 $s$ 的所有后缀记录下来，按字典序排序，也就是直接 sort。比较任意两个后缀的大小关系是 $\operatorname{O}(n)$ 的，虽然跑不满，但是总的复杂度还是接近 $\operatorname{O}(n^2\log n)$ 的。相当低效。</p>
+<p>暴力的代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp">string a[max_n]; <span style="color:#75715e">// 存储后缀
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> sa[max_n],rk[max_n];
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">SA</span>(){
+	a[n][<span style="color:#ae81ff">1</span>]<span style="color:#f92672">=</span>s[n];
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span>n<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">1</span>;<span style="color:#f92672">--</span>i){ <span style="color:#75715e">// 记录后缀
+</span><span style="color:#75715e"></span>		a[i]<span style="color:#f92672">=</span>a[i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>];
+		a[i].push_back(s[i]);
+	}
+	sort(a<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,a<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">+</span>n); <span style="color:#75715e">// 直接排序
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i){
+		<span style="color:#66d9ef">int</span> j<span style="color:#f92672">=</span>n<span style="color:#f92672">-</span>a[i].size()<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;
+		sa[i]<span style="color:#f92672">=</span>j,
+		rk[j]<span style="color:#f92672">=</span>i;
+	}
+}
+</code></pre></div><p>当然这个复杂度太拉垮了。</p>
+<h4 id="暴力优化">暴力优化</h4>
+<p>将比较两个字符串大小从暴力改成 Hash+二分公共前缀。复杂度可以转化为 $\operatorname{O}(n\log^2 n)$。不多赘述。</p>
+<h4 id="倍增">倍增</h4>
+<p>我们首先按照每个后缀的第一个字符排序。对于每一个后缀，按照第一个字符的字典序可以给它一个临时排名。这个临时排名显然有可能并列。因为不同后缀的第一个字符可能是相同的。</p>
+<p>然后把相邻的字符拼在一起，也就是每个后缀的前两位进行排序。考虑到我们已经排过第一位了，而第一位小的第二位不管怎样这个后缀整体都小，也就是这个时候可以直接只把并列的部分拿出来，然后按照第二位排序就行。如果嫌麻烦，也可以直接按照临时排名为排序第一关键字，第二位上的字符为第二关键字。</p>
+<p>这时得到了新的临时排名（更新之前的临时排名），此时再把相邻的两个拼在一起，也就是每个后缀的前四位进行排序。考虑到任意连续的两个字符拼在一起的排名已经出来了。这一次排序可以按照前两个字符排名为第一关键字，后两个字符排名为第二关键字。进行排序。</p>
+<p>以此类推排序，上一次按照前 $x$ 个字符排序，这一次就按照前 $2x$ 个字符排序。在什么时候结束呢？很显然，如果这一次得到的临时排名没有出现并列，说明这个时候的排名已经是非常严谨的最终排名了。按照这种排序方法显然不会出问题。此时的排名就是最终的 $rk$ 数组。然后根据 $rk_{sa_i}=i$，可以得到 $sa$ 数组。</p>
+<p>这样整体的排序，sort 的 $n\log n$ 还在，但是变成了双关键字排序，也就是单次比较大小是 $\operatorname{O}(1)$ 的。因为最坏要排序 $\log n$ 次。因此整体复杂度是 $\operatorname{O}(n\log^2 n)$ 的。</p>
+<h4 id="基数排序优化">基数排序优化</h4>
+<p>考虑到我们已经把它转化成双关键字排序排序了，为什么不试试基数排序呢？</p>
+<p>我们可以开两个桶，一个装第一关键字，一个装第二关键字。每次我们先依次把每个元素放进第二关键字的桶里面。然后按顺序取出。这时各个元素之间是按照第二关键字排序好的。然后再依次放进第一关键字的桶里面，按顺序取出。这时各个元素之间按照第一关键字排好了，对于第一关键字相同的部分，因为前面已经按照第二关键字排过，所以第一关键字相同时保留了第二关键字的排序。</p>
+<p>举个例子，假设我们用两位数代表一个元素，第一关键字是十位，第二关键字是个位，待排序（从小到大）的序列为：</p>
+<p>$$73,09,22,93,43,55,14,28,65,39,81,20$$</p>
+<p>在第一次排序，也就是第二关键字排序时，建一个第二关键字（即个位）桶，按照原序加入后：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">0</th>
+<th style="text-align:center">1</th>
+<th style="text-align:center">2</th>
+<th style="text-align:center">3</th>
+<th style="text-align:center">4</th>
+<th style="text-align:center">5</th>
+<th style="text-align:center">6</th>
+<th style="text-align:center">7</th>
+<th style="text-align:center">8</th>
+<th style="text-align:center">9</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">20</td>
+<td style="text-align:center">81</td>
+<td style="text-align:center">22</td>
+<td style="text-align:center">73,93,43</td>
+<td style="text-align:center">14</td>
+<td style="text-align:center">55,65</td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center">28</td>
+<td style="text-align:center">09,39</td>
+</tr>
+</tbody>
+</table>
+<p>此时再按顺序提出来，原序列变为：$20,81,22,73,93,43,14,55,65,28,09,39$，不难发现是按照个位小到大排序的，个位相同则为原数组顺序。第二次排序的时候，建一个第一关键字（即十位）桶，按此时顺序加入后：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">0</th>
+<th style="text-align:center">1</th>
+<th style="text-align:center">2</th>
+<th style="text-align:center">3</th>
+<th style="text-align:center">4</th>
+<th style="text-align:center">5</th>
+<th style="text-align:center">6</th>
+<th style="text-align:center">7</th>
+<th style="text-align:center">8</th>
+<th style="text-align:center">9</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">09</td>
+<td style="text-align:center">14</td>
+<td style="text-align:center">20,22,28</td>
+<td style="text-align:center">39</td>
+<td style="text-align:center">43</td>
+<td style="text-align:center">55</td>
+<td style="text-align:center">65</td>
+<td style="text-align:center">73</td>
+<td style="text-align:center">81</td>
+<td style="text-align:center">93</td>
+</tr>
+</tbody>
+</table>
+<p>再依次提取出来，原序列变为：$09,14,20,22,28,39,43,55,65,73,81,93$，已经从小到大排好了。这是因为这是按照十位小到大排序的，十位相同则为前面那个数组顺序，而前面那个数组顺序就是个位小到大顺序。所以整体效果就变成了按照十位小到大排序，十位相同则按照个位小到大排序。也就是正确的排序了。</p>
+<p>显然基数排序的复杂度（为了方便我们假设桶大小不大于 $n$）是 $\operatorname{O}(n)$ 的，它是基于若干次桶排序进行的。</p>
+<p>而前面倍增的时候，我们碰到的就是双关键字排序这样一个问题，用 sort 是 $n\log n$ 的，现在使用基数排序可以优化成单次排序为 $\operatorname{O}(n)$，因为要进行 $\log n$ 次排序，所以总的复杂度是 $\operatorname{O}(n\log n)$ 的。</p>
+<p>代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">SA</span>{ <span style="color:#75715e">// 习惯性封装
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">int</span> rk[max_n],sa[max_n],tp[max_n],m;
+	SA(){m<span style="color:#f92672">=</span><span style="color:#ae81ff">300</span>;memset(sa,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">sizeof</span>(sa));} <span style="color:#75715e">// m 表示桶大小
+</span><span style="color:#75715e"></span>	
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">sort</span>(){ <span style="color:#75715e">// 基数排序
+</span><span style="color:#75715e"></span>		memset(sm,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">sizeof</span>(sm)); <span style="color:#75715e">// sm 是桶
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i)
+			<span style="color:#f92672">++</span>sm[rk[i]]; <span style="color:#75715e">// 按顺序放入桶
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>m;<span style="color:#f92672">++</span>i)
+			sm[i]<span style="color:#f92672">+=</span>sm[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]; 
+			<span style="color:#75715e">// 因为桶里面下标是临时排名，值是多少个
+</span><span style="color:#75715e"></span>			<span style="color:#75715e">// 所以可以直接前缀和快速计算排名关系
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span>n;i<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">1</span>;<span style="color:#f92672">--</span>i){
+			sa[sm[rk[tp[i]]]]<span style="color:#f92672">=</span>tp[i], <span style="color:#75715e">// 更新 sa
+</span><span style="color:#75715e"></span>			<span style="color:#f92672">--</span>sm[rk[tp[i]]]; <span style="color:#75715e">// 逐渐初始化桶
+</span><span style="color:#75715e"></span>		}
+	}
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">build</span>(<span style="color:#66d9ef">int</span> a[]){ <span style="color:#75715e">// 建 SA，a 数组是原串
+</span><span style="color:#75715e"></span>		<span style="color:#75715e">// 方便起见将其转化为 int 类型了
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i){
+			rk[i]<span style="color:#f92672">=</span>a[i],
+			tp[i]<span style="color:#f92672">=</span>i; <span style="color:#75715e">// tp[i] 表示第二关键字排名为 i 的后缀的第一关键字位置
+</span><span style="color:#75715e"></span>		}
+		sort(); <span style="color:#75715e">// 先按照第一个字符排好序
+</span><span style="color:#75715e"></span>
+		<span style="color:#66d9ef">int</span> len<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;
+		<span style="color:#66d9ef">while</span>(<span style="color:#ae81ff">1</span>){ <span style="color:#75715e">// 倍增
+</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">int</span> cnt<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+			<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>len;<span style="color:#f92672">++</span>i)
+				tp[<span style="color:#f92672">++</span>cnt]<span style="color:#f92672">=</span>n<span style="color:#f92672">-</span>len<span style="color:#f92672">+</span>i; <span style="color:#75715e">// 重新更新
+</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i)
+				<span style="color:#66d9ef">if</span>(sa[i]<span style="color:#f92672">&gt;</span>len)
+					tp[<span style="color:#f92672">++</span>cnt]<span style="color:#f92672">=</span>sa[i]<span style="color:#f92672">-</span>len;
+			sort(),
+			memcpy(tp,rk,<span style="color:#66d9ef">sizeof</span>(rk)); <span style="color:#75715e">// 得到排名
+</span><span style="color:#75715e"></span>			rk[sa[<span style="color:#ae81ff">1</span>]]<span style="color:#f92672">=</span>cnt<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;
+			<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i){ <span style="color:#75715e">// sa 有序了，可直接生成下次排序关键字
+</span><span style="color:#75715e"></span>				<span style="color:#66d9ef">if</span>(tp[sa[i]]<span style="color:#f92672">==</span>tp[sa[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]] <span style="color:#f92672">&amp;&amp;</span> tp[sa[i]<span style="color:#f92672">+</span>len]<span style="color:#f92672">==</span>tp[sa[i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">+</span>len])
+					rk[sa[i]]<span style="color:#f92672">=</span>cnt;
+				<span style="color:#66d9ef">else</span>
+					rk[sa[i]]<span style="color:#f92672">=++</span>cnt;
+			}
+			m<span style="color:#f92672">=</span>cnt,len<span style="color:#f92672">&lt;&lt;=</span><span style="color:#ae81ff">1</span>; <span style="color:#75715e">// 更新桶大小和提取后缀前几个字符
+</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">if</span>(cnt<span style="color:#f92672">&gt;=</span>n) <span style="color:#66d9ef">break</span>; <span style="color:#75715e">// 说明没有并列，已经排好了
+</span><span style="color:#75715e"></span>		}
+	}
+}sa;
+</code></pre></div><p>实际上还有非常复杂的 $\operatorname{O}(n)$ 做法求 $rk$ 和 $sa$，这里并不讨论。</p>
+<h3 id="后缀数组求-lcp">后缀数组求 LCP</h3>
+<p>前面在 LCP 的性质里面，也提到过：</p>
+<blockquote>
+<p>记 $len_i$ 表示排名为 $i$ 的后缀的长度，有 $\operatorname{LCP}(i,i)=len_i$。</p>
+</blockquote>
+<p>这时候发现 $len_i$ 不就可以转化为 $n-sa_i+1$ 吗？于是就可以求 $\operatorname{LCP}(i,i)$ 了。关键就是 $i\neq j$ 这种的 $\operatorname{LCP}(i,j)$ 怎么求。</p>
+<p>结合 LCP 定理。我们设 $ht_i$（其他博客写的是 $height$，我简写了）表示 $\operatorname{LCP}(i,i-1)$。特别的，$ht_1=0$。</p>
+<p>根据 LCP 引理，得到 $\operatorname{LCP}(i,j)=\min_{i&lt;k\leqslant j}(ht_k)$。</p>
+<p>那么 $ht$ 数组如何求得呢，显然不能直接枚举（复杂度直接爆炸好吗.jpg），因此我们要考虑两个 $ht$ 之间的关系。不妨定义 $h_i$ 表示 $ht_{rk_i}$。那么显然有 $ht_i=h_{sa_i}$。</p>
+<p>现在引进一个非常重要的定理：</p>
+<p>$$h_i\geqslant h_{i-1}-1$$</p>
+<p>这个证明就非常魔鬼，这里丢出来一个有<a href="http://www.yhzq-blog.cc/%E5%90%8E%E7%BC%80%E6%95%B0%E7%BB%84%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/">证明的博客</a>，有意者可以去那里看看。</p>
+<p>这个性质保证了除非 $h_i=h{i-1}-1$，不然它就是不降的，有了这样一个高级的性质，就可以进行 $\operatorname{O}(n)$ 地递推了。</p>
+<p>递推部分代码如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">// a 数组是原串
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>,j<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i){
+	<span style="color:#66d9ef">if</span>(j) <span style="color:#f92672">--</span>j; <span style="color:#75715e">// h[i]&gt;=h[i-1]-1
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">int</span> k<span style="color:#f92672">=</span>sa[rk[i]<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>];
+	<span style="color:#66d9ef">while</span>(a[i<span style="color:#f92672">+</span>j]<span style="color:#f92672">==</span>a[j<span style="color:#f92672">+</span>k])
+		<span style="color:#f92672">++</span>j;
+	ht[rk[i]]<span style="color:#f92672">=</span>j; <span style="color:#75715e">// h[i]=ht[rk[i]]
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>有这样求可以非常好地求出 LCP 了。如果用 st 之类数据结构维护 $ht$ 数组，就可以做到 $n\log n$ 预处理，$\operatorname{O}(1)$ 查询。（什么，你问我 $n\log n$ 太慢了？<del>你求 sa 和 rk 都是 nlog n 那还管什么常数</del>）</p>
+<p>除此之外三个典型的字符串问题，都简单提一下：</p>
+<ul>
+<li><strong>求可重叠最长重复子串</strong>：$ht$ 数组最大值。</li>
+<li><strong>求不可重叠最长重复子串</strong>：二分答案 $x$，对 $ht$ 数组的各个连续元素分组，使得每一组的 $ht$ 最小值不小于 $x$。此时枚举每一组，记录最大长度 $max$，最小长度 $min$。如果有 $sa_max-sa_min\geqslant x$ 则更新答案。</li>
+<li><strong>本质不同的子串数量</strong>：枚举每一个后缀，设后缀长度为 $len$，第 $i$ 个后缀对答案的贡献为 $len-sa_i+1-ht_i$。</li>
+</ul>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://walker68145/Arahc.github.io/posts/lcp-%E5%92%8C%E5%90%8E%E7%BC%80%E6%95%B0%E7%BB%84/" title="LCP 和后缀数组" target="_blank" rel="external">https://walker68145/Arahc.github.io/posts/lcp-%E5%92%8C%E5%90%8E%E7%BC%80%E6%95%B0%E7%BB%84/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/Walker_68145" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://walker68145/Arahc.github.io/avatar.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/Walker_68145" target="_blank"><span class="text-dark">Arahc</span><small class="ml-1x">Arahc&#39;s home</small></a></h3>
+        <div>咕↘咕↗咕——→</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://walker68145/Arahc.github.io/posts/cf1553%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/" title="CF1553部分题解"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://walker68145/Arahc.github.io/posts/2021%E5%85%A8%E7%9C%9F%E6%A8%A1%E6%8B%9F/"
+                    title="2021全真模拟"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/Walker_68145" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://walker68145/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/C&#43;&#43;.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://walker68145/Arahc.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://walker68145/Arahc.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/walker68145\/Arahc.github.io',
+            CONTENT_URL: 'https:\/\/walker68145\/Arahc.github.io\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://walker68145/Arahc.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>

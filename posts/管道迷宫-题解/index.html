@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        管道迷宫 题解 - Arahc&#39;s blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="题目传送门
+（团队题库，不可见，重题见 此处 ）
+题外话 本来是去年一个有关树然后有个线上下扫的交互题今年把它实现出来。
+结果后来还是算了，搞了一个物理学的东西，是准备用来当考试题的。
+鬼晓得这玩意没一个人知道比暴力优的解法，我自己都不知道。
+然后想到去年还有个想法，稍微改了一下，发现和网上某题重了。
+实在懒得出新题目了重就重吧没人做过就行。
+题目分析 题目长度适中偏长，符合 NOIP 题面长度套路，但是是真交互题，CCF 没考过。
+简单来说，就是给一个以 $1$ 为根的有根树，然后有两种交互，一种查询两点距离，一种查询一个点的子树。要求用父亲表示法把树还原出来。
+你看吧虽然题面很长但简化出来只有一句话，所以还是不符合 CCF 的出题习惯。
+测试数据 1 不难看出这个数据就是一个菊花图。
+注意了，这个菊花图的花蕊不一定是根节点，事实上数据也不是。只要你够细心就知道还有一种情况是花蕊的海拔是 $-1$，换句话说树高为 $3$。
+就算你不知道这个花蕊是不是根节点，分类讨论总会吧。
+一个简单的做法，枚举每个点和根节点的距离。如果除了根节点，所有点距离都是 $1$，说明是 $1$ 为花蕊的菊花，否则一定只有一个点距离为 $1$，别的都是 $2$。那个距离为 $1$ 的就是花蕊。
+我才不会告诉你这个数据差点卡掉了 100 分的正解。
+测试数据 2~5 （ 25 分暴力算法） 我摊牌了表格里我写的小于等于其实所有数据 n 都开到等于了。
+所以没有必要讨论玄学骗分算法。
+考虑到可询问次数大于 $n^2$，最简单的算法就是暴力枚举两个点，查询一下距离。如果距离是 $1$ 就说明是有边直接连接的。
+因此暴力查询距离得到联通关系，相当于是知道这个树的边了，显然再跑一遍 dfs 就可以得出父子关系。
+测试数据 6~8 不难得出这两个数据点都是说这个树是一条链。
+链是个好东西，为什么？因为一个点只会有一个儿子啊。
+询问次数卡到了大约是 $2n$ 的水平，可以考虑在上一组测试数据的基础上优化。
+因为每一个深度都只有一个点，我们可以暴力询问每一个点和根节点的距离，这个时候可以发现深度为 $d$ 的点的父亲就是深度为 $d-1$ 的点的父亲（正如前文所述，不要忘记链的情况每个点深度互不相同！）。
+知道了这一点就可以随便怎么搞了，我的做法是根据深度小到大排序。这里不必赘述。
+测试数据 9~11 从这里开始我们将走向玄学和魔法的道路。" />
+    <meta name="generator" content="Hugo 0.91.2 with theme pure" />
+    <title>管道迷宫 题解 - Arahc&#39;s blog</title>
+    
+    
+    <link rel="stylesheet" href="https://walker68145/Arahc.github.io/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="管道迷宫 题解" />
+<meta property="og:description" content="题目传送门
+（团队题库，不可见，重题见 此处 ）
+题外话 本来是去年一个有关树然后有个线上下扫的交互题今年把它实现出来。
+结果后来还是算了，搞了一个物理学的东西，是准备用来当考试题的。
+鬼晓得这玩意没一个人知道比暴力优的解法，我自己都不知道。
+然后想到去年还有个想法，稍微改了一下，发现和网上某题重了。
+实在懒得出新题目了重就重吧没人做过就行。
+题目分析 题目长度适中偏长，符合 NOIP 题面长度套路，但是是真交互题，CCF 没考过。
+简单来说，就是给一个以 $1$ 为根的有根树，然后有两种交互，一种查询两点距离，一种查询一个点的子树。要求用父亲表示法把树还原出来。
+你看吧虽然题面很长但简化出来只有一句话，所以还是不符合 CCF 的出题习惯。
+测试数据 1 不难看出这个数据就是一个菊花图。
+注意了，这个菊花图的花蕊不一定是根节点，事实上数据也不是。只要你够细心就知道还有一种情况是花蕊的海拔是 $-1$，换句话说树高为 $3$。
+就算你不知道这个花蕊是不是根节点，分类讨论总会吧。
+一个简单的做法，枚举每个点和根节点的距离。如果除了根节点，所有点距离都是 $1$，说明是 $1$ 为花蕊的菊花，否则一定只有一个点距离为 $1$，别的都是 $2$。那个距离为 $1$ 的就是花蕊。
+我才不会告诉你这个数据差点卡掉了 100 分的正解。
+测试数据 2~5 （ 25 分暴力算法） 我摊牌了表格里我写的小于等于其实所有数据 n 都开到等于了。
+所以没有必要讨论玄学骗分算法。
+考虑到可询问次数大于 $n^2$，最简单的算法就是暴力枚举两个点，查询一下距离。如果距离是 $1$ 就说明是有边直接连接的。
+因此暴力查询距离得到联通关系，相当于是知道这个树的边了，显然再跑一遍 dfs 就可以得出父子关系。
+测试数据 6~8 不难得出这两个数据点都是说这个树是一条链。
+链是个好东西，为什么？因为一个点只会有一个儿子啊。
+询问次数卡到了大约是 $2n$ 的水平，可以考虑在上一组测试数据的基础上优化。
+因为每一个深度都只有一个点，我们可以暴力询问每一个点和根节点的距离，这个时候可以发现深度为 $d$ 的点的父亲就是深度为 $d-1$ 的点的父亲（正如前文所述，不要忘记链的情况每个点深度互不相同！）。
+知道了这一点就可以随便怎么搞了，我的做法是根据深度小到大排序。这里不必赘述。
+测试数据 9~11 从这里开始我们将走向玄学和魔法的道路。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://walker68145/Arahc.github.io/posts/%E7%AE%A1%E9%81%93%E8%BF%B7%E5%AE%AB-%E9%A2%98%E8%A7%A3/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-03T21:38:55+08:00" />
+<meta property="article:modified_time" content="2021-07-03T21:38:55+08:00" />
+
+<meta itemprop="name" content="管道迷宫 题解">
+<meta itemprop="description" content="题目传送门
+（团队题库，不可见，重题见 此处 ）
+题外话 本来是去年一个有关树然后有个线上下扫的交互题今年把它实现出来。
+结果后来还是算了，搞了一个物理学的东西，是准备用来当考试题的。
+鬼晓得这玩意没一个人知道比暴力优的解法，我自己都不知道。
+然后想到去年还有个想法，稍微改了一下，发现和网上某题重了。
+实在懒得出新题目了重就重吧没人做过就行。
+题目分析 题目长度适中偏长，符合 NOIP 题面长度套路，但是是真交互题，CCF 没考过。
+简单来说，就是给一个以 $1$ 为根的有根树，然后有两种交互，一种查询两点距离，一种查询一个点的子树。要求用父亲表示法把树还原出来。
+你看吧虽然题面很长但简化出来只有一句话，所以还是不符合 CCF 的出题习惯。
+测试数据 1 不难看出这个数据就是一个菊花图。
+注意了，这个菊花图的花蕊不一定是根节点，事实上数据也不是。只要你够细心就知道还有一种情况是花蕊的海拔是 $-1$，换句话说树高为 $3$。
+就算你不知道这个花蕊是不是根节点，分类讨论总会吧。
+一个简单的做法，枚举每个点和根节点的距离。如果除了根节点，所有点距离都是 $1$，说明是 $1$ 为花蕊的菊花，否则一定只有一个点距离为 $1$，别的都是 $2$。那个距离为 $1$ 的就是花蕊。
+我才不会告诉你这个数据差点卡掉了 100 分的正解。
+测试数据 2~5 （ 25 分暴力算法） 我摊牌了表格里我写的小于等于其实所有数据 n 都开到等于了。
+所以没有必要讨论玄学骗分算法。
+考虑到可询问次数大于 $n^2$，最简单的算法就是暴力枚举两个点，查询一下距离。如果距离是 $1$ 就说明是有边直接连接的。
+因此暴力查询距离得到联通关系，相当于是知道这个树的边了，显然再跑一遍 dfs 就可以得出父子关系。
+测试数据 6~8 不难得出这两个数据点都是说这个树是一条链。
+链是个好东西，为什么？因为一个点只会有一个儿子啊。
+询问次数卡到了大约是 $2n$ 的水平，可以考虑在上一组测试数据的基础上优化。
+因为每一个深度都只有一个点，我们可以暴力询问每一个点和根节点的距离，这个时候可以发现深度为 $d$ 的点的父亲就是深度为 $d-1$ 的点的父亲（正如前文所述，不要忘记链的情况每个点深度互不相同！）。
+知道了这一点就可以随便怎么搞了，我的做法是根据深度小到大排序。这里不必赘述。
+测试数据 9~11 从这里开始我们将走向玄学和魔法的道路。"><meta itemprop="datePublished" content="2021-07-03T21:38:55+08:00" />
+<meta itemprop="dateModified" content="2021-07-03T21:38:55+08:00" />
+<meta itemprop="wordCount" content="544">
+<meta itemprop="keywords" content="图论,分治,随机化," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="管道迷宫 题解"/>
+<meta name="twitter:description" content="题目传送门
+（团队题库，不可见，重题见 此处 ）
+题外话 本来是去年一个有关树然后有个线上下扫的交互题今年把它实现出来。
+结果后来还是算了，搞了一个物理学的东西，是准备用来当考试题的。
+鬼晓得这玩意没一个人知道比暴力优的解法，我自己都不知道。
+然后想到去年还有个想法，稍微改了一下，发现和网上某题重了。
+实在懒得出新题目了重就重吧没人做过就行。
+题目分析 题目长度适中偏长，符合 NOIP 题面长度套路，但是是真交互题，CCF 没考过。
+简单来说，就是给一个以 $1$ 为根的有根树，然后有两种交互，一种查询两点距离，一种查询一个点的子树。要求用父亲表示法把树还原出来。
+你看吧虽然题面很长但简化出来只有一句话，所以还是不符合 CCF 的出题习惯。
+测试数据 1 不难看出这个数据就是一个菊花图。
+注意了，这个菊花图的花蕊不一定是根节点，事实上数据也不是。只要你够细心就知道还有一种情况是花蕊的海拔是 $-1$，换句话说树高为 $3$。
+就算你不知道这个花蕊是不是根节点，分类讨论总会吧。
+一个简单的做法，枚举每个点和根节点的距离。如果除了根节点，所有点距离都是 $1$，说明是 $1$ 为花蕊的菊花，否则一定只有一个点距离为 $1$，别的都是 $2$。那个距离为 $1$ 的就是花蕊。
+我才不会告诉你这个数据差点卡掉了 100 分的正解。
+测试数据 2~5 （ 25 分暴力算法） 我摊牌了表格里我写的小于等于其实所有数据 n 都开到等于了。
+所以没有必要讨论玄学骗分算法。
+考虑到可询问次数大于 $n^2$，最简单的算法就是暴力枚举两个点，查询一下距离。如果距离是 $1$ 就说明是有边直接连接的。
+因此暴力查询距离得到联通关系，相当于是知道这个树的边了，显然再跑一遍 dfs 就可以得出父子关系。
+测试数据 6~8 不难得出这两个数据点都是说这个树是一条链。
+链是个好东西，为什么？因为一个点只会有一个儿子啊。
+询问次数卡到了大约是 $2n$ 的水平，可以考虑在上一组测试数据的基础上优化。
+因为每一个深度都只有一个点，我们可以暴力询问每一个点和根节点的距离，这个时候可以发现深度为 $d$ 的点的父亲就是深度为 $d-1$ 的点的父亲（正如前文所述，不要忘记链的情况每个点深度互不相同！）。
+知道了这一点就可以随便怎么搞了，我的做法是根据深度小到大排序。这里不必赘述。
+测试数据 9~11 从这里开始我们将走向玄学和魔法的道路。"/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/Walker_68145" target="_blank">
+            <img class="img-circle img-rotate" src="https://walker68145/Arahc.github.io/avatar.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Arahc</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Arahc&#39;s home</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Changsha, China</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/Arahc.github.io/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/Arahc.github.io/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/Arahc.github.io/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/Arahc.github.io/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/Arahc.github.io/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content"><p>博客已经由 Walker_68145.github.io 转移到此处，原页面保留，为此带来的不便请大家谅解。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link" rel="1">k进制<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link" rel="1">stl<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link" rel="2">二分三分<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link" rel="3">分治<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link" rel="8">动态规划<span
+               class="tag-list-count">8</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link" rel="7">图论<span
+               class="tag-list-count">7</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link" rel="1">字符串<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link" rel="10">数学<span
+               class="tag-list-count">10</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link" rel="9">数据结构<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link" rel="4">暴力<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link" rel="1">莫队<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link" rel="3">贪心<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link" rel="2">随机化<span
+               class="tag-list-count">2</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E6%9D%82%E9%A1%B9/" class="category-list-link">杂项</a><span class="category-list-count">3</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/" class="category-list-link">笔记</a><span class="category-list-count">11</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E9%A2%98%E8%A7%A3/" class="category-list-link">题解</a><span class="category-list-count">20</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link">k进制</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link">stl</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link">二分三分</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link">分治</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link">动态规划</a><span
+                    class="tag-list-count">8</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link">图论</a><span
+                    class="tag-list-count">7</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link">字符串</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link">数学</a><span
+                    class="tag-list-count">10</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link">数据结构</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link">暴力</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link">莫队</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link">贪心</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link">随机化</a><span
+                    class="tag-list-count">2</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/" class="title">P5633最小度限制生成树 题解</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-28 21:43:22 &#43;0800 CST" itemprop="datePublished">2021-12-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/" class="title">线性基入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-22 21:47:24 &#43;0800 CST" itemprop="datePublished">2021-12-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/" class="title">Markdown 入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-30 18:41:00 &#43;0800 CST" itemprop="datePublished">2021-11-30</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/" class="title">OI 相关的非切题内容</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-28 21:42:04 &#43;0800 CST" itemprop="datePublished">2021-11-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E4%B8%8Ekdtree/" class="title">替罪羊与KDTree</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-25 21:48:19 &#43;0800 CST" itemprop="datePublished">2021-11-25</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/Arahc.github.io/posts/%E7%AE%A1%E9%81%93%E8%BF%B7%E5%AE%AB-%E9%A2%98%E8%A7%A3/"
+    >管道迷宫 题解</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://walker68145/Arahc.github.io/posts/%E7%AE%A1%E9%81%93%E8%BF%B7%E5%AE%AB-%E9%A2%98%E8%A7%A3/" class="article-date">
+  <time datetime="2021-07-03 21:38:55 &#43;0800 CST" itemprop="datePublished">2021-07-03</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/Arahc.github.io/categories/%E9%A2%98%E8%A7%A3/"> 题解 </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/"> 图论 </a>
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/"> 分治 </a>
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/"> 随机化 </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 544 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 3 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p><strong><a href="https://www.luogu.com.cn/problem/T183788">题目传送门</a></strong></p>
+<p>（团队题库，不可见，重题见 <strong><a href="https://www.luogu.com.cn/problem/P7597">此处</a></strong> ）</p>
+<h3 id="题外话">题外话</h3>
+<p>本来是去年一个有关树然后有个线上下扫的交互题今年把它实现出来。</p>
+<p>结果后来还是算了，搞了一个物理学的东西，是准备用来当<a href="https://www.luogu.com.cn/problem/U166570">考试题</a>的。</p>
+<p>鬼晓得这玩意没一个人知道比暴力优的解法，我自己都不知道。</p>
+<p>然后想到去年还有个想法，稍微改了一下，发现和网上某题重了。</p>
+<p><del>实在懒得出新题目了重就重吧没人做过就行。</del></p>
+<h3 id="题目分析">题目分析</h3>
+<p>题目长度适中偏长，符合 NOIP 题面长度套路，但是是真交互题，CCF 没考过。</p>
+<p>简单来说，就是给一个以 $1$ 为根的有根树，然后有两种交互，一种查询两点距离，一种查询一个点的子树。要求用父亲表示法把树还原出来。</p>
+<p>你看吧虽然题面很长但简化出来只有一句话，<del>所以还是不符合 CCF 的出题习惯。</del></p>
+<h4 id="测试数据-1">测试数据 1</h4>
+<p>不难看出这个数据就是一个菊花图。</p>
+<p>注意了，这个菊花图的花蕊不一定是根节点，事实上数据也不是。只要你够细心就知道还有一种情况是花蕊的海拔是 $-1$，换句话说树高为 $3$。</p>
+<p>就算你不知道这个花蕊是不是根节点，分类讨论总会吧。</p>
+<p>一个简单的做法，枚举每个点和根节点的距离。如果除了根节点，所有点距离都是 $1$，说明是 $1$ 为花蕊的菊花，否则一定只有一个点距离为 $1$，别的都是 $2$。那个距离为 $1$ 的就是花蕊。</p>
+<p><del>我才不会告诉你这个数据差点卡掉了 100 分的正解。</del></p>
+<h4 id="测试数据-25--25-分暴力算法">测试数据 2~5 （ 25 分暴力算法）</h4>
+<p>我摊牌了表格里我写的小于等于其实所有数据 n 都开到等于了。</p>
+<p>所以没有必要讨论玄学骗分算法。</p>
+<p>考虑到可询问次数大于 $n^2$，最简单的算法就是暴力枚举两个点，查询一下距离。如果距离是 $1$ 就说明是有边直接连接的。</p>
+<p>因此暴力查询距离得到联通关系，相当于是知道这个树的边了，显然再跑一遍 dfs 就可以得出父子关系。</p>
+<h4 id="测试数据-68">测试数据 6~8</h4>
+<p>不难得出这两个数据点都是说这个树是一条链。</p>
+<p>链是个好东西，为什么？因为一个点只会有一个儿子啊。</p>
+<p>询问次数卡到了大约是 $2n$ 的水平，可以考虑在上一组测试数据的基础上优化。</p>
+<p>因为每一个深度都只有一个点，我们可以暴力询问每一个点和根节点的距离，这个时候可以发现深度为 $d$ 的点的父亲就是深度为 $d-1$ 的点的父亲（正如前文所述，不要忘记链的情况每个点深度互不相同！）。</p>
+<p>知道了这一点就可以随便怎么搞了，我的做法是根据深度小到大排序。这里不必赘述。</p>
+<h4 id="测试数据-911">测试数据 9~11</h4>
+<p>从这里开始我们将走向玄学和魔法的道路。</p>
+<p>这里的特殊性质在暗示我们这两个点都是完全二叉树，至于完不完美，也不一定，除非你知道数据（数据都取了表格的最大值， $n=2000$ 当然不完美）。</p>
+<p>就当它是个完全二叉树做。</p>
+<p>前面的 $30$ 分都只用了查询距离的询问，现在来考虑查询子树。</p>
+<p>查子树是非常麻烦的，因为一个点的子树大小未知，而查一次就要消耗子树大小那么多个询问次数。</p>
+<p>虽然这样子一说显得这个操作很鸡肋，但是万事开头难。我们先舍弃那些询问限制，考虑怎么只查子树还原整个树。</p>
+<p>既然这个东西一下子给你整出这么多信息点（既包含子树大小，也知道有哪些点），也一下子扣了那么多查询次数，显然我们要本着尽可能不要浪费信息点的方法来处理。</p>
+<p>不妨不管三七二十一把能记录的记下来再说。</p>
+<p>假设 $s_i$ 表示 $i$ 号节点的子树大小，然后用一个二维数组存下所有点的祖先（顺序随意），这道题 $n$ 最大也只有 $2333$，空间限制也不卡，显然二维数组不会炸空间。</p>
+<p>为什么记祖先不记子树呢，因为根据本人习惯，想到一个节点父亲一定只有一个，儿子就不一定只有一个了，所以记祖先总会方便一些。</p>
+<p>这两个信息都可以通过查子树得到，具体怎么处理也不难，大家自行尝试。</p>
+<p>因为记录的是祖先节点，所以我们最好是从下往上地处理。显然子树大小为 $1$ 的肯定是叶子节点了。</p>
+<p>明确了处理方向，具体怎么处理呢？</p>
+<p>现在我们知道了一个叶子节点 $u$，以及他的所有祖先，以及所有点的子树大小。因为上面的点子树大小显然比下面的点大，所以在这个叶子的祖先里搜一遍，找到子树最小的点 $fa$，则 $fa$ 一定是 $u$ 的父亲。</p>
+<p>每一个点都可以进行这样的操作，因为 $n$ 很小不会 TLE，所以到这里就可以结束了。</p>
+<p>这个算法的复杂度是多少呢？</p>
+<p>考虑到时间最坏也是 $n^2$ 打死都 T 不掉，如果事先按照子树大小 $s$ 排个序复杂度可能更低。因此重点来考虑一下询问次数。</p>
+<p>因为我们是从下往上处理的，而且下面的节点处理完毕就再也没有管过了，可以假设这些点直接被删掉，那么这个点的祖先的子树大小全部要 $-1$。</p>
+<p>如果我们事先按照子树大小排好了序，那么肯定是先把所有的叶子处理掉了。叶子处理掉然后呢？这个时候我们就发现，原本是叶子节点父亲的那些点就变成叶子了。然后再把这些新叶子处理掉，它们的父亲就变成新叶子了……</p>
+<p>以此进行的操作是和子树大小的递减有关的。那么抽象地说，如果同一层的节点越多，那么这一层节点的叶子可能会越多（想象一下一个根节点为花蕊的菊花图，然后再想一个 $n$ 很大但是树高特别小的树你就大概理解了），处理的时候反而会越快。</p>
+<p>那么理论而言，对于一个完全随机生成的树，他的理论复杂度是 $n\sqrt{n}$ 的；对于一个完全二叉树，大概估测一下他的复杂度是 $n\log n$ 的；因为它基于子树的减少，如果是一条链的情况，子树每次只会减少 $1$，这时会退化成 $n^2$ 的。</p>
+<p>不过这个解法的复杂度对于完全二叉树而言还是很友善的，亲测可行。</p>
+<h4 id="测试数据-121995-分根号分治算法">测试数据 12~19（95 分根号分治算法）</h4>
+<p>我们来总结一下前面使用过的查询方法：</p>
+<p>根据深度判断，这个操作只适用与链；<br>
+枚举两点距离。<br>
+查询点的子树，从下往上倒推。</p>
+<p>先考虑前两个。</p>
+<p>假设我首先查询出每个点的深度，可不可以优化“枚举两点距离”呢？</p>
+<p>当然可以，如果你不知道它们的深度，枚举的范围总是 $n$ 的规模，但是如果我知道每个点的深度，显然两个深度隔了 $2$ 或以上的点不可能形成父子关系，所以每个点的枚举的范围缩减到了比他深一个单位的点的数量。</p>
+<p>考虑第三个查询方法，如果我事先知道每个点的深度，然后还知道某个点的子树，那么这个点的子树中，深度刚好比这点深 $1$ 的点不就是它的儿子吗？</p>
+<p>于是我们有两种查询方法：</p>
+<p>无论如何，先求每个点和根节点的距离，得到深度，然后：</p>
+<p>利用深度缩减枚举范围，枚举两点距离，距离为 $1$ 的形成父子关系。<br>
+查询一个点子树，结合深度确定父子关系，深度差刚好为 $1$ 的形成父子关系。</p>
+<p>发现两种方法的利弊几乎是互补的：</p>
+<p>第一种方法适合某一层的节点较少的情况，这样枚举范围较小；在链的情况下，查询复杂度为 $n$，在完全二叉树上，大概估测一下，几乎退化成 $n^2$，在随机数据上，期望查询为 $n\sqrt{n}$。</p>
+<p>第二种方法适合某一层的节点较多的情况，这样期望的可以一步查询到位的点更多。在完全二叉树上，大概估测一下，可以达到 $n\log n$，在一条链上，复杂度几乎为 $n^2$，在随机数据上，期望查询为 $n\sqrt{n}$。</p>
+<p>随便算一下，$n\sqrt{n}$，$n\log n$，$n$ 的查询次数的方法可以过。可惜数据不一定是随机生成，不然这两种都能过了。</p>
+<p>注意到第一种方法适合一层节点少的情况，第二种方法适合节点多的情况……</p>
+<p>不妨就基于骗分的思想，如果这一层节点少，就用第一种，如果比较多，就用第二种。</p>
+<p>我们确定一个常数 $S$，如果这一层的点数大于（或大于等于）$S$，考虑第二种，如果这一层点数小于（或小于等于）$S$，考虑第一种。</p>
+<p>当然这个 $S$ 不能乱取，不然还是很容易被卡掉 <del>（事实上我貌似想不到怎么去卡）</del>。还是确定一下 $S$ 的值保险。</p>
+<hr>
+<p>下文的大于和小于可以取等，影响不大。</p>
+<p>假设这一颗树有 $m$ 层，第 $i$ 层有 $a_i$ 个点，当前我们已经知道了第 $i$ 层，准备查找第 $i+1$ 层。进行分类讨论：</p>
+<ul>
+<li>$a_i&gt;S$</li>
+</ul>
+<p>显然对于这一层的所有节点，我都查询一次子树，再根据深度判断下一层的点与这一层的父子关系。显然任何一层消耗的总操作量 $\leqslant n$。</p>
+<p>而 $a_i&gt;S$ 的情况最多也只会有 $n/S$ 次，每次输出不超过 $n$。因此总次数为（实则一定不超过） $n^2/S$。</p>
+<ul>
+<li>$a_i&lt;S$</li>
+</ul>
+<p>此时对于这一层我们使用的是第一种操作，对于每一个这一层的点，需要循环一遍下一层的所有点来查距离，消耗的总操作数是 $a_i \times a_{i+1}$。</p>
+<p>因为这次分类讨论我们同时处理的两层的数量关系，所以这种情况出现的次数不是 $n/a_i$，而是 $\dfrac{n}{a_i+a_{i+1}}$ 的。</p>
+<p>那么这种情况总的查询数是：$a_i \times a_{i+1} \times \dfrac{n}{a_i+a_{i+1}}$。</p>
+<p>显然 $a_i+a_{i+1}&gt;a_{i+1}$，即使真的有 $a_i+a_{i+1}=a_{i+1}$，那么原式就会变为 $a_i \times n$，既然显然这两者不可能相等，那么原式一定会小于 $a_i \times n$。</p>
+<p>而如前面所提，$a_i&lt;S$，因此会有：</p>
+<p>原式 $&lt; a_i\times n &lt; nS$，因此原式无论如何需要的操作次数都不会比 $nS$ 还要多。</p>
+<p>综上，两种情况总结起来，总的查询次数是一定会小于这个值的：</p>
+<p>$$n^2/S+nS$$</p>
+<p>这个式子看起来非常的恶心，实际上则不然，如果你还记得均值不等式：</p>
+<p>$$a+b\geqslant 2\sqrt{ab}$$</p>
+<p>且当且仅当 $a=b$ 时原式取等号。</p>
+<p>那么我们将 $a=n^2/S, b=nS$ 带入原式：</p>
+<p>$$n^2/S+nS\geqslant 2\sqrt{\frac{n^2}{S}\times nS}$$</p>
+<p>不等号右侧合并，化为最简根式：</p>
+<p>$$n^2/S + nS \geqslant 2n\sqrt{n}$$</p>
+<p>这个式子当且仅当 $n^2/S=nS$ 时，取等号，也就岁复杂度为最小值。</p>
+<p>$$\frac{n^2}{S}=nS$$</p>
+<p>$$\therefore S^2=n$$</p>
+<p>$$\therefore S=\sqrt{n}$$</p>
+<hr>
+<p>综上所述，我们得出了一个很厉害的结论：当 $S=\sqrt{n}$ 的时候，有最小的询问次数。因为证明中得到的那个式子两个加数都取不到，所以询问次数一定是小于 $2n\sqrt{n}$ 的。</p>
+<p>实际上，大约也就是 $n\sqrt{n}$ 的水平，刚好可以过。</p>
+<p>事实上，出题人还算比较仁慈，第 $12$ 个数据点是专门给 $S=n/2$ 设计的，第 $13$ 个数据点是专门给 $S=\log_2 n$ 设计的。毕竟不是所有人考场都能想到 $S=\sqrt{n}$ 最优。</p>
+<h4 id="测试数据-20--100-分随机化算法">测试数据 20 ( 100 分随机化算法）</h4>
+<p>因为 $n\leqslant 2333$，只要时间复杂度是 $n^2$ 我们都可以瞎搞（甚至好像还能带个 $\log$）。因此仍然只考虑查询次数是否超限。</p>
+<p>考虑前面所提到的：对于两个点 $u,v$，如果 $v$ 在 $u$ 的子树中，且 $u,v$ 深度关系满足 $dep_u+1=dep_v$ （方便起见不使用原题的海拔代表深度，直接从上到下从 $1$ 开始标）。</p>
+<p>首先每一个点的 $dep$ 显然还是要做的。如果我们朴素地从上到下递归查询子树，判断深度，复杂度是达到 $n^2$ 级别的，梦回暴力 $25$ 分。</p>
+<p>这一步如何优化呢？</p>
+<p>考虑如果我知道一个点 $u$，它有一个儿子 $v$，如果我知道 $u$ 的子树，还知道 $u$ 的其他儿子的子树，那么直接相减就得到了 $v$ 节点的子树。</p>
+<p>这样子我们对于每一个点至少可以少查一个儿子的子树了。</p>
+<p>少查的这个子树给哪个点最好呢？当然是子树最多的那个点。是不是感觉非常想树链剖分找重儿子？如果我们可以保证每次选择的是重儿子，根据树剖和 dsu on tree （树上启发式合并）里的推论，可以估测出查询的数量级略小于 $n\log n$。</p>
+<p>那么问题来了，我要求的不久是树的结构吗，连树的结构都不知道怎么剖呢？</p>
+<p>这个时候我们开始玄学：<strong>随机</strong>。</p>
+<p>如果一个点的子树最大，那么如果我随机若干个点作为标记点，这个点的子树中就会有期望更多的标记点。这个时候我们令占标记点最多的点为重儿子。</p>
+<p>那么应该随机几个呢？最好还是简单为好，为了避免两个点所占的标记点一样多导致冲突，直接只随机一个点就可以了。</p>
+<p>这样子的算法非常玄学。但是其复杂度退化的原因就在于我随机的时候并没有找到重儿子。实际测试的时候发现即使我找到的点大部分都是轻儿子，复杂度的退化也并不明显。</p>
+<p>再者，如果要卡掉这种随机算法，要从两个方面考虑：一个是加多轻儿子数量，另一个就是让其因为找到轻儿子复杂度退化更加明显。</p>
+<p>选择加多轻儿子数量，可以众生平等开完美多叉树，但这样又可以视为每个点都是重儿子，而且如果一个点的儿子个数 $&gt;2$ ，复杂度甚至会比 $\log_2 n $ 还要小。就算开的是完美二叉树，他的复杂度也是 $\log_2 n$ 的。显然轻儿子数量越多，重儿子和轻儿子的子树大小差值也会变小，整体效率还是非常可观的。</p>
+<p>那么还有一个方法就是让找到轻儿子复杂度的退化加剧，这样做就只能不断加大重儿子的子树大小，让其拉开和轻儿子子树大小的差距。实际上如果重儿子子树大小和轻儿子差距越大，那么每一次随机点我找到重儿子的概率也会越大。考虑到 $n$ 虽然不大，但是也不是很小，可以估算找到重儿子的次数是非常可观的。</p>
+<p>于是我们大概口糊了一下算法的正确性，交上去是可以 AC 的。</p>
+<hr>
+<p>现在来感性理解一下随机算法：</p>
+<p>假设对于一个点 $u$，我们记 $h_u$ （ heavy son ，重儿子 ）为这个点的重儿子，其他的所有点（ 轻儿子 ）记为 $l_u$ （ light son ）。</p>
+<p>如果我们颠倒了一个点的轻重儿子，相当于这一次少查了个重儿子多查了个轻儿子。对于这个点的询问次数，将会乘上一个 $\dfrac{size_{h_u}}{size_{l_u}}$。</p>
+<p>假设我们有 $p$ 的概率颠倒，则对于一个点 $u$，设最优情况下他的询问次数为 $t$ ，则他期望的询问次数为：</p>
+<p>$$t \times [(1-p)+p \times \frac{size_{h_u}}{size_{l_u}}]$$</p>
+<p>假设 $t$ 后面那一个式子记为 $E$，那么期望次数为：</p>
+<p>$$Et$$</p>
+<p>考虑树链剖分还带一个小于 $\log n$ 的处理，总的询问次数就是：</p>
+<p>$$En\log n$$</p>
+<p>考虑求 $E$ 的最大值。直接打个表求出近似值：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+
+<span style="color:#66d9ef">int</span> x,y,t;
+
+<span style="color:#75715e">//x表示重子树大小，y表示轻子树大小，t表示随机标记点数 
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">double</span> f[<span style="color:#ae81ff">505</span>][<span style="color:#ae81ff">505</span>],ans;
+<span style="color:#66d9ef">int</span> book[<span style="color:#ae81ff">505</span>][<span style="color:#ae81ff">505</span>];<span style="color:#75715e">// f 和 book 是记忆化，虽然是打表但还是要追求效率
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">double</span> <span style="color:#a6e22e">dfs</span>(<span style="color:#66d9ef">int</span> nowx,<span style="color:#66d9ef">int</span> nowy){ <span style="color:#75715e">//记忆化搜索求解子树颠倒的概率 
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> (nowx<span style="color:#f92672">+</span>nowy<span style="color:#f92672">==</span>t){
+		<span style="color:#66d9ef">if</span> (nowx<span style="color:#f92672">&lt;=</span>nowy)<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1.0</span>;
+		<span style="color:#66d9ef">if</span> (nowx<span style="color:#f92672">==</span>nowy)<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0.5</span>; 
+		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0.0</span>;
+	}
+	<span style="color:#66d9ef">if</span> (book[nowx][nowy])<span style="color:#66d9ef">return</span> f[nowx][nowy];
+	<span style="color:#66d9ef">double</span> ans<span style="color:#f92672">=</span><span style="color:#ae81ff">1.0</span><span style="color:#f92672">*</span>x<span style="color:#f92672">/</span>(x<span style="color:#f92672">+</span>y)<span style="color:#f92672">*</span>dfs(nowx<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,nowy)<span style="color:#f92672">+</span><span style="color:#ae81ff">1.0</span><span style="color:#f92672">*</span>y<span style="color:#f92672">/</span>(x<span style="color:#f92672">+</span>y)<span style="color:#f92672">*</span>dfs(nowx,nowy<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>);
+	book[nowx][nowy]<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;
+	<span style="color:#66d9ef">return</span> f[nowx][nowy]<span style="color:#f92672">=</span>ans;
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">gcd</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> a,<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> b){
+	<span style="color:#66d9ef">if</span> (b<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>)<span style="color:#66d9ef">return</span> a;
+	<span style="color:#66d9ef">return</span> gcd(b,a<span style="color:#f92672">%</span>b);
+}
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+	<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span><span style="color:#ae81ff">500</span>;i<span style="color:#f92672">++</span>)
+	    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> j<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;j<span style="color:#f92672">&lt;</span>i;j<span style="color:#f92672">++</span>){<span style="color:#75715e">//枚举不同重或轻子树大小的比值 
+</span><span style="color:#75715e"></span>		   <span style="color:#66d9ef">if</span> (gcd(i,j)<span style="color:#f92672">!=</span><span style="color:#ae81ff">1</span>)<span style="color:#66d9ef">continue</span>; <span style="color:#75715e">// 如果可以约分直接省略，因为前面肯定循环过了
+</span><span style="color:#75715e"></span>		    x<span style="color:#f92672">=</span>i,y<span style="color:#f92672">=</span>j,t<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>; 
+		    memset(book,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">sizeof</span>(book));
+		    <span style="color:#66d9ef">double</span> now<span style="color:#f92672">=</span>dfs(<span style="color:#ae81ff">0</span>,<span style="color:#ae81ff">0</span>);
+		    ans<span style="color:#f92672">=</span>max(ans,<span style="color:#ae81ff">1.0</span><span style="color:#f92672">-</span>now<span style="color:#f92672">+</span>now<span style="color:#f92672">*</span>i<span style="color:#f92672">/</span>j);<span style="color:#75715e">//计算E的最大值 
+</span><span style="color:#75715e"></span>	    }
+	printf(<span style="color:#e6db74">&#34;%.9lf</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,ans);<span style="color:#75715e">// 求出的近似值，并不一定精确，但是9位小数已经足够了
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>当然这个代码除了可以求随机一个点的 $max_E$，通过调试不同的 $t$，可以求出随机不同的点的 $max_E$。</p>
+<p>$t=1$ 的时候， $E$ 的最大值约为 $1.996007984$。当然如果不嫌麻烦我们再求一下其他情况。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">$t$（随机点数）</th>
+<th style="text-align:center">$max_E$（单个点期望询问次数）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1.996007984</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">2.990027928</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">1.315565155</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">1.542594038</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">1.217548930</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">1.345111947</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">1.173320703</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">1.260993873</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">1.147271264</td>
+</tr>
+</tbody>
+</table>
+<p>可以发现在实验范围内， $t=9$ 的时候是最优的。进一步探究发现，将 $t$ 为奇数的情况记下来，是递减的；将偶数的情况记下来，也是递减的。</p>
+<p>那么前面我们为了方便直接去 $t=1$，复杂度是多少呢？</p>
+<p>这样算下来 $E\approx 2$，原复杂度可以视为是 $2n\log n$ 的，这个算法看起来可能会被 T 飞，但是实际上也是比较优秀的。</p>
+<p>把打表代码改一下，输出中间值，可以发现，如果轻重儿子子树大小的比值 $\dfrac{size_{h_u}}{size_{l_u}}$ 越大，$E$ 的值也会越大。</p>
+<p>但是这样下去树也会越来越不平衡，对于一个不平衡的树，根据 OI wiki，树上启发式合并（ dsu on tree ）的常数减小也会显著。</p>
+<p>另外一方面，树越来越不平衡，颠倒轻重儿子的概率 $p$ 也会变小，树链剖分常数也会变小，整体复杂度反而下降了。</p>
+<hr>
+<p>因为随机乱搞的算法还是比较恶心，本来是占了 $30$ 分的（即根号分治 $70$ 分，随机化 $100$ 分），改成 $5$ 分了（即根号分治 $95$ 分，随机化 $100$ 分）。</p>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://walker68145/Arahc.github.io/posts/%E7%AE%A1%E9%81%93%E8%BF%B7%E5%AE%AB-%E9%A2%98%E8%A7%A3/" title="管道迷宫 题解" target="_blank" rel="external">https://walker68145/Arahc.github.io/posts/%E7%AE%A1%E9%81%93%E8%BF%B7%E5%AE%AB-%E9%A2%98%E8%A7%A3/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/Walker_68145" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://walker68145/Arahc.github.io/avatar.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/Walker_68145" target="_blank"><span class="text-dark">Arahc</span><small class="ml-1x">Arahc&#39;s home</small></a></h3>
+        <div>咕↘咕↗咕——→</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://walker68145/Arahc.github.io/posts/%E5%A4%A7%E5%B8%88-%E9%A2%98%E8%A7%A3/" title="大师 题解"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://walker68145/Arahc.github.io/posts/%E4%BB%8Ebst%E5%88%B0splay/"
+                    title="从BST到Splay"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/Walker_68145" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://walker68145/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/C&#43;&#43;.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://walker68145/Arahc.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://walker68145/Arahc.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/walker68145\/Arahc.github.io',
+            CONTENT_URL: 'https:\/\/walker68145\/Arahc.github.io\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://walker68145/Arahc.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>

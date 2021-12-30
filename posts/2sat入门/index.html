@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        2SAT入门 - Arahc&#39;s blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="前置知识  Tarjan 没了  问题与解法 问题 2-SAT 问题的模板题目是：
+ 模板例题：对于 $n$ 个 bool 变量，变量值未知，给定 $m$ 个关系，每个关系形如：$x_i=c_1$ 或 $x_j=c_2$（$c_1,c_2\in{0,1}$）。求是否有给每个变量赋值的方案，若有解则输出一组解。时间复杂度要求线性。
+ 这类问题就是 2-SAT 问题，更加进一步地，如果关系是：$x_i=c_1$ 或 $x_j=c_2$ 或 $x_k=c_3$。那就是 3-SAT 问题……现在已经被证明，3-SAT 或以上的 k-SAT 问题，是 NPC 的，1-SAT 问题应该不需要多说，所以重点就是 2-SAT 问题了。
+解法 2-SAT 问题给出的是两个点之间的关系，对于 $a=1$ 或 $b=0$ 这样一个条件，我们可以推导出以下几个关系：
+ 当 $a=0$ 时，$b$ 一定是 $0$。 当 $b=1$ 时，$a$ 一定是 $1$。  类似的，对于每一个种不同的关系，都可以推导出两个不同的式子：
+   要么 a= 要么 b= 得到结论 1 得到结论 2     0 0 a=1 时，b=0 b=1 时，a=0   0 1 a=1 时，b=1 b=0 时，a=0   1 0 a=0 时，b=0 b=1 时，a=1   1 1 a=0 时，b=1 b=0 时，a=1    于是我们根据“当什么什么时，得到什么什么”建立一个图。注意的是，这个关系是不能反过来的，比如表格第一个行结论 1：当 $b=0$ 时，一定有 $a=1$ 吗？并不是，此时 $a$ 可以是 $0$ 也可以是 $1$，不受约束。因此关系是定向的，不能反过来，翻译成建图就是，我们要建立有向图。" />
+    <meta name="generator" content="Hugo 0.91.2 with theme pure" />
+    <title>2SAT入门 - Arahc&#39;s blog</title>
+    
+    
+    <link rel="stylesheet" href="https://walker68145/Arahc.github.io/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="2SAT入门" />
+<meta property="og:description" content="前置知识  Tarjan 没了  问题与解法 问题 2-SAT 问题的模板题目是：
+ 模板例题：对于 $n$ 个 bool 变量，变量值未知，给定 $m$ 个关系，每个关系形如：$x_i=c_1$ 或 $x_j=c_2$（$c_1,c_2\in{0,1}$）。求是否有给每个变量赋值的方案，若有解则输出一组解。时间复杂度要求线性。
+ 这类问题就是 2-SAT 问题，更加进一步地，如果关系是：$x_i=c_1$ 或 $x_j=c_2$ 或 $x_k=c_3$。那就是 3-SAT 问题……现在已经被证明，3-SAT 或以上的 k-SAT 问题，是 NPC 的，1-SAT 问题应该不需要多说，所以重点就是 2-SAT 问题了。
+解法 2-SAT 问题给出的是两个点之间的关系，对于 $a=1$ 或 $b=0$ 这样一个条件，我们可以推导出以下几个关系：
+ 当 $a=0$ 时，$b$ 一定是 $0$。 当 $b=1$ 时，$a$ 一定是 $1$。  类似的，对于每一个种不同的关系，都可以推导出两个不同的式子：
+   要么 a= 要么 b= 得到结论 1 得到结论 2     0 0 a=1 时，b=0 b=1 时，a=0   0 1 a=1 时，b=1 b=0 时，a=0   1 0 a=0 时，b=0 b=1 时，a=1   1 1 a=0 时，b=1 b=0 时，a=1    于是我们根据“当什么什么时，得到什么什么”建立一个图。注意的是，这个关系是不能反过来的，比如表格第一个行结论 1：当 $b=0$ 时，一定有 $a=1$ 吗？并不是，此时 $a$ 可以是 $0$ 也可以是 $1$，不受约束。因此关系是定向的，不能反过来，翻译成建图就是，我们要建立有向图。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://walker68145/Arahc.github.io/posts/2sat%E5%85%A5%E9%97%A8/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-10-14T09:55:51+08:00" />
+<meta property="article:modified_time" content="2021-10-14T09:55:51+08:00" />
+
+<meta itemprop="name" content="2SAT入门">
+<meta itemprop="description" content="前置知识  Tarjan 没了  问题与解法 问题 2-SAT 问题的模板题目是：
+ 模板例题：对于 $n$ 个 bool 变量，变量值未知，给定 $m$ 个关系，每个关系形如：$x_i=c_1$ 或 $x_j=c_2$（$c_1,c_2\in{0,1}$）。求是否有给每个变量赋值的方案，若有解则输出一组解。时间复杂度要求线性。
+ 这类问题就是 2-SAT 问题，更加进一步地，如果关系是：$x_i=c_1$ 或 $x_j=c_2$ 或 $x_k=c_3$。那就是 3-SAT 问题……现在已经被证明，3-SAT 或以上的 k-SAT 问题，是 NPC 的，1-SAT 问题应该不需要多说，所以重点就是 2-SAT 问题了。
+解法 2-SAT 问题给出的是两个点之间的关系，对于 $a=1$ 或 $b=0$ 这样一个条件，我们可以推导出以下几个关系：
+ 当 $a=0$ 时，$b$ 一定是 $0$。 当 $b=1$ 时，$a$ 一定是 $1$。  类似的，对于每一个种不同的关系，都可以推导出两个不同的式子：
+   要么 a= 要么 b= 得到结论 1 得到结论 2     0 0 a=1 时，b=0 b=1 时，a=0   0 1 a=1 时，b=1 b=0 时，a=0   1 0 a=0 时，b=0 b=1 时，a=1   1 1 a=0 时，b=1 b=0 时，a=1    于是我们根据“当什么什么时，得到什么什么”建立一个图。注意的是，这个关系是不能反过来的，比如表格第一个行结论 1：当 $b=0$ 时，一定有 $a=1$ 吗？并不是，此时 $a$ 可以是 $0$ 也可以是 $1$，不受约束。因此关系是定向的，不能反过来，翻译成建图就是，我们要建立有向图。"><meta itemprop="datePublished" content="2021-10-14T09:55:51+08:00" />
+<meta itemprop="dateModified" content="2021-10-14T09:55:51+08:00" />
+<meta itemprop="wordCount" content="602">
+<meta itemprop="keywords" content="图论," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="2SAT入门"/>
+<meta name="twitter:description" content="前置知识  Tarjan 没了  问题与解法 问题 2-SAT 问题的模板题目是：
+ 模板例题：对于 $n$ 个 bool 变量，变量值未知，给定 $m$ 个关系，每个关系形如：$x_i=c_1$ 或 $x_j=c_2$（$c_1,c_2\in{0,1}$）。求是否有给每个变量赋值的方案，若有解则输出一组解。时间复杂度要求线性。
+ 这类问题就是 2-SAT 问题，更加进一步地，如果关系是：$x_i=c_1$ 或 $x_j=c_2$ 或 $x_k=c_3$。那就是 3-SAT 问题……现在已经被证明，3-SAT 或以上的 k-SAT 问题，是 NPC 的，1-SAT 问题应该不需要多说，所以重点就是 2-SAT 问题了。
+解法 2-SAT 问题给出的是两个点之间的关系，对于 $a=1$ 或 $b=0$ 这样一个条件，我们可以推导出以下几个关系：
+ 当 $a=0$ 时，$b$ 一定是 $0$。 当 $b=1$ 时，$a$ 一定是 $1$。  类似的，对于每一个种不同的关系，都可以推导出两个不同的式子：
+   要么 a= 要么 b= 得到结论 1 得到结论 2     0 0 a=1 时，b=0 b=1 时，a=0   0 1 a=1 时，b=1 b=0 时，a=0   1 0 a=0 时，b=0 b=1 时，a=1   1 1 a=0 时，b=1 b=0 时，a=1    于是我们根据“当什么什么时，得到什么什么”建立一个图。注意的是，这个关系是不能反过来的，比如表格第一个行结论 1：当 $b=0$ 时，一定有 $a=1$ 吗？并不是，此时 $a$ 可以是 $0$ 也可以是 $1$，不受约束。因此关系是定向的，不能反过来，翻译成建图就是，我们要建立有向图。"/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/Walker_68145" target="_blank">
+            <img class="img-circle img-rotate" src="https://walker68145/Arahc.github.io/avatar.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Arahc</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Arahc&#39;s home</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Changsha, China</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/Arahc.github.io/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/Arahc.github.io/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/Arahc.github.io/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/Arahc.github.io/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/Arahc.github.io/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content"><p>博客已经由 Walker_68145.github.io 转移到此处，原页面保留，为此带来的不便请大家谅解。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link" rel="1">k进制<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link" rel="1">stl<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link" rel="2">二分三分<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link" rel="3">分治<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link" rel="8">动态规划<span
+               class="tag-list-count">8</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link" rel="7">图论<span
+               class="tag-list-count">7</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link" rel="1">字符串<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link" rel="10">数学<span
+               class="tag-list-count">10</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link" rel="9">数据结构<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link" rel="4">暴力<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link" rel="1">莫队<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link" rel="3">贪心<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link" rel="2">随机化<span
+               class="tag-list-count">2</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E6%9D%82%E9%A1%B9/" class="category-list-link">杂项</a><span class="category-list-count">3</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/" class="category-list-link">笔记</a><span class="category-list-count">11</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E9%A2%98%E8%A7%A3/" class="category-list-link">题解</a><span class="category-list-count">20</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link">k进制</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link">stl</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link">二分三分</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link">分治</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link">动态规划</a><span
+                    class="tag-list-count">8</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link">图论</a><span
+                    class="tag-list-count">7</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link">字符串</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link">数学</a><span
+                    class="tag-list-count">10</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link">数据结构</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link">暴力</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link">莫队</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link">贪心</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link">随机化</a><span
+                    class="tag-list-count">2</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/" class="title">P5633最小度限制生成树 题解</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-28 21:43:22 &#43;0800 CST" itemprop="datePublished">2021-12-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/" class="title">线性基入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-22 21:47:24 &#43;0800 CST" itemprop="datePublished">2021-12-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/" class="title">Markdown 入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-30 18:41:00 &#43;0800 CST" itemprop="datePublished">2021-11-30</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/" class="title">OI 相关的非切题内容</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-28 21:42:04 &#43;0800 CST" itemprop="datePublished">2021-11-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E4%B8%8Ekdtree/" class="title">替罪羊与KDTree</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-25 21:48:19 &#43;0800 CST" itemprop="datePublished">2021-11-25</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/Arahc.github.io/posts/2sat%E5%85%A5%E9%97%A8/"
+    >2SAT入门</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://walker68145/Arahc.github.io/posts/2sat%E5%85%A5%E9%97%A8/" class="article-date">
+  <time datetime="2021-10-14 09:55:51 &#43;0800 CST" itemprop="datePublished">2021-10-14</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/"> 笔记 </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/"> 图论 </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 602 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 3 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <h2 id="前置知识">前置知识</h2>
+<ul>
+<li>Tarjan</li>
+<li>没了</li>
+</ul>
+<h2 id="问题与解法">问题与解法</h2>
+<h3 id="问题">问题</h3>
+<p>2-SAT 问题的模板题目是：</p>
+<blockquote>
+<p>模板例题：对于 $n$ 个 bool 变量，变量值未知，给定 $m$ 个关系，每个关系形如：$x_i=c_1$ 或 $x_j=c_2$（$c_1,c_2\in{0,1}$）。求是否有给每个变量赋值的方案，若有解则输出一组解。时间复杂度要求线性。</p>
+</blockquote>
+<p>这类问题就是 2-SAT 问题，更加进一步地，如果关系是：$x_i=c_1$ 或 $x_j=c_2$ 或 $x_k=c_3$。那就是 3-SAT 问题……现在已经被证明，3-SAT 或以上的 k-SAT 问题，是 NPC 的，<del>1-SAT 问题应该不需要多说</del>，所以重点就是 2-SAT 问题了。</p>
+<h3 id="解法">解法</h3>
+<p>2-SAT 问题给出的是两个点之间的关系，对于 $a=1$ 或 $b=0$ 这样一个条件，我们可以推导出以下几个关系：</p>
+<ul>
+<li>当 $a=0$ 时，$b$ 一定是 $0$。</li>
+<li>当 $b=1$ 时，$a$ 一定是 $1$。</li>
+</ul>
+<p>类似的，对于每一个种不同的关系，都可以推导出两个不同的式子：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">要么 a=</th>
+<th style="text-align:center">要么 b=</th>
+<th style="text-align:center">得到结论 1</th>
+<th style="text-align:center">得到结论 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">a=1 时，b=0</td>
+<td style="text-align:center">b=1 时，a=0</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">a=1 时，b=1</td>
+<td style="text-align:center">b=0 时，a=0</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">a=0 时，b=0</td>
+<td style="text-align:center">b=1 时，a=1</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">a=0 时，b=1</td>
+<td style="text-align:center">b=0 时，a=1</td>
+</tr>
+</tbody>
+</table>
+<p>于是我们根据“当什么什么时，得到什么什么”建立一个图。注意的是，这个<strong>关系是不能反过来的</strong>，比如表格第一个行结论 1：当 $b=0$ 时，一定有 $a=1$ 吗？并不是，此时 $a$ 可以是 $0$ 也可以是 $1$，不受约束。因此关系是定向的，不能反过来，翻译成建图就是，我们要建立有向图。</p>
+<p>实际地说，对于每一个变量，我们要开两个点，为了方便我们用 $i$ 号点表示 $x_i$ 是 $0$，$i+n$（后文为了方便也记作 $i'$）号点表示 $x_i$ 是 $1$。</p>
+<p>现在假设我们有以下几个关系：</p>
+<ul>
+<li>$a=1$ 或 $b=1$</li>
+<li>$b=1$ 或 $c=0$</li>
+<li>$a=0$ 或 $d=1$</li>
+<li>$c=0$ 或 $d=1$</li>
+<li>$a=0$ 或 $b=0$</li>
+</ul>
+<p>拿第一个举例，$a=0$ 可以推出 $b=1$，所以 $a$ 向 $b'$ 连边；因为 $b=0$ 可以推出 $a=1$，所以 $b$ 向 $a'$ 连边。以上所有的关系的连边是：</p>
+<pre tabindex="0"><code>a b'
+b a'
+b c
+c' b'
+a' d'
+d a
+c' d'
+d c
+a' b
+b' a
+</code></pre><p>得到的图：</p>
+<p><img src="https://pic.imgdb.cn/item/615a63aa2ab3f51d91305bcd.png" alt="2-SAT"></p>
+<p>现在发现，$a'$ 和 $b$ 在同一强连通分量内，$b'$ 和 $a$ 在同一强连通分量内，其他的点单独构成强连通分量。在同一强连通分量意味着这些变量有任意一个确定了取值，求可以推出全部强连通分量内的变量取值。假想一下如果 $a$ 和 $a'$ 在同一强连通分量意味着什么：$a=0$ 可以推出 $a=1$，而 $a=1$ 可以推出 $a=0$，此时就无解了。</p>
+<p>也就是说：若对于一个变量 $x_i$，若 $x_i$ 和 $x_i'$ 在同一强连通分量内，一定无解，扫一遍即可。</p>
+<p>现在这个图是一定有解了，如何找到一组解呢？我们假设得到了这样一个局部状态：</p>
+<p><img src="https://pic.imgdb.cn/item/615a6a952ab3f51d913909df.png" alt="2SAT局部"></p>
+<p>如果我们选择 $a=0$，那么 $a=0$ 可以推导出 $b=1$，进一步推导出 $a=1$，与 $a=0$ 出现矛盾。反之，如果选择 $a=1$，那么只能推出 $b=0$，但是 $a=1,b=0$ 恰好就是这个局部的一个可行解。从图论的角度看，对于同一个变量的两个点 $x_i$ 和 $x_i'，$我们选择了拓扑序较大的那个点。</p>
+<p>进一步猜想一下，对于同一个变量的两个取值，选择缩点之后所在分量拓扑序较大的点是不是一定能构造出一组可行解呢？不妨来尝试证明一下：</p>
+<hr>
+<p>先考虑一下这两个定理：</p>
+<p>设 $u_0$ 表示节点 $u$，$u_1$ 表示节点 $u'$。</p>
+<blockquote>
+<p><strong>引理</strong>：若存在边 $(u_p,v_q)$，一定存在边 $(v_{1-q},u_{1-p})$。</p>
+</blockquote>
+<p>证明：枚举法，见上文表格，对照即可。本引理在后文称作“引理一”。</p>
+<blockquote>
+<p><strong>引理</strong>：若存在一条单向路径 $u_p\rightarrow v_q$，则一定存在单向路径 $v_{1-q}\rightarrow u_{1-p}$。</p>
+</blockquote>
+<p>证明：对路径上的每一条边都进行一次引理一得到。本引理在后文称作“引理二”。</p>
+<p>假设 $\operatorname{f}(u_p)$ 表示 $u_p$ 所在的分量的拓扑序，并且有 $\operatorname{f}(u_p)&lt;\operatorname{f}(u_{1-p}),\operatorname{f}(v_q)&gt;\operatorname{f}(v_{1-q})$。若存在路径 $v_q\rightarrow u_p$，则说明取拓扑序大的这一做法不成立。</p>
+<p>根据引理二，存在路径 $u_{1-p}\rightarrow v_{1-q}$，由前一个路径，$\operatorname{f}(v_q)&lt;\operatorname{f}(u_p)$，由后一个路径，$\operatorname{f}(u_{1-p})&lt;\operatorname{f}(v_{1-q})$</p>
+<p>联立：</p>
+<p>$$
+\begin{cases}
+\operatorname{f}(u_p)&lt;\operatorname{f}(u_{1-p}) \
+\operatorname{f}(v_q)&lt;\operatorname{f}(u_p) \
+\operatorname{f}(u_{1-p})&lt;\operatorname{f}(v_{1-q})
+\end{cases}
+$$</p>
+<p>所以有：</p>
+<p>$$\operatorname{f}(v_q)&lt;\operatorname{f}(u_p)&lt;\operatorname{f}(u_{1-p})&lt;\operatorname{f}(v_{1-q})$$</p>
+<p>这与 $\operatorname{f}(v_q)&gt;\operatorname{f}(v_{1-q})$ 是矛盾的。也就是说取拓扑序大的这一做法是成立的。证毕。</p>
+<hr>
+<p>那么现在的问题就是处理拓扑序了，<del>显然可以直接缩点然后拓扑</del>。</p>
+<p>考虑到 Tarjan 标记强连通分量的时候，缩点的时候一定是先把靠近叶子节点的点缩掉了，而在搜索树上，拓扑序越大的点就是越靠近叶子节点的。因此 Tarjan 缩点的时候已经求出各分量的拓扑序了，但是是反序，因为先缩的点更靠近叶子，拓扑序也越大。</p>
+<p>所以所在分量拓扑序更大，等价于 Tarjan 后所在强连通分量标号更小。</p>
+<p>因此总的算法是：</p>
+<ol>
+<li>根据变量关系建图，注意图中有 $2n$ 个点，$2m$ 条有向边。</li>
+<li>Tarjan 算法进行缩点。</li>
+<li>此时枚举每一个点，若 $x_i$ 和 $x_i'$ 在同一强连通分量，无解。否则有解。</li>
+<li>枚举每一个点，对于 $x_i$ 和 $x_i'$，取所在分量标号更小的那个点对应的取值，得到一组可行解。</li>
+</ol>
+<p>时间复杂度 $\operatorname{O}(n)$ 级别。</p>
+<h3 id="代码">代码</h3>
+<p><a href="https://www.luogu.com.cn/problem/P47820">洛谷P4782模板</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">// Problem: P4782 【模板】2-SAT 问题
+</span><span style="color:#75715e">// Contest: Luogu
+</span><span style="color:#75715e">// URL: https://www.luogu.com.cn/problem/P4782
+</span><span style="color:#75715e">// Memory Limit: 512 MB
+</span><span style="color:#75715e">// Time Limit: 1000 ms
+</span><span style="color:#75715e">// 
+</span><span style="color:#75715e">// Powered by CP Editor (https://cpeditor.org)
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> max_n<span style="color:#f92672">=</span><span style="color:#ae81ff">2000006</span>;
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">read</span>(){
+	<span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">bool</span> w<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">char</span> c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&lt;</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">||</span> c<span style="color:#f92672">&gt;</span><span style="color:#e6db74">&#39;9&#39;</span>) w<span style="color:#f92672">|=</span>c<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;-&#39;</span>,c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&gt;=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> c<span style="color:#f92672">&lt;=</span><span style="color:#e6db74">&#39;9&#39;</span>) x<span style="color:#f92672">=</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">+</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">3</span>)<span style="color:#f92672">+</span>(c<span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>),c<span style="color:#f92672">=</span>getchar();
+	<span style="color:#66d9ef">return</span> w<span style="color:#f92672">?-</span>x:x;
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">write</span>(<span style="color:#66d9ef">int</span> x){
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>) putchar(<span style="color:#e6db74">&#39;-&#39;</span>),x<span style="color:#f92672">=-</span>x;
+	<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">9</span>) write(x<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>);
+	putchar(x<span style="color:#f92672">%</span><span style="color:#ae81ff">10</span><span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>);
+}
+<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">graph</span>{
+	<span style="color:#66d9ef">int</span> ct,hd[max_n],to[max_n<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>],nx[max_n<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>];
+	graph(){ct<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;}
+
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">clear</span>(){
+		ct<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;
+		memset(hd,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">sizeof</span>(hd));
+	}
+	<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">int</span> u,<span style="color:#66d9ef">int</span> v){
+		nx[<span style="color:#f92672">++</span>ct]<span style="color:#f92672">=</span>hd[u],hd[u]<span style="color:#f92672">=</span>ct,to[ct]<span style="color:#f92672">=</span>v;
+	}
+}e;
+
+<span style="color:#66d9ef">int</span> n,m,tot,col[max_n];
+
+stack<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">int</span><span style="color:#f92672">&gt;</span> s;
+<span style="color:#66d9ef">bool</span> in[max_n];
+<span style="color:#66d9ef">int</span> cntdfn,dfn[max_n],low[max_n];
+
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Tarjan</span>(<span style="color:#66d9ef">int</span> u,<span style="color:#66d9ef">int</span> fa){ <span style="color:#75715e">// 常规的Tarjan
+</span><span style="color:#75715e"></span>	s.push(u),in[u]<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;
+	dfn[u]<span style="color:#f92672">=</span>low[u]<span style="color:#f92672">=++</span>cntdfn;
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span>e.hd[u];i;i<span style="color:#f92672">=</span>e.nx[i]){
+		<span style="color:#66d9ef">int</span> v<span style="color:#f92672">=</span>e.to[i];
+		<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>dfn[v]){
+			Tarjan(v,u);
+			low[u]<span style="color:#f92672">=</span>min(low[u],low[v]);
+		}
+		<span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span>(in[v])
+			low[u]<span style="color:#f92672">=</span>min(low[u],dfn[v]);
+	}
+	<span style="color:#66d9ef">if</span>(dfn[u]<span style="color:#f92672">==</span>low[u]){
+		<span style="color:#f92672">++</span>tot;
+		<span style="color:#66d9ef">int</span> v<span style="color:#f92672">=</span>u;
+		<span style="color:#66d9ef">do</span>{
+			v<span style="color:#f92672">=</span>s.top();s.pop();
+			in[v]<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,
+			col[v]<span style="color:#f92672">=</span>tot;
+		}<span style="color:#66d9ef">while</span>(v<span style="color:#f92672">!=</span>u);
+	}
+}
+
+<span style="color:#75715e">// i     : i=0
+</span><span style="color:#75715e">// opp(i): i=1
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define opp(x) (x+n)
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">signed</span> <span style="color:#a6e22e">main</span>(){
+	n<span style="color:#f92672">=</span>read(),m<span style="color:#f92672">=</span>read();
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>m;<span style="color:#f92672">++</span>i){
+		<span style="color:#66d9ef">int</span> a<span style="color:#f92672">=</span>read(),x<span style="color:#f92672">=</span>read(),b<span style="color:#f92672">=</span>read(),y<span style="color:#f92672">=</span>read();
+		<span style="color:#66d9ef">if</span>(x<span style="color:#f92672">==</span>y <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>x){ <span style="color:#75715e">// 0 0
+</span><span style="color:#75715e"></span>			e.add(opp(a),b),
+			e.add(opp(b),a);
+		}
+		<span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span>(x<span style="color:#f92672">==</span>y){ <span style="color:#75715e">// 1 1
+</span><span style="color:#75715e"></span>			e.add(a,opp(b)),
+			e.add(b,opp(a));
+		}
+		<span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>x){ <span style="color:#75715e">// 0 1
+</span><span style="color:#75715e"></span>			e.add(opp(a),opp(b)),
+			e.add(b,a);
+		}
+		<span style="color:#66d9ef">else</span>{ <span style="color:#75715e">// 1 0
+</span><span style="color:#75715e"></span>			e.add(a,b),
+			e.add(opp(b),opp(a));
+		}
+	}
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>;<span style="color:#f92672">++</span>i) <span style="color:#75715e">// Tarjan
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>dfn[i])
+			Tarjan(i,i);
+
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i)
+		<span style="color:#66d9ef">if</span>(col[i]<span style="color:#f92672">==</span>col[opp(i)]){ <span style="color:#75715e">// 和 i&#39; 在同一分量，无解
+</span><span style="color:#75715e"></span>			puts(<span style="color:#e6db74">&#34;IMPOSSIBLE&#34;</span>);
+			<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+		}
+	puts(<span style="color:#e6db74">&#34;POSSIBLE&#34;</span>);
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i){
+		<span style="color:#66d9ef">if</span>(col[i]<span style="color:#f92672">&lt;</span>col[opp(i)]) <span style="color:#75715e">// 因为是反序，取编号小的
+</span><span style="color:#75715e"></span>			write(<span style="color:#ae81ff">0</span>);
+		<span style="color:#66d9ef">else</span>
+			write(<span style="color:#ae81ff">1</span>);
+		putchar(<span style="color:#e6db74">&#39; &#39;</span>);
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><h2 id="2-sat活用">2-SAT活用</h2>
+<h3 id="2-sat-例题">2-SAT 例题</h3>
+<p>先看一个变式，虽然题目中并没有经常出现，但是万一哪天有一个毒瘤题让你建模成这种形式呢：</p>
+<blockquote>
+<p>对于 $m$ 组关系，有两种形式：第一种是 $x_i=c_1$ 或 $x_j=c_2$；第二种是：$x_i=c_1$ 且 $x_j=c_2$</p>
+</blockquote>
+<p>看起来花里胡哨，实际上相当于直接送给你两个变量取值了，跑的时候直接从已知点往外推就行，对于已知结果的点也就不需要判拓扑序了。</p>
+<hr>
+<p>洛谷上，带 2-SAT 标签的题目不算多，大多以紫题为主，简单举例。</p>
+<blockquote>
+<p><a href="https://www.luogu.com.cn/problem/P3825">NOI2017 游戏</a>：每种场地有不同的赛车需求，有 ABC 三种赛车，有若干个不同场地选择赛车的需求，还需要满足：a 场地不能用 A，b 场地不能用 B，c 场地不能用 C，x 场地无限制。x 场地个数不超过 $8$。</p>
+</blockquote>
+<p>对于 a,b,c 场地，可以转化为每个场地只适合两个赛车的情况，即对于 a 号场地，把 $i$ 和 $i'$ 当作“适合 B 赛车”和“适合 C 赛车”，以此类推。对于 x 类型的场地，因为个数很小，可以枚举每个场地不允许走 A 或者不允许走 B，转化成 2-SAT 问题。</p>
+<blockquote>
+<p><a href="https://www.luogu.com.cn/problem/P3209">HNOI2010 平面图判定</a>：给定一个保证有哈密顿回路的图，求是否是平面图。</p>
+</blockquote>
+<p>将哈密顿回路看作一个圆，其他边是圆上的弦，考虑是否要把弦翻到圆外。枚举两个在圆内有交点的弦，可以知道必须是一个在外一个在内的，具体见<a href="https://walker68145.github.io/post/ping-mian-tu-pan-ding-ti-jie/">我的题解</a>。</p>
+<blockquote>
+<p><a href="https://www.luogu.com.cn/problem/P5782">POI2001 和平组委员会</a>：给定 $2n$ 个人以及之间的相互厌恶关系，每两个人属于一个党，每个党选一个人作为代表，且所有代表之间不能有相互厌恶关系。</p>
+</blockquote>
+<p>可以将每个党派当作一个变量，$x_i=0$ 表示选择这个党第一个人，$x_i=1$ 表示选择这个党第二个人。考虑两个人厌恶的情况，实际上就相当于两个代表不能一起上台，换言之，上了其中一个人，就不能上另外一个。这样就也转化从 2-SAT 模板的推论式了。若 $a$ 不喜欢 $b$，则 $a\rightarrow b'$，$b\rightarrow a'$。</p>
+<h3 id="2-sat与并查集">2-SAT与并查集</h3>
+<p>并查集同样也是处理两个点之间的关系的东西，2-SAT 也是处理两个点关系的东西，二者之间有什么区别？</p>
+<p>我们来看一个<a href="https://hydro.ac/p/HTR003C">这道题</a>，简化题意如下：</p>
+<blockquote>
+<p>有很多变量和各不相同的公式，一个公式描述两个变量的关系。若知道 A 和 B 的关系、B 和 C 的关系，就知道了 A 和 C 的关系；若知道 A 和 B 两个不同公式得到的关系，就解出了 A 和 B 的值；若知道 A 和 B 的关系、A 的值，就能得到 B 的值。现在不断加入新公式，每次加入后输出可以知道多少个变量的值。</p>
+</blockquote>
+<p>我们抓住其中的特点：</p>
+<ul>
+<li>关系是确定的。</li>
+<li>关系具有传递性。</li>
+<li>是否可以求值根据关系具有传递性。</li>
+<li>不断加入新条件，每次加入后都要求解一次多少个值。</li>
+<li>对哪些点可以求值不在乎，只统计数量。</li>
+</ul>
+<p>即使抛弃其他特点，单独看第四点，总不能每次加一个条件，重新跑一遍 Tarjan 吧。</p>
+<p>假设我们并不在每次加边后都求值，而是在所有的加边结束后询问一次，那么是不是可以用 2-SAT 的思路，因为 $a,b$ 关系知道了，相当于知道 $a$ 就知道 $b$，知道 $b$ 就知道 $a$？那不久相当于在一个图上面跑强连通分量了吗。</p>
+<p>下面回到原来的题目，对于“传递性”这一特征，2-SAT 也可以实现，“统计数量”则等价于在 Tarjan 里求强连通分量中变量的数量……解释起来貌似一切成型。</p>
+<p>相反一个 2-SAT 的题目可不可以用并查集做？正如前面所说，这个“若什么什么，则什么什么”的关系是不能反过来的。因此，显然，单纯的用并查集做是不合理的，不过 2-SAT 模板题的题解中有并查集+拓扑序的做法，有兴趣的可以自行去找。</p>
+
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://walker68145/Arahc.github.io/posts/2sat%E5%85%A5%E9%97%A8/" title="2SAT入门" target="_blank" rel="external">https://walker68145/Arahc.github.io/posts/2sat%E5%85%A5%E9%97%A8/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/Walker_68145" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://walker68145/Arahc.github.io/avatar.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/Walker_68145" target="_blank"><span class="text-dark">Arahc</span><small class="ml-1x">Arahc&#39;s home</small></a></h3>
+        <div>咕↘咕↗咕——→</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://walker68145/Arahc.github.io/posts/%E5%B9%B3%E9%9D%A2%E5%9B%BE%E5%88%A4%E5%AE%9A-%E9%A2%98%E8%A7%A3/" title="平面图判定 题解"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            <li class="next">
+                <a href="https://walker68145/Arahc.github.io/posts/cf643c-%E9%A2%98%E8%A7%A3/"
+                    title="CF643C 题解"><span>Newer&nbsp;&nbsp;</span><i
+                        class="icon icon-angle-right" aria-hidden="true"></i></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/Walker_68145" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://walker68145/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/C&#43;&#43;.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://walker68145/Arahc.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://walker68145/Arahc.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/walker68145\/Arahc.github.io',
+            CONTENT_URL: 'https:\/\/walker68145\/Arahc.github.io\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://walker68145/Arahc.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>

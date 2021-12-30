@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>
+        P5633最小度限制生成树 题解 - Arahc&#39;s blog
+      </title>
+        <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    
+    <meta name="theme-color" content="#000000" />
+    
+    <meta http-equiv="window-target" content="_top" />
+    
+    
+    <meta name="description" content="wqs 二分，但是没有归排。
+wqs 我们考虑朴素地用 kruscal 构造一个生成树，是按照边权加边的。这种方法显然无法保证 $s$ 的度。
+因此我们考虑把和 $s$ 相邻的边的边权修改一下，使得最后的生成树能让 $s$ 有那么多的度数。
+具体的修改方法，我们可以 wqs 二分一个 $\Delta$，每次让和 $s$ 相邻的点的边权都加上 $\Delta$。然后用朴素地 kruscal 跑就可以了。
+根据常识，如果这次尝试中 $s$ 的度多于限制，就要让边权更大使得其更不容易被选到；如果更少就同理。
+无解的情况不算很多：
+ 原图不连通（没有最小生成树）。 $s$ 的度本身就不到 $k$。 二分得到的 $\Delta$ 不能使 $s$ 的度达到 $k$。即二分到无解。  我们发现前两种情况都可以归化为第三种情况：如果原图不连通或者 $s$ 的度本身就没有达到 $k$，那么二分出来的 $\Delta$ 一定不能满足条件。
+因此我们只需要判断第三种条件就可以了。
+ 如果按照以上方法裸地实现，你会发现你有 T。
+我们考虑上面代码的复杂度是什么，假设二分的值域范围为 $a$，本题中也就是大家的 $(-\infty,\infty)$。每次二分排序一遍所有的边，然后跑一遍 kruscal，总复杂度 $\operatorname{O}(m\log m\log a)$。
+我们进一步发现，因为每次都只修改了和 $s$ 相邻的边，那么我们把这一类边单独提出来。和不与 $s$ 相邻的边分开，记为 $1$ 类边和 $2$ 类边。
+两类边分别排序之后，并不需要每次归并，因为给一类边所有权值加上一个 $\Delta$ 后，相对大小不改变，因此只需要在二分前分别排好序，后面就没必要排序了。kruscal 里面直接判断此时一类边边权小还是二类边边权小即可。
+复杂度 $\operatorname{O}(m\log a)$。" />
+    <meta name="generator" content="Hugo 0.91.2 with theme pure" />
+    <title>P5633最小度限制生成树 题解 - Arahc&#39;s blog</title>
+    
+    
+    <link rel="stylesheet" href="https://walker68145/Arahc.github.io/css/style.min.e64d754037c0ee0ec4e20ab1d6f07740ace61729bc03850559b8caa21ae4a597.css">
+    
+    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+    <meta property="og:title" content="P5633最小度限制生成树 题解" />
+<meta property="og:description" content="wqs 二分，但是没有归排。
+wqs 我们考虑朴素地用 kruscal 构造一个生成树，是按照边权加边的。这种方法显然无法保证 $s$ 的度。
+因此我们考虑把和 $s$ 相邻的边的边权修改一下，使得最后的生成树能让 $s$ 有那么多的度数。
+具体的修改方法，我们可以 wqs 二分一个 $\Delta$，每次让和 $s$ 相邻的点的边权都加上 $\Delta$。然后用朴素地 kruscal 跑就可以了。
+根据常识，如果这次尝试中 $s$ 的度多于限制，就要让边权更大使得其更不容易被选到；如果更少就同理。
+无解的情况不算很多：
+ 原图不连通（没有最小生成树）。 $s$ 的度本身就不到 $k$。 二分得到的 $\Delta$ 不能使 $s$ 的度达到 $k$。即二分到无解。  我们发现前两种情况都可以归化为第三种情况：如果原图不连通或者 $s$ 的度本身就没有达到 $k$，那么二分出来的 $\Delta$ 一定不能满足条件。
+因此我们只需要判断第三种条件就可以了。
+ 如果按照以上方法裸地实现，你会发现你有 T。
+我们考虑上面代码的复杂度是什么，假设二分的值域范围为 $a$，本题中也就是大家的 $(-\infty,\infty)$。每次二分排序一遍所有的边，然后跑一遍 kruscal，总复杂度 $\operatorname{O}(m\log m\log a)$。
+我们进一步发现，因为每次都只修改了和 $s$ 相邻的边，那么我们把这一类边单独提出来。和不与 $s$ 相邻的边分开，记为 $1$ 类边和 $2$ 类边。
+两类边分别排序之后，并不需要每次归并，因为给一类边所有权值加上一个 $\Delta$ 后，相对大小不改变，因此只需要在二分前分别排好序，后面就没必要排序了。kruscal 里面直接判断此时一类边边权小还是二类边边权小即可。
+复杂度 $\operatorname{O}(m\log a)$。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-12-28T21:43:22+08:00" />
+<meta property="article:modified_time" content="2021-12-28T21:43:22+08:00" />
+
+<meta itemprop="name" content="P5633最小度限制生成树 题解">
+<meta itemprop="description" content="wqs 二分，但是没有归排。
+wqs 我们考虑朴素地用 kruscal 构造一个生成树，是按照边权加边的。这种方法显然无法保证 $s$ 的度。
+因此我们考虑把和 $s$ 相邻的边的边权修改一下，使得最后的生成树能让 $s$ 有那么多的度数。
+具体的修改方法，我们可以 wqs 二分一个 $\Delta$，每次让和 $s$ 相邻的点的边权都加上 $\Delta$。然后用朴素地 kruscal 跑就可以了。
+根据常识，如果这次尝试中 $s$ 的度多于限制，就要让边权更大使得其更不容易被选到；如果更少就同理。
+无解的情况不算很多：
+ 原图不连通（没有最小生成树）。 $s$ 的度本身就不到 $k$。 二分得到的 $\Delta$ 不能使 $s$ 的度达到 $k$。即二分到无解。  我们发现前两种情况都可以归化为第三种情况：如果原图不连通或者 $s$ 的度本身就没有达到 $k$，那么二分出来的 $\Delta$ 一定不能满足条件。
+因此我们只需要判断第三种条件就可以了。
+ 如果按照以上方法裸地实现，你会发现你有 T。
+我们考虑上面代码的复杂度是什么，假设二分的值域范围为 $a$，本题中也就是大家的 $(-\infty,\infty)$。每次二分排序一遍所有的边，然后跑一遍 kruscal，总复杂度 $\operatorname{O}(m\log m\log a)$。
+我们进一步发现，因为每次都只修改了和 $s$ 相邻的边，那么我们把这一类边单独提出来。和不与 $s$ 相邻的边分开，记为 $1$ 类边和 $2$ 类边。
+两类边分别排序之后，并不需要每次归并，因为给一类边所有权值加上一个 $\Delta$ 后，相对大小不改变，因此只需要在二分前分别排好序，后面就没必要排序了。kruscal 里面直接判断此时一类边边权小还是二类边边权小即可。
+复杂度 $\operatorname{O}(m\log a)$。"><meta itemprop="datePublished" content="2021-12-28T21:43:22+08:00" />
+<meta itemprop="dateModified" content="2021-12-28T21:43:22+08:00" />
+<meta itemprop="wordCount" content="323">
+<meta itemprop="keywords" content="图论,二分三分," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="P5633最小度限制生成树 题解"/>
+<meta name="twitter:description" content="wqs 二分，但是没有归排。
+wqs 我们考虑朴素地用 kruscal 构造一个生成树，是按照边权加边的。这种方法显然无法保证 $s$ 的度。
+因此我们考虑把和 $s$ 相邻的边的边权修改一下，使得最后的生成树能让 $s$ 有那么多的度数。
+具体的修改方法，我们可以 wqs 二分一个 $\Delta$，每次让和 $s$ 相邻的点的边权都加上 $\Delta$。然后用朴素地 kruscal 跑就可以了。
+根据常识，如果这次尝试中 $s$ 的度多于限制，就要让边权更大使得其更不容易被选到；如果更少就同理。
+无解的情况不算很多：
+ 原图不连通（没有最小生成树）。 $s$ 的度本身就不到 $k$。 二分得到的 $\Delta$ 不能使 $s$ 的度达到 $k$。即二分到无解。  我们发现前两种情况都可以归化为第三种情况：如果原图不连通或者 $s$ 的度本身就没有达到 $k$，那么二分出来的 $\Delta$ 一定不能满足条件。
+因此我们只需要判断第三种条件就可以了。
+ 如果按照以上方法裸地实现，你会发现你有 T。
+我们考虑上面代码的复杂度是什么，假设二分的值域范围为 $a$，本题中也就是大家的 $(-\infty,\infty)$。每次二分排序一遍所有的边，然后跑一遍 kruscal，总复杂度 $\operatorname{O}(m\log m\log a)$。
+我们进一步发现，因为每次都只修改了和 $s$ 相邻的边，那么我们把这一类边单独提出来。和不与 $s$ 相邻的边分开，记为 $1$ 类边和 $2$ 类边。
+两类边分别排序之后，并不需要每次归并，因为给一类边所有权值加上一个 $\Delta$ 后，相对大小不改变，因此只需要在二分前分别排好序，后面就没必要排序了。kruscal 里面直接判断此时一类边边权小还是二类边边权小即可。
+复杂度 $\operatorname{O}(m\log a)$。"/>
+
+    <!--[if lte IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+      <![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+      <![endif]-->
+  </head>
+
+  
+  
+
+  <body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header">
+        <div class="profile-block text-center">
+          <a id="avatar" href="https://github.com/Walker_68145" target="_blank">
+            <img class="img-circle img-rotate" src="https://walker68145/Arahc.github.io/avatar.png" width="200" height="200">
+          </a>
+          <h2 id="name" class="hidden-xs hidden-sm">Arahc</h2>
+          <h3 id="title" class="hidden-xs hidden-sm hidden-md">Arahc&#39;s home</h3>
+          <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i>Changsha, China</small>
+        </div><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+            <li class="menu-item menu-item-home">
+                <a href="/Arahc.github.io/">
+                    <i class="icon icon-home-fill"></i>
+                  <span class="menu-title">Home</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-archives">
+                <a href="/Arahc.github.io/posts/">
+                    <i class="icon icon-archives-fill"></i>
+                  <span class="menu-title">Archives</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-categories">
+                <a href="/Arahc.github.io/categories/">
+                    <i class="icon icon-folder"></i>
+                  <span class="menu-title">Categories</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-tags">
+                <a href="/Arahc.github.io/tags/">
+                    <i class="icon icon-tags"></i>
+                  <span class="menu-title">Tags</span>
+                </a>
+            </li>
+            <li class="menu-item menu-item-about">
+                <a href="/Arahc.github.io/about/">
+                    <i class="icon icon-cup-fill"></i>
+                  <span class="menu-title">About</span>
+                </a>
+            </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+<aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">Board</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content"><p>博客已经由 Walker_68145.github.io 转移到此处，原页面保留，为此带来的不便请大家谅解。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div id="tag-cloud-list" class="widget-body">
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link" rel="1">k进制<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link" rel="1">stl<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link" rel="2">二分三分<span
+               class="tag-list-count">2</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link" rel="3">分治<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link" rel="8">动态规划<span
+               class="tag-list-count">8</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link" rel="7">图论<span
+               class="tag-list-count">7</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link" rel="1">字符串<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link" rel="10">数学<span
+               class="tag-list-count">10</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link" rel="9">数据结构<span
+               class="tag-list-count">9</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link" rel="4">暴力<span
+               class="tag-list-count">4</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link" rel="1">莫队<span
+               class="tag-list-count">1</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link" rel="3">贪心<span
+               class="tag-list-count">3</span></a>
+            
+            
+            <a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link" rel="2">随机化<span
+               class="tag-list-count">2</span></a>
+            
+    </div>
+<script>
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    tagCloud('#tag-cloud-list a',  8 ,  20 );
+  }
+};
+
+function tagCloud(where, min, max) {
+  let iMax = 0;
+  let iMin = 0;
+  $(where).each(function() {
+    let weight = Number($(this).attr("rel"));
+    if(iMax < weight) iMax = weight;
+    if(iMin > weight || iMin == 0) iMin = weight;
+  });
+  let step = (max - min)/(iMax - iMin);
+  $(where).each(function() {
+    let weight = $(this).attr("rel") - iMin;
+    $(this).css({"font-size": min + (weight * step) + 'px'});
+  });
+};
+</script>
+</div>
+
+      <div class="widget">
+    <h3 class="widget-title"> Categories</h3>
+    <div class="widget-body">
+        <ul class="category-list">
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E6%9D%82%E9%A1%B9/" class="category-list-link">杂项</a><span class="category-list-count">3</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E7%AC%94%E8%AE%B0/" class="category-list-link">笔记</a><span class="category-list-count">11</span></li>
+            <li class="category-list-item"><a href="https://walker68145/Arahc.github.io/categories/%E9%A2%98%E8%A7%A3/" class="category-list-link">题解</a><span class="category-list-count">20</span></li>
+        </ul>
+    </div>
+</div>
+      <div class="widget">
+    <h3 class="widget-title"> Tags</h3>
+    <div class="widget-body">
+        <ul class="tag-list">
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/k%E8%BF%9B%E5%88%B6/" class="tag-list-link">k进制</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/stl/" class="tag-list-link">stl</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/" class="tag-list-link">二分三分</a><span
+                    class="tag-list-count">2</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%88%86%E6%B2%BB/" class="tag-list-link">分治</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" class="tag-list-link">动态规划</a><span
+                    class="tag-list-count">8</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/" class="tag-list-link">图论</a><span
+                    class="tag-list-count">7</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="tag-list-link">字符串</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E5%AD%A6/" class="tag-list-link">数学</a><span
+                    class="tag-list-count">10</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="tag-list-link">数据结构</a><span
+                    class="tag-list-count">9</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E6%9A%B4%E5%8A%9B/" class="tag-list-link">暴力</a><span
+                    class="tag-list-count">4</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%8E%AB%E9%98%9F/" class="tag-list-link">莫队</a><span
+                    class="tag-list-count">1</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E8%B4%AA%E5%BF%83/" class="tag-list-link">贪心</a><span
+                    class="tag-list-count">3</span></li>
+            
+            
+            <li class="tag-list-item"><a href="https://walker68145/Arahc.github.io/tags/%E9%9A%8F%E6%9C%BA%E5%8C%96/" class="tag-list-link">随机化</a><span
+                    class="tag-list-count">2</span></li>
+            
+        </ul>
+
+    </div>
+</div>
+      
+<div class="widget">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget-body">
+        <ul class="recent-post-list list-unstyled no-thumbnail">
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/" class="title">P5633最小度限制生成树 题解</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-28 21:43:22 &#43;0800 CST" itemprop="datePublished">2021-12-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/" class="title">线性基入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-12-22 21:47:24 &#43;0800 CST" itemprop="datePublished">2021-12-22</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/markdown-%E5%85%A5%E9%97%A8/" class="title">Markdown 入门</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-30 18:41:00 &#43;0800 CST" itemprop="datePublished">2021-11-30</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/oi-%E7%9B%B8%E5%85%B3%E7%9A%84%E9%9D%9E%E5%88%87%E9%A2%98%E5%86%85%E5%AE%B9/" class="title">OI 相关的非切题内容</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-28 21:42:04 &#43;0800 CST" itemprop="datePublished">2021-11-28</time>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="item-inner">
+                    <p class="item-title">
+                        <a href="https://walker68145/Arahc.github.io/posts/%E6%9B%BF%E7%BD%AA%E7%BE%8A%E4%B8%8Ekdtree/" class="title">替罪羊与KDTree</a>
+                    </p>
+                    <p class="item-date">
+                        <time datetime="2021-11-25 21:48:19 &#43;0800 CST" itemprop="datePublished">2021-11-25</time>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+  </div>
+</aside>
+
+    
+    
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <h4 class="toc-title">Catalogue</h4>
+    <nav id="toc" class="js-toc toc">
+
+    </nav>
+  </div>
+</aside>
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/"
+    >P5633最小度限制生成树 题解</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/" class="article-date">
+  <time datetime="2021-12-28 21:43:22 &#43;0800 CST" itemprop="datePublished">2021-12-28</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/Arahc.github.io/categories/%E9%A2%98%E8%A7%A3/"> 题解 </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E5%9B%BE%E8%AE%BA/"> 图论 </a>
+    <a class="article-tag-link" href="/Arahc.github.io/tags/%E4%BA%8C%E5%88%86%E4%B8%89%E5%88%86/"> 二分三分 </a>
+  </span>
+
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">Word Count: 323 words</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">Read Time: 2 minutes </span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <p>wqs 二分，但是没有归排。</p>
+<h2 id="wqs">wqs</h2>
+<p>我们考虑朴素地用 kruscal 构造一个生成树，是按照边权加边的。这种方法显然无法保证 $s$ 的度。</p>
+<p>因此我们考虑把和 $s$ 相邻的边的边权修改一下，使得最后的生成树能让 $s$ 有那么多的度数。</p>
+<p>具体的修改方法，我们可以 wqs 二分一个 $\Delta$，每次让和 $s$ 相邻的点的边权都加上 $\Delta$。然后用朴素地 kruscal 跑就可以了。</p>
+<p>根据常识，如果这次尝试中 $s$ 的度多于限制，就要让边权更大使得其更不容易被选到；如果更少就同理。</p>
+<p>无解的情况不算很多：</p>
+<ul>
+<li>原图不连通（没有最小生成树）。</li>
+<li>$s$ 的度本身就不到 $k$。</li>
+<li>二分得到的 $\Delta$ 不能使 $s$ 的度达到 $k$。即二分到无解。</li>
+</ul>
+<p>我们发现前两种情况都可以归化为第三种情况：如果原图不连通或者 $s$ 的度本身就没有达到 $k$，那么二分出来的 $\Delta$ 一定不能满足条件。</p>
+<p>因此我们只需要判断第三种条件就可以了。</p>
+<hr>
+<p>如果按照以上方法裸地实现，你会发现你有 T。</p>
+<p>我们考虑上面代码的复杂度是什么，假设二分的值域范围为 $a$，本题中也就是大家的 $(-\infty,\infty)$。每次二分排序一遍所有的边，然后跑一遍 kruscal，总复杂度 $\operatorname{O}(m\log m\log a)$。</p>
+<p>我们进一步发现，因为每次都只修改了和 $s$ 相邻的边，那么我们把这一类边单独提出来。和不与 $s$ 相邻的边分开，记为 $1$ 类边和 $2$ 类边。</p>
+<p>两类边分别排序之后，并不需要每次归并，因为给一类边所有权值加上一个 $\Delta$ 后，相对大小不改变，因此只需要在二分前分别排好序，后面就没必要排序了。kruscal 里面直接判断此时一类边边权小还是二类边边权小即可。</p>
+<p>复杂度 $\operatorname{O}(m\log a)$。</p>
+<h2 id="code">code</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> max_n<span style="color:#f92672">=</span><span style="color:#ae81ff">50004</span>,max_m<span style="color:#f92672">=</span><span style="color:#ae81ff">500005</span>;
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">read</span>(){
+    <span style="color:#66d9ef">int</span> x<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">bool</span> w<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#66d9ef">char</span> c<span style="color:#f92672">=</span>getchar();
+    <span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&lt;</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">||</span> c<span style="color:#f92672">&gt;</span><span style="color:#e6db74">&#39;9&#39;</span>) w<span style="color:#f92672">|=</span>c<span style="color:#f92672">==</span><span style="color:#e6db74">&#39;-&#39;</span>,c<span style="color:#f92672">=</span>getchar();
+    <span style="color:#66d9ef">while</span>(c<span style="color:#f92672">&gt;=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#f92672">&amp;&amp;</span> c<span style="color:#f92672">&lt;=</span><span style="color:#e6db74">&#39;9&#39;</span>) x<span style="color:#f92672">=</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1</span>)<span style="color:#f92672">+</span>(x<span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">3</span>)<span style="color:#f92672">+</span>(c<span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>),c<span style="color:#f92672">=</span>getchar();
+    <span style="color:#66d9ef">return</span> w<span style="color:#f92672">?-</span>x:x;
+}
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">write</span>(<span style="color:#66d9ef">int</span> x){
+    <span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>){<span style="color:#75715e">// 懒，直接在快写里面判无解
+</span><span style="color:#75715e"></span>        puts(<span style="color:#e6db74">&#34;Impossible&#34;</span>);
+        <span style="color:#66d9ef">return</span>;
+    }
+    <span style="color:#66d9ef">if</span>(x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">9</span>) write(x<span style="color:#f92672">/</span><span style="color:#ae81ff">10</span>);
+    putchar(x<span style="color:#f92672">%</span><span style="color:#ae81ff">10</span><span style="color:#f92672">^</span><span style="color:#ae81ff">48</span>);
+}
+
+<span style="color:#66d9ef">int</span> n,m,s,k,m1,m2;
+
+<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">edge</span>{
+    <span style="color:#66d9ef">int</span> u,v,w;
+    <span style="color:#66d9ef">bool</span> <span style="color:#66d9ef">operator</span> <span style="color:#f92672">&lt;</span> (<span style="color:#66d9ef">const</span> edge <span style="color:#f92672">&amp;</span>b) <span style="color:#66d9ef">const</span>{
+        edge a<span style="color:#f92672">=*</span><span style="color:#66d9ef">this</span>;
+        <span style="color:#66d9ef">return</span> a.w<span style="color:#f92672">&lt;</span>b.w;
+    }
+}e1[max_m],e2[max_m]; <span style="color:#75715e">// e1 一类边；e2 二类边
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">inline</span> edge <span style="color:#a6e22e">makee</span>(<span style="color:#66d9ef">int</span> x,<span style="color:#66d9ef">int</span> y,<span style="color:#66d9ef">int</span> z){
+    edge res;
+    res.u<span style="color:#f92672">=</span>x,res.v<span style="color:#f92672">=</span>y,res.w<span style="color:#f92672">=</span>z;
+    <span style="color:#66d9ef">return</span> res;
+}
+
+<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">par</span>{ <span style="color:#75715e">// 习惯，手写 pair
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> x,y;
+};
+<span style="color:#66d9ef">inline</span> par <span style="color:#a6e22e">makep</span>(<span style="color:#66d9ef">int</span> x,<span style="color:#66d9ef">int</span> y){
+    par res;
+    res.x<span style="color:#f92672">=</span>x,res.y<span style="color:#f92672">=</span>y;
+    <span style="color:#66d9ef">return</span> res;
+}
+
+<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Union</span>{
+    <span style="color:#66d9ef">int</span> fa[max_n],sz[max_n],n;
+    <span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">init</span>(<span style="color:#66d9ef">int</span> x){
+        n<span style="color:#f92672">=</span>x;
+        <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;<span style="color:#f92672">++</span>i)
+            fa[i]<span style="color:#f92672">=</span>i,sz[i]<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;
+    }
+    <span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">find</span>(<span style="color:#66d9ef">int</span> x){
+        <span style="color:#66d9ef">if</span>(x<span style="color:#f92672">==</span>fa[x]) <span style="color:#66d9ef">return</span> x;
+        <span style="color:#66d9ef">return</span> fa[x]<span style="color:#f92672">=</span>find(fa[x]);
+    }
+    <span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">merge</span>(<span style="color:#66d9ef">int</span> x,<span style="color:#66d9ef">int</span> y){
+        x<span style="color:#f92672">=</span>find(x),y<span style="color:#f92672">=</span>find(y);
+        <span style="color:#66d9ef">if</span>(x<span style="color:#f92672">==</span>y) <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+        <span style="color:#66d9ef">if</span>(sz[x]<span style="color:#f92672">&gt;</span>sz[y]) x<span style="color:#f92672">^=</span>y<span style="color:#f92672">^=</span>x<span style="color:#f92672">^=</span>y;
+        sz[y]<span style="color:#f92672">+=</span>sz[x],fa[x]<span style="color:#f92672">=</span>y;
+        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+    }
+}uf;
+
+<span style="color:#66d9ef">inline</span> par <span style="color:#a6e22e">check</span>(<span style="color:#66d9ef">int</span> mid){ <span style="color:#75715e">// kruscal
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span>(mid) <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>m1;<span style="color:#f92672">++</span>i)
+        e1[i].w<span style="color:#f92672">+=</span>mid;
+    uf.init(n);
+    <span style="color:#66d9ef">int</span> res1<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>,res2<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>,j1<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>,j2<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;</span>n;){
+        <span style="color:#66d9ef">if</span>(j1<span style="color:#f92672">&gt;</span>m1 <span style="color:#f92672">&amp;&amp;</span> j2<span style="color:#f92672">&gt;</span>m2 <span style="color:#f92672">&amp;&amp;</span> i<span style="color:#f92672">&lt;</span>n<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) <span style="color:#75715e">// 两种边都用完了，还没有选够，说明图不连通，无解
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">return</span> makep(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
+        <span style="color:#66d9ef">if</span>(j1<span style="color:#f92672">&lt;=</span>m1 <span style="color:#f92672">&amp;&amp;</span> (j2<span style="color:#f92672">&gt;</span>m2 <span style="color:#f92672">||</span> e1[j1].w<span style="color:#f92672">&lt;=</span>e2[j2].w)){ <span style="color:#75715e">// 选 1 类
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">int</span> u<span style="color:#f92672">=</span>e1[j1].u,v<span style="color:#f92672">=</span>e1[j1].v;
+            <span style="color:#66d9ef">if</span>(uf.merge(u,v)){
+                <span style="color:#f92672">++</span>res1,res2<span style="color:#f92672">+=</span>e1[j1].w,
+                <span style="color:#f92672">++</span>i;
+            }
+            <span style="color:#f92672">++</span>j1;
+        }
+        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span>(j2<span style="color:#f92672">&lt;=</span>m2 <span style="color:#f92672">||</span> j1<span style="color:#f92672">&gt;</span>m1){ <span style="color:#75715e">// 选 2 类
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">int</span> u<span style="color:#f92672">=</span>e2[j2].u,v<span style="color:#f92672">=</span>e2[j2].v;
+            <span style="color:#66d9ef">if</span>(uf.merge(u,v)){
+                res2<span style="color:#f92672">+=</span>e2[j2].w,
+                <span style="color:#f92672">++</span>i;
+            }
+            <span style="color:#f92672">++</span>j2;
+        }
+    }
+    <span style="color:#66d9ef">if</span>(mid) <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>m1;<span style="color:#f92672">++</span>i)
+        e1[i].w<span style="color:#f92672">-=</span>mid;
+    <span style="color:#66d9ef">return</span> makep(res1,res2<span style="color:#f92672">-</span>res1<span style="color:#f92672">*</span>mid);
+}<span style="color:#75715e">// res1：s 的度，res2：最小生成树大小，记得减去偏移量
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">erfen</span>(<span style="color:#66d9ef">int</span> l,<span style="color:#66d9ef">int</span> r){
+    <span style="color:#f92672">--</span>l,<span style="color:#f92672">++</span>r;<span style="color:#66d9ef">int</span> ans<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">while</span>(l<span style="color:#f92672">&lt;</span>r<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>){
+        <span style="color:#66d9ef">int</span> mid<span style="color:#f92672">=</span>(l<span style="color:#f92672">+</span>r)<span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>;par res<span style="color:#f92672">=</span>check(mid);
+        <span style="color:#66d9ef">if</span>(res.x<span style="color:#f92672">==</span>k)
+            l<span style="color:#f92672">=</span>mid,ans<span style="color:#f92672">=</span>mid;
+        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span>(res.x<span style="color:#f92672">&lt;</span>k)
+            r<span style="color:#f92672">=</span>mid;
+        <span style="color:#66d9ef">else</span>
+            l<span style="color:#f92672">=</span>mid;
+    }
+    par res<span style="color:#f92672">=</span>check(ans);
+    <span style="color:#66d9ef">if</span>(res.x<span style="color:#f92672">!=</span>k) <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>; <span style="color:#75715e">// 最后二分到的答案无解
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> res.y;
+}
+
+<span style="color:#66d9ef">signed</span> <span style="color:#a6e22e">main</span>(){
+<span style="color:#75715e">//  freopen(&#34;.in&#34;,&#34;r&#34;,stdin),
+</span><span style="color:#75715e">//  freopen(&#34;.out&#34;,&#34;w&#34;,stdout);
+</span><span style="color:#75715e"></span>    n<span style="color:#f92672">=</span>read(),m<span style="color:#f92672">=</span>read(),s<span style="color:#f92672">=</span>read(),k<span style="color:#f92672">=</span>read();
+    <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">register</span> <span style="color:#66d9ef">int</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>m;<span style="color:#f92672">++</span>i){
+        <span style="color:#66d9ef">int</span> u<span style="color:#f92672">=</span>read(),v<span style="color:#f92672">=</span>read(),w<span style="color:#f92672">=</span>read();
+        <span style="color:#66d9ef">if</span>(u<span style="color:#f92672">==</span>s <span style="color:#f92672">||</span> v<span style="color:#f92672">==</span>s)
+            e1[<span style="color:#f92672">++</span>m1]<span style="color:#f92672">=</span>makee(u,v,w);
+        <span style="color:#66d9ef">else</span>
+            e2[<span style="color:#f92672">++</span>m2]<span style="color:#f92672">=</span>makee(u,v,w);
+    }
+    sort(e1<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,e1<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">+</span>m1),sort(e2<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>,e2<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">+</span>m2);
+    write(erfen(<span style="color:#f92672">-</span><span style="color:#ae81ff">30000</span>,<span style="color:#ae81ff">30000</span>));
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div>
+    </div>
+    <div class="article-footer">
+<blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <li class="post-copyright-link hidden-xs">
+      <strong>Permalink: </strong>
+      <a href="https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/" title="P5633最小度限制生成树 题解" target="_blank" rel="external">https://walker68145/Arahc.github.io/posts/p5633%E6%9C%80%E5%B0%8F%E5%BA%A6%E9%99%90%E5%88%B6%E7%94%9F%E6%88%90%E6%A0%91-%E9%A2%98%E8%A7%A3/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>License: </strong>
+        <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external"></a>
+    </li>
+  </ul>
+</blockquote>
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/Walker_68145" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://walker68145/Arahc.github.io/avatar.png" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/Walker_68145" target="_blank"><span class="text-dark">Arahc</span><small class="ml-1x">Arahc&#39;s home</small></a></h3>
+        <div>咕↘咕↗咕——→</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+    </div>
+  </article>
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <ul class="pager pull-left">
+            <li class="prev">
+                <a href="https://walker68145/Arahc.github.io/posts/%E7%BA%BF%E6%80%A7%E5%9F%BA%E5%85%A5%E9%97%A8/" title="线性基入门"><i
+                        class="icon icon-angle-left"
+                        aria-hidden="true"></i><span>&nbsp;&nbsp;Older</span></a>
+            </li>
+            
+            <li class="toggle-toc">
+                <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false"
+                    title="Catalogue" role="button">
+                    <span>[&nbsp;</span><span>Catalogue</span>
+                    <i class="text-collapsed icon icon-anchor"></i>
+                    <i class="text-in icon icon-close"></i>
+                    <span>]</span>
+                </a>
+            </li>
+        </ul>
+        <div class="bar-right">
+            <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter"
+                data-mobile-sites="weibo,qq,qzone"></div>
+        </div>
+    </div>
+</nav>
+
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+<ul class="social-links">
+    <li><a href="https://github.com/Walker_68145" target="_blank" title="github" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-github"></i></a></li>
+    <li><a href="https://walker68145/index.xml" target="_blank" title="rss" data-toggle=tooltip data-placement=top >
+            <i class="icon icon-rss"></i></a></li>
+</ul>
+  <div class="copyright">
+    &copy;2017  -
+    2021
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+    
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+            showMathMenu: false, //disables context menu
+            tex2jax: {
+            inlineMath: [ ['$','$'], ['\\(','\\)'] ]
+           }
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/python.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/javascript.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/languages/C&#43;&#43;.min.js" defer></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="https://walker68145/Arahc.github.io/js/application.min.a94ab19cb63a95c8d7fbd7b85cab3ddeea8c369bdf75b9cab6708787ead123af.js"></script>
+<script src="https://walker68145/Arahc.github.io/js/plugin.min.19c5bcb2fb0789ab4f2b7834e5ceb5e92635645605bab902c1024b25f1502364.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'https:\/\/walker68145\/Arahc.github.io',
+            CONTENT_URL: 'https:\/\/walker68145\/Arahc.github.io\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="https://walker68145/Arahc.github.io/js/insight.min.4a2d52de4bfff73e0c688404fe3d17c9a3ae12d9888e1e1ac9c690e4890de2ded50fe55f2b819c2ba55435a76f396f3ea6805765f0b0af5635cdf74ea459eab0.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>
